@@ -67,6 +67,8 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
   };
 
   const handleSave = async (patientData: Partial<Patient>) => {
+    console.log('handleSave starting with:', patientData);
+    alert('Iniciando guardado...');
     if (!patientData.name) {
       alert('El nombre del paciente es obligatorio');
       return;

@@ -21,6 +21,15 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Submitting PatientForm with:', formData);
+    if (!formData.name) {
+      alert('Error: El nombre es obligatorio');
+      return;
+    }
+    if (!formData.chairNumber) {
+      alert('Error: Debes seleccionar una silla');
+      return;
+    }
     onSave(formData);
   };
 
