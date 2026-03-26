@@ -1,8 +1,12 @@
-const express = require('express');
-const cors = require('cors');
-const { v4: uuidv4 } = require('uuid');
-const fs = require('fs');
-const path = require('path');
+import express from 'express';
+import cors from 'cors';
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -22,14 +26,17 @@ const loadPatients = () => {
   } catch (err) {
     console.error('Error loading patients:', err);
   }
-  return []; // Default initial data if file doesn't exist
+  return [];
 };
 
 const savePatients = (data) => {
   try {
+    // Note: Writing to disk will fail in Vercel Serverless environment
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+    return true;
   } catch (err) {
-    console.error('Error saving patients:', err);
+    console.error('Error saving patients (likely read-only fs):', err);
+    return false;
   }
 };
 
@@ -41,28 +48,28 @@ let migrated = false;
 patients = patients.map(p => {
   if (!p.date) {
     migrated = true;
-    return { ...p, date: today };
+    return { ...p, date: p.date || today };
   }
   return p;
 });
-if (migrated) savePatients(patients);
+if (migrated) {
+  savePatients(patients); // Silent fail ok on Vercel
+}
 
 // Initial data if empty
 if (patients.length === 0) {
-  patients = [
+  const initialData = [
     {
       id: '1',
       name: 'Juan Pérez',
-      phone: '11 2233-4455',
-      address: 'Av. Corrientes 1234, CABA',
-      familyContact: '11 5544-3322',
-      familyRelationship: 'Hijo',
       shift: '1',
       floor: 1,
       chairNumber: 1,
-      status: 'Ocupada'
+      status: 'Ocupada',
+      date: today
     }
   ];
+  patients = initialData;
   savePatients(patients);
 }
 
@@ -82,9 +89,9 @@ app.post('/api/patients', (req, res) => {
   const newPatient = {
     id: uuidv4(),
     name,
-    phone,
-    address,
-    familyContact,
+    phone: phone || '',
+    address: address || '',
+    familyContact: familyContact || '',
     familyRelationship: familyRelationship || 'Tutor',
     shift,
     floor: floor || 1,
@@ -133,14 +140,16 @@ app.put('/api/patients/:id', (req, res) => {
   if (chairNumber !== undefined) patients[index].chairNumber = chairNumber;
   if (status) patients[index].status = status;
   if (date) patients[index].date = date;
+  
   savePatients(patients);
   res.json(patients[index]);
 });
 
-if (require.main === module) {
+// For local testing
+if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
     console.log(`Backend de Dialcheck corriendo en http://localhost:${PORT}`);
   });
 }
 
-module.exports = app;
+export default app;
