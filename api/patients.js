@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Persistence Helper - in Vercel, this is read-only
-const DATA_FILE = path.join(__dirname, 'patients.json');
+const DATA_FILE = path.join(__dirname, 'db/patients.json');
 
 const loadPatients = () => {
   try {
