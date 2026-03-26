@@ -1,0 +1,14 @@
+[
+  {
+    "id": "1",
+    "name": "Juan Pérez",
+    "phone": "11 2233-4455",
+    "address": "Av. Corrientes 1234, CABA",
+    "familyContact": "11 5544-3322",
+    "familyRelationship": "Hijo",
+    "shift": "1",
+    "floor": 1,
+    "chairNumber": 1,
+    "status": "Ocupada"
+  }
+]

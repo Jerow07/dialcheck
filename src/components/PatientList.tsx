@@ -1,0 +1,175 @@
+import { useState } from 'react';
+import type { Patient } from '../types';
+import { Search, MapPin, Phone, Users, History, ClipboardList, Trash2, Edit } from 'lucide-react';
+import { PatientForm } from './PatientForm';
+
+const API_URL = 'http://localhost:3001/api/patients';
+
+interface PatientListProps {
+  patients: Patient[];
+  onRefresh: () => void;
+}
+
+export const PatientList = ({ patients, onRefresh }: PatientListProps) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
+  const [showForm, setShowForm] = useState(false);
+
+  const filteredPatients = patients.filter(p => 
+    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSave = async (patientData: Partial<Patient>) => {
+    try {
+      const url = `${API_URL}/${patientData.id}`;
+      const resp = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(patientData)
+      });
+
+      if (resp.ok) {
+        onRefresh();
+        setShowForm(false);
+        setEditingPatient(null);
+      }
+    } catch (err) {
+      console.error('Error updating patient:', err);
+    }
+  };
+
+  const deletePatient = async (id: string) => {
+    if (!window.confirm('¿Está seguro de que desea eliminar este paciente del directorio?')) return;
+    try {
+      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      onRefresh();
+    } catch (err) {
+      console.error('Error deleting patient:', err);
+    }
+  };
+
+  return (
+    <div className="w-full space-y-8 pb-20">
+      {/* Search Header */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[var(--bg-accent)] p-8 rounded-[40px] border border-[var(--border-color)] backdrop-blur-xl">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-blue-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/20">
+            <ClipboardList className="text-white" size={32} />
+          </div>
+          <div>
+            <h2 className="text-3xl font-black tracking-tight">Directorio de Pacientes</h2>
+            <p className="opacity-40 font-medium">Búsqueda y Fichas Técnicas</p>
+          </div>
+        </div>
+
+        <div className="relative w-full md:w-96">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 opacity-30" size={20} />
+          <input 
+            type="text" 
+            placeholder="Buscar por nombre..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full h-14 bg-black/5 dark:bg-black/40 border border-[var(--border-color)] rounded-2xl pl-16 pr-6 font-bold focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
+          />
+        </div>
+      </div>
+
+      {/* Patients Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredPatients.map((patient) => (
+          <div 
+            key={patient.id}
+            className="group bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-[40px] p-8 hover:border-blue-500/30 transition-all hover:shadow-2xl hover:shadow-blue-500/5 relative overflow-hidden"
+          >
+            {/* Top Info */}
+            <div className="flex justify-between items-start mb-8">
+              <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center">
+                <Users className="text-blue-500" size={24} />
+              </div>
+            </div>
+
+            <h3 className="text-2xl font-black mb-6 tracking-tight">{patient.name}</h3>
+
+            {/* Technical File */}
+            <div className="space-y-4 mb-8">
+              <div className="flex items-center gap-4 opacity-60">
+                <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0">
+                  <Phone size={14} />
+                </div>
+                <span className="text-sm font-bold">{patient.phone || 'N/A'}</span>
+              </div>
+              
+              <div className="flex items-center gap-4 opacity-60">
+                <div className="w-8 h-8 rounded-lg bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0">
+                  <MapPin size={14} />
+                </div>
+                <span className="text-sm font-bold truncate">{patient.address || 'Sin dirección'}</span>
+              </div>
+
+              <div className="flex items-center gap-4 opacity-60 text-blue-500">
+                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                  <History size={14} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Piso {patient.floor} • Silla {patient.chairNumber}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Turno {patient.shift}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Contacto de Emergencia */}
+            <div className="mt-6 pt-6 border-t border-[var(--border-color)]">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 block mb-3">Contacto de Emergencia</span>
+              <p className="text-sm font-bold opacity-80">
+                <span className="text-blue-500 mr-2">{patient.familyRelationship || 'Tutor'}:</span>
+                {patient.familyContact || 'Sin contacto'}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-8 flex gap-3">
+              <button 
+                onClick={() => {
+                  setEditingPatient(patient);
+                  setShowForm(true);
+                }}
+                className="flex-1 h-12 bg-blue-500 text-white hover:bg-blue-600 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
+              >
+                <Edit size={14} />
+                Editar Ficha
+              </button>
+              <button 
+                onClick={() => deletePatient(patient.id)}
+                className="w-12 h-12 bg-red-500/5 hover:bg-red-500 hover:text-white rounded-xl flex items-center justify-center transition-all text-red-500"
+                title="Eliminar del sistema"
+              >
+                <Trash2 size={18} />
+              </button>
+            </div>
+          </div>
+        ))}
+
+        {filteredPatients.length === 0 && (
+          <div className="col-span-full py-20 text-center opacity-30">
+            <ClipboardList size={48} className="mx-auto mb-4" />
+            <p className="text-lg font-bold">No se encontraron pacientes</p>
+          </div>
+        )}
+      </div>
+
+      {/* Edit Form Modal */}
+      {showForm && (
+        <PatientForm 
+          title="Editar Ficha Técnica"
+          initialData={editingPatient!}
+          hideOperationalFields={true}
+          onClose={() => {
+            setShowForm(false);
+            setEditingPatient(null);
+          }}
+          onSave={handleSave}
+        />
+      )}
+    </div>
+  );
+};
