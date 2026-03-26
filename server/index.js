@@ -35,6 +35,18 @@ const savePatients = (data) => {
 
 let patients = loadPatients();
 
+// Migration: ensure all patients have a date
+const today = new Date().toISOString().split('T')[0];
+let migrated = false;
+patients = patients.map(p => {
+  if (!p.date) {
+    migrated = true;
+    return { ...p, date: today };
+  }
+  return p;
+});
+if (migrated) savePatients(patients);
+
 // Initial data if empty
 if (patients.length === 0) {
   patients = [
@@ -61,7 +73,7 @@ app.get('/api/patients', (req, res) => {
 
 // POST new patient
 app.post('/api/patients', (req, res) => {
-  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status } = req.body;
+  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date } = req.body;
   
   if (!name || !shift || chairNumber === undefined) {
     return res.status(400).json({ error: 'Name, shift and chairNumber are required' });
@@ -77,7 +89,8 @@ app.post('/api/patients', (req, res) => {
     shift,
     floor: floor || 1,
     chairNumber,
-    status: status || 'Ocupada'
+    status: status || 'Ocupada',
+    date: date || today
   };
 
   patients.push(newPatient);
@@ -102,7 +115,7 @@ app.delete('/api/patients/:id', (req, res) => {
 // UPDATE patient
 app.put('/api/patients/:id', (req, res) => {
   const { id } = req.params;
-  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status } = req.body;
+  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date } = req.body;
   
   const index = patients.findIndex(p => p.id === id);
   if (index === -1) {
@@ -119,6 +132,7 @@ app.put('/api/patients/:id', (req, res) => {
   if (floor !== undefined) patients[index].floor = floor;
   if (chairNumber !== undefined) patients[index].chairNumber = chairNumber;
   if (status) patients[index].status = status;
+  if (date) patients[index].date = date;
   savePatients(patients);
   res.json(patients[index]);
 });

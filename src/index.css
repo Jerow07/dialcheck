@@ -25,11 +25,11 @@
 }
 
 [data-theme='dark'] {
-  --bg-primary: #050505;
-  --text-primary: #ffffff;
-  --bg-accent: #111111;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --glass-bg: rgba(255, 255, 255, 0.05);
+  --bg-primary: #020617; /* Slate 950 / Deep Navy */
+  --text-primary: #f8fafc;
+  --bg-accent: #0f172a; /* Slate 900 */
+  --border-color: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.03);
 }
 
 body {

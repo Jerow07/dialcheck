@@ -6,11 +6,12 @@ interface AssignPatientModalProps {
   patients: Patient[];
   onClose: () => void;
   onAssign: (patientId: string) => void;
+  onRegisterNew: () => void;
   floor: number;
   chairNumber: number;
 }
 
-export const AssignPatientModal = ({ patients, onClose, onAssign, floor, chairNumber }: AssignPatientModalProps) => {
+export const AssignPatientModal = ({ patients, onClose, onAssign, onRegisterNew, floor, chairNumber }: AssignPatientModalProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const unassignedPatients = patients.filter(p => 
@@ -76,10 +77,16 @@ export const AssignPatientModal = ({ patients, onClose, onAssign, floor, chairNu
           )}
         </div>
 
-        <div className="mt-8 pt-6 border-t border-[var(--border-color)]">
+        <div className="mt-8 pt-6 border-t border-[var(--border-color)] flex flex-col gap-3">
+          <button 
+            onClick={onRegisterNew}
+            className="w-full h-14 bg-blue-500/10 text-blue-500 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-blue-500 hover:text-white transition-all border border-blue-500/20"
+          >
+            Registrar NUEVO PACIENTE en esta silla
+          </button>
           <button 
             onClick={onClose}
-            className="w-full h-14 rounded-2xl font-black uppercase text-xs tracking-widest opacity-40 hover:opacity-100 transition-all"
+            className="w-full h-14 rounded-2xl font-black uppercase text-[10px] tracking-widest opacity-40 hover:opacity-100 transition-all"
           >
             Cancelar
           </button>

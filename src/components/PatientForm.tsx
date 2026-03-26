@@ -7,11 +7,12 @@ interface PatientFormProps {
   onClose: () => void;
   onSave: (patient: Partial<Patient>) => void;
   title: string;
+  patients: Patient[];
   hideOperationalFields?: boolean;
   hidePersonalFields?: boolean;
 }
 
-export const PatientForm = ({ initialData, onClose, onSave, title, hideOperationalFields, hidePersonalFields }: PatientFormProps) => {
+export const PatientForm = ({ initialData, onClose, onSave, title, patients, hideOperationalFields, hidePersonalFields }: PatientFormProps) => {
   const [formData, setFormData] = useState<Partial<Patient>>(initialData || {
     shift: '1',
     floor: 1,
@@ -100,16 +101,37 @@ export const PatientForm = ({ initialData, onClose, onSave, title, hideOperation
                     <option value="3">Turno 3</option>
                   </select>
                 </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-2 block tracking-widest">Silla ({formData.floor === 2 ? '1-12' : '1-16'})</label>
-                  <input 
-                    required
-                    type="number" 
-                    min="1" max={formData.floor === 2 ? 12 : 16}
-                    value={formData.chairNumber || ''}
-                    className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
-                    onChange={e => setFormData({...formData, chairNumber: parseInt(e.target.value)})}
-                  />
+                <div className="col-span-2">
+                  <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-4 block tracking-widest">Seleccionar Silla Disponible</label>
+                  <div className={`p-6 bg-black/5 dark:bg-white/5 rounded-[32px] border border-[var(--border-color)] overflow-hidden`}>
+                    <div className={formData.floor === 1 ? "grid grid-cols-8 gap-3" : "grid grid-cols-4 gap-3"}>
+                      {(formData.floor === 2 ? [4,3,2,1,5,6,7,8,9,10,11,12] : Array.from({length: 16}, (_, i) => i + 1)).map(n => {
+                        const occupant = patients.find(p => p.floor === formData.floor && p.shift === formData.shift && p.chairNumber === n && p.id !== formData.id);
+                        const isSelected = formData.chairNumber === n;
+                        
+                        return (
+                          <button
+                            key={n}
+                            type="button"
+                            disabled={!!occupant}
+                            onClick={() => setFormData({...formData, chairNumber: n})}
+                            className={`aspect-square rounded-xl flex items-center justify-center text-[10px] font-black transition-all border-2 ${
+                              occupant 
+                                ? 'bg-red-500/10 border-red-500/20 text-red-500/40 cursor-not-allowed' 
+                                : isSelected
+                                  ? 'bg-blue-500 border-blue-600 text-white shadow-lg shadow-blue-500/40 scale-110'
+                                  : 'bg-[var(--bg-accent)] border-[var(--border-color)] hover:border-blue-500/50 text-[var(--text-primary)]/40 hover:text-blue-500'
+                            }`}
+                          >
+                            {n}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="text-[9px] font-medium opacity-30 mt-4 text-center uppercase tracking-tighter">
+                      {formData.floor === 1 ? 'Vista simplificada: 1 al 16' : 'Disposición en U: Costados y Superior'}
+                    </p>
+                  </div>
                 </div>
               </>
             )}

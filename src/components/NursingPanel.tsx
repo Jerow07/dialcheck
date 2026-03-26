@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope } from 'lucide-react';
+import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, ChevronLeft, ChevronRight, Copy } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 import { AssignPatientModal } from './AssignPatientModal';
 
 const API_URL = '/api/patients';
+
+const getLocalDateString = (date: Date = new Date()) => {
+  return date.toISOString().split('T')[0];
+};
 
 interface NursingPanelProps {
   patients: Patient[];
@@ -15,6 +19,8 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
   const [selectedShift, setSelectedShift] = useState('1');
   const [selectedFloor, setSelectedFloor] = useState(1);
   const [rotation, setRotation] = useState<'AM' | 'PM'>('AM'); // For Turno 2 (12-14 vs 14-16)
+  const [selectedDate, setSelectedDate] = useState(getLocalDateString());
+  const [movingPatient, setMovingPatient] = useState<Patient | null>(null);
 
   // Map of nurses per block (1-4) for Piso 1.
   // Morning includes T1 and T2-AM. Afternoon includes T2-PM and T3.
@@ -22,8 +28,8 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
     const isAfternoon = selectedShift === '3' || (selectedShift === '2' && rotation === 'PM');
     if (floor === 1) {
       const names = isAfternoon 
-        ? ['Enf. Tarde 1', 'Enf. Tarde 2', 'Enf. Tarde 3', 'Enf. Tarde 4']
-        : ['Enf. Mañana 1', 'Enf. Mañana 2', 'Enf. Mañana 3', 'Enf. Mañana 4'];
+        ? ['Clara Arias', 'Antonia', 'Daniel Rincon', 'Brisa Hidalgo']
+        : ['Norma', 'Andrea', 'Carolina', 'Edgar (el negro)'];
       return names[block - 1] || `Enf. ${block}`;
     } else {
       const names = isAfternoon
@@ -42,6 +48,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
       p.floor === floor && 
       p.shift === shift && 
       p.chairNumber === chairNumber && 
+      (p.date || getLocalDateString()) === selectedDate &&
       p.id !== excludeId
     );
 
@@ -80,7 +87,10 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
       const resp = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(patientData)
+        body: JSON.stringify({
+          ...patientData,
+          date: patientData.date || selectedDate
+        })
       });
 
       if (resp.ok) {
@@ -109,6 +119,9 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
 
   const handleAssign = async (patientId: string) => {
     if (!selectedChair) return;
+    const patient = patients.find(p => p.id === patientId);
+    if (!patient) return;
+
     try {
       // Check collision
       const canProceed = await checkAndReleaseCollision(
@@ -119,15 +132,18 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
       );
       if (!canProceed) return;
 
-      const resp = await fetch(`${API_URL}/${patientId}`, {
-        method: 'PUT',
+      const isNewAssignment = (patient.date || getLocalDateString()) !== selectedDate;
+      const url = isNewAssignment ? API_URL : `${API_URL}/${patientId}`;
+      const method = isNewAssignment ? 'POST' : 'PUT';
+      
+      const payload = isNewAssignment 
+        ? { ...patient, id: undefined, chairNumber: selectedChair, shift: selectedShift, floor: selectedFloor, date: selectedDate, status: 'Ocupada' }
+        : { chairNumber: selectedChair, shift: selectedShift, floor: selectedFloor, status: 'Ocupada', date: selectedDate };
+
+      const resp = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          chairNumber: selectedChair,
-          shift: selectedShift,
-          floor: selectedFloor,
-          status: 'Ocupada'
-        })
+        body: JSON.stringify(payload)
       });
 
       if (resp.ok) {
@@ -140,31 +156,112 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
     }
   };
 
+  const handleCloneSchedule = async (sourceDate: string) => {
+    if (!window.confirm(`¿Copiar todos los pacientes del día ${sourceDate} al día seleccionado (${selectedDate})?`)) return;
+    
+    const patientsToClone = patients.filter(p => (p.date || getLocalDateString()) === sourceDate && p.chairNumber > 0);
+    
+    if (patientsToClone.length === 0) {
+      alert('No hay pacientes para copiar en esa fecha');
+      return;
+    }
+
+    try {
+      for (const p of patientsToClone) {
+        const { id, ...patientData } = p;
+        await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...patientData,
+            date: selectedDate,
+            status: 'Ocupada'
+          })
+        });
+      }
+      onRefresh();
+      alert('Plan copiado con éxito');
+    } catch (err) {
+      console.error('Error cloning schedule:', err);
+    }
+  };
+
+  const handleMove = async (targetChair: number) => {
+    if (!movingPatient) return;
+    try {
+      const resp = await fetch(`${API_URL}/${movingPatient.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          chairNumber: targetChair 
+        })
+      });
+
+      if (resp.ok) {
+        onRefresh();
+        setMovingPatient(null);
+      }
+    } catch (err) {
+      console.error('Error moving patient:', err);
+    }
+  };
+
   const renderChair = (chairNumber: number) => {
     const chair = {
       number: chairNumber,
-      patient: patients.find(p => p.shift === selectedShift && p.floor === selectedFloor && p.chairNumber === chairNumber)
+      patient: patients.find(p => p.shift === selectedShift && p.floor === selectedFloor && p.chairNumber === chairNumber && (p.date || getLocalDateString()) === selectedDate)
     };
+
+    const isOccupied = !!chair.patient;
+    const isAbsent = chair.patient?.status === 'Ausente';
+    
+    const shouldFlip = (selectedFloor === 1 && (
+      (chairNumber >= 1 && chairNumber <= 4) || 
+      (chairNumber >= 9 && chairNumber <= 12)
+    )) || (selectedFloor === 2 && (
+      chairNumber <= 6
+    ));
 
     return (
       <div
         key={chair.number}
         onClick={() => {
+          if (movingPatient) {
+            if (!chair.patient) {
+              handleMove(chair.number);
+            }
+            return;
+          }
           if (!chair.patient) {
             setEditingPatient(null);
             setSelectedChair(chair.number);
             setShowAssignModal(true);
           }
         }}
-        className={`aspect-square rounded-[18px] p-2 flex flex-col items-center justify-center text-center transition-all border-2 relative group cursor-pointer ${
-          chair.patient 
-            ? chair.patient.status === 'Ocupada'
-              ? 'bg-blue-500/10 border-blue-500/30 shadow-inner cursor-default'
-              : 'bg-orange-500/10 border-orange-500/30 cursor-default'
-            : 'bg-[var(--bg-primary)] border-dashed border-[var(--border-color)] opacity-60 hover:opacity-100 hover:scale-[1.02] hover:bg-blue-500/5'
-        }`}
+        className={`aspect-square rounded-[24px] px-4 pt-4 pb-3 flex flex-col items-center justify-between text-center transition-all border-2 relative group cursor-pointer overflow-hidden ${
+          movingPatient && !chair.patient
+            ? 'bg-blue-500/20 border-blue-500 animate-pulse ring-4 ring-blue-500/20 z-50 scale-[1.05]'
+            : isOccupied 
+              ? isAbsent
+                ? 'bg-orange-500/20 border-orange-500/40 cursor-default'
+                : 'bg-red-500/20 border-red-500/40 shadow-[inset_0_0_20px_rgba(239,68,68,0.2)] cursor-default'
+              : 'bg-blue-500/10 border-dashed border-blue-500/30 opacity-95 hover:opacity-100 hover:scale-[1.02] hover:bg-blue-500/20 shadow-[inset_0_0_20px_rgba(59,130,246,0.1)]'
+        } ${movingPatient && chair.patient && movingPatient.id !== chair.patient.id ? 'opacity-20 pointer-events-none' : ''}`}
       >
-        <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-2 left-0 right-0 bottom-14 flex items-center justify-center pointer-events-none z-0">
+          <img 
+            src="/assets/chair.png" 
+            alt="Dialysis Chair"
+            className={`w-full h-full object-contain transition-all duration-300 ${
+              isOccupied 
+                ? isAbsent ? 'sepia-0 grayscale-0 saturate-150 contrast-125 brightness-110 opacity-90' : 'sepia-[0.8] saturate-[400%] hue-rotate-[320deg] opacity-100 drop-shadow-2xl' 
+                : 'sepia-0 grayscale-0 opacity-100 saturate-110'
+            }`}
+            style={{ transform: shouldFlip ? 'scaleX(-1)' : 'none' }}
+          />
+        </div>
+
+        <div className="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-20">
           {chair.patient && (
             <>
               <button 
@@ -173,50 +270,151 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                   setEditingPatient(chair.patient!);
                   setShowForm(true);
                 }}
-                className="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 shadow-lg"
+                className="w-7 h-7 rounded-lg bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 shadow-lg transition-transform active:scale-90"
               >
-                <Edit2 size={14} />
+                <Edit2 size={12} />
+              </button>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMovingPatient(chair.patient!);
+                }}
+                className="w-7 h-7 rounded-lg bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 shadow-lg transition-transform active:scale-90"
+                title="Mover Silla"
+              >
+                <ArrowLeftRight size={12} />
               </button>
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
                   releaseChair(chair.patient!.id);
                 }}
-                className="w-8 h-8 rounded-lg bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg"
+                className="w-7 h-7 rounded-lg bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg transition-transform active:scale-90"
               >
-                <UserX size={14} />
+                <UserX size={12} />
               </button>
             </>
           )}
         </div>
 
-        <span className="text-[10px] font-black opacity-30 uppercase tracking-widest mb-2">Silla {chair.number}</span>
+        <div className="relative z-10 w-full flex justify-start">
+          <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border backdrop-blur-sm ${
+            isOccupied 
+              ? isAbsent ? 'text-orange-500 border-orange-500/20 bg-orange-500/10' : 'text-red-500 border-red-500/20 bg-red-500/10' 
+              : 'text-blue-500 border-blue-500/20 bg-blue-500/10'
+          }`}>Silla {chair.number}</span>
+        </div>
         
-        {chair.patient ? (
-          <div className="flex flex-col items-center w-full px-1">
-            <span className="text-[13px] font-black tracking-tight leading-tight truncate w-full">{chair.patient.name}</span>
-            <div className="mt-1 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-white dark:bg-black/20 shadow-sm border border-[var(--border-color)]">
-              {chair.patient.status === 'Ocupada' ? (
-                <CheckCircle2 size={10} className="text-blue-500" />
-              ) : (
-                <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-              )}
-              <span className={`text-[8px] font-black uppercase tracking-widest ${
-                chair.patient.status === 'Ocupada' ? 'text-blue-500' : 'text-orange-500'
-              }`}>
-                {chair.patient.status}
-              </span>
+        <div className="relative z-10 w-full mt-auto">
+          {movingPatient && !chair.patient ? (
+            <div className="bg-blue-500 text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-xl animate-bounce">
+              Mover Aquí
             </div>
-          </div>
-        ) : (
-          <p className="text-[10px] font-black uppercase tracking-tighter opacity-20">Libre</p>
-        )}
+          ) : chair.patient ? (
+            <div className="flex flex-col items-center w-full space-y-0.5">
+              <div className="bg-white/95 dark:bg-black/95 backdrop-blur-md px-3 py-0.5 rounded-lg border border-white/10 shadow-lg w-full">
+                <span className="text-[11px] font-black tracking-tight leading-tight truncate block">{chair.patient.name}</span>
+              </div>
+              <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full shadow-sm border border-[var(--border-color)] ${
+                 isAbsent ? 'bg-orange-500/20 text-orange-500' : 'bg-red-500/20 text-red-500'
+              }`}>
+                {chair.patient.status === 'Ocupada' ? (
+                  <CheckCircle2 size={10} className="text-red-500" />
+                ) : (
+                  <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                )}
+                <span className="text-[8px] font-black uppercase tracking-widest">
+                  {chair.patient.status}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="opacity-90 flex flex-col items-center gap-1">
+              <p className="text-[9px] font-black uppercase tracking-widest italic text-blue-600 dark:text-blue-400 bg-white/40 dark:bg-black/40 px-3 py-0.5 rounded-full border border-white/10 backdrop-blur-sm">Libre</p>
+            </div>
+          )}
+        </div>
       </div>
     );
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-8 pb-20">
+    <div className="w-full max-w-7xl mx-auto space-y-6 pb-20">
+      {/* Date Navigation Bar */}
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-[var(--bg-accent)] p-6 rounded-[32px] border border-[var(--border-color)]">
+        <div className="flex items-center gap-4">
+          <div className="bg-orange-500/10 p-3 rounded-2xl border border-orange-500/20 text-orange-500">
+            <Calendar size={20} />
+          </div>
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-widest leading-tight">
+              {new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(selectedDate + 'T00:00:00'))}
+            </h3>
+            <p className="text-[10px] font-bold opacity-40 uppercase tracking-tighter">Planificación Diaria</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-[var(--border-color)]">
+          <button 
+            onClick={() => {
+              const prev = new Date(selectedDate + 'T00:00:00');
+              prev.setDate(prev.getDate() - 1);
+              setSelectedDate(getLocalDateString(prev));
+            }}
+            className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all opacity-40 hover:opacity-100"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          
+          <button 
+            onClick={() => setSelectedDate(getLocalDateString())}
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              selectedDate === getLocalDateString() ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'opacity-40 hover:opacity-100'
+            }`}
+          >
+            Hoy
+          </button>
+
+          <button 
+            onClick={() => {
+              const tomorrow = new Date();
+              tomorrow.setDate(tomorrow.getDate() + 1);
+              setSelectedDate(getLocalDateString(tomorrow));
+            }}
+            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+              selectedDate === getLocalDateString(new Date(Date.now() + 86400000)) ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'opacity-40 hover:opacity-100'
+            }`}
+          >
+            Mañana
+          </button>
+
+          <button 
+            onClick={() => {
+              const next = new Date(selectedDate + 'T00:00:00');
+              next.setDate(next.getDate() + 1);
+              setSelectedDate(getLocalDateString(next));
+            }}
+            className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all opacity-40 hover:opacity-100"
+          >
+            <ChevronRight size={18} />
+          </button>
+          
+          <div className="w-px h-6 bg-[var(--border-color)] mx-2" />
+          
+          <button 
+            onClick={() => {
+              const prevDay = new Date(selectedDate + 'T00:00:00');
+              prevDay.setDate(prevDay.getDate() - 1);
+              handleCloneSchedule(getLocalDateString(prevDay));
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-blue-500/20"
+          >
+            <Copy size={14} />
+            Copiar de ayer
+          </button>
+        </div>
+      </div>
+
       {/* Header & Shift Selector */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[var(--bg-accent)] p-8 rounded-[40px] border border-[var(--border-color)] backdrop-blur-xl">
         <div className="flex items-center gap-4">
@@ -287,41 +485,51 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
           )}
         </div>
 
-        <button 
-          onClick={() => {
-            setEditingPatient(null);
-            setSelectedChair(null);
-            setShowForm(true);
-          }}
-          className="px-8 h-14 bg-[var(--text-primary)] text-[var(--bg-primary)] rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-blue-500 hover:text-white transition-all flex items-center gap-3 shadow-xl"
-        >
-          <UserPlus size={18} />
-          Nuevo Paciente
-        </button>
+        {movingPatient ? (
+          <div className="flex flex-col items-center gap-2 bg-orange-500/10 p-6 rounded-[32px] border border-orange-500/30 animate-in zoom-in-95 duration-300">
+            <h3 className="text-sm font-black uppercase tracking-widest text-orange-500">Moviendo a {movingPatient.name}</h3>
+            <p className="text-[10px] font-bold opacity-60 uppercase">Selecciona una silla vacía para trasladarlo</p>
+            <button 
+              onClick={() => setMovingPatient(null)}
+              className="mt-2 px-6 py-2 bg-orange-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-orange-600 transition-all flex items-center gap-2"
+            >
+              <X size={12} />
+              Cancelar Movimiento
+            </button>
+          </div>
+        ) : (
+          <button 
+            onClick={() => {
+              setEditingPatient(null);
+              setSelectedChair(null);
+              setShowForm(true);
+            }}
+            className="px-8 h-14 bg-[var(--text-primary)] text-[var(--bg-primary)] rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-blue-500 hover:text-white transition-all flex items-center gap-3 shadow-xl"
+          >
+            <UserPlus size={18} />
+            Nuevo Paciente
+          </button>
+        )}
       </div>
 
       {/* Realistic Chair Layout */}
       {selectedFloor === 1 ? (
         <div className="space-y-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Sector 1 (8 sillas en bloques de 4) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
             <div className="bg-[var(--bg-accent)]/30 p-8 rounded-[48px] border border-[var(--border-color)]">
               <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-8 text-center italic">Sector ESTE</h3>
-              
               <div className="grid grid-cols-2 gap-6 relative">
-                {/* Block 1 (1-4) */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
-                    <Users size={12} className="text-blue-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-blue-500">{getNurseName(1, 1)}</span>
+                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                    <Users size={12} className="text-orange-500" />
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 1)}</span>
                   </div>
                   {[1, 2, 3, 4].map(n => renderChair(n))}
                 </div>
-                {/* Block 2 (5-8) */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
-                    <Users size={12} className="text-blue-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-blue-500">{getNurseName(1, 2)}</span>
+                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                    <Users size={12} className="text-orange-500" />
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 2)}</span>
                   </div>
                   {[5, 6, 7, 8].map(n => renderChair(n))}
                 </div>
@@ -329,23 +537,20 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               </div>
             </div>
 
-            {/* Sector 2 (8 sillas en bloques de 4) */}
             <div className="bg-[var(--bg-accent)]/30 p-8 rounded-[48px] border border-[var(--border-color)]">
               <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-8 text-center italic">Sector OESTE</h3>
               <div className="grid grid-cols-2 gap-6 relative">
-                {/* Block 3 (9-12) */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
-                    <Users size={12} className="text-blue-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-blue-500">{getNurseName(1, 3)}</span>
+                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                    <Users size={12} className="text-orange-500" />
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 3)}</span>
                   </div>
                   {[9, 10, 11, 12].map(n => renderChair(n))}
                 </div>
-                {/* Block 4 (13-16) */}
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
-                    <Users size={12} className="text-blue-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-blue-500">{getNurseName(1, 4)}</span>
+                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                    <Users size={12} className="text-orange-500" />
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 4)}</span>
                   </div>
                   {[13, 14, 15, 16].map(n => renderChair(n))}
                 </div>
@@ -354,9 +559,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
             </div>
           </div>
 
-          {/* Fictitious Nursing Station & Doctor at the bottom */}
           <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-            {/* Doctor in Charge */}
             <div className="bg-orange-500/10 border border-orange-500/30 px-10 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
               <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
                 <Stethoscope size={20} />
@@ -364,10 +567,10 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               <div>
                 <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40">Responsable</h4>
                 <p className="text-sm font-black uppercase tracking-tighter text-orange-500">Doctor a cargo</p>
+                <p className="text-[12px] font-bold text-orange-500/60 leading-tight">Silvina Escudero</p>
               </div>
             </div>
 
-            {/* Central Nursing Station */}
             <div className="bg-blue-600/10 border border-blue-500/30 px-60 py-6 rounded-[32px] flex items-center gap-16 backdrop-blur-md shadow-xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <div className="flex -space-x-3">
@@ -390,37 +593,31 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
           <div className="bg-[var(--bg-accent)]/30 p-12 rounded-[64px] border border-[var(--border-color)]">
             <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-12 text-center italic">Distribución en U (1-12)</h3>
             <div className="max-w-4xl mx-auto">
-              {/* Top Row (4 chairs) - Block 2 */}
               <div className="mb-12">
-                <div className="flex items-center gap-2 mb-4 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20 w-fit mx-auto">
-                  <Users size={12} className="text-blue-500" />
-                  <span className="text-[10px] font-black uppercase tracking-tighter text-blue-500">{getNurseName(2, 2)}</span>
+                <div className="flex items-center gap-2 mb-4 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20 w-fit mx-auto">
+                  <Users size={12} className="text-orange-500" />
+                  <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 2)}</span>
                 </div>
                 <div className="grid grid-cols-4 gap-6">
                   {[5, 6, 7, 8].map(n => renderChair(n))}
                 </div>
               </div>
 
-              {/* Middle Section (U sides) - Blocks 1 & 3 */}
               <div className="grid grid-cols-4 gap-6">
-                {/* Block 1 (Left) */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
-                    <Users size={12} className="text-blue-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-blue-500">{getNurseName(2, 1)}</span>
+                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                    <Users size={12} className="text-orange-500" />
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 1)}</span>
                   </div>
                   {[4, 3, 2, 1].map(n => renderChair(n))}
                 </div>
-
                 <div className="col-span-2 flex items-center justify-center opacity-10">
                   <Users size={80} strokeWidth={1} />
                 </div>
-
-                {/* Block 3 (Right) */}
                 <div className="space-y-6">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-blue-500/10 rounded-full border border-blue-500/20">
-                    <Users size={12} className="text-blue-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-blue-500">{getNurseName(2, 3)}</span>
+                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                    <Users size={12} className="text-orange-500" />
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 3)}</span>
                   </div>
                   {[9, 10, 11, 12].map(n => renderChair(n))}
                 </div>
@@ -428,9 +625,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
             </div>
           </div>
 
-          {/* Fictitious Nursing Station & Doctor at the bottom for Piso 2 */}
           <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-            {/* Doctor in Charge */}
             <div className="bg-orange-500/10 border border-orange-500/30 px-10 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
               <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
                 <Stethoscope size={20} />
@@ -438,10 +633,10 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               <div>
                 <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40">Responsable</h4>
                 <p className="text-sm font-black uppercase tracking-tighter text-orange-500">Doctor a cargo</p>
+                <p className="text-[12px] font-bold text-orange-500/60 leading-tight italic">Por asignar</p>
               </div>
             </div>
 
-            {/* Central Nursing Station */}
             <div className="bg-blue-600/10 border border-blue-500/30 px-60 py-6 rounded-[32px] flex items-center gap-16 backdrop-blur-md shadow-xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <div className="flex -space-x-3">
@@ -461,11 +656,11 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
         </div>
       )}
 
-      {/* Patient Form Modal */}
       {showForm && (
         <PatientForm 
           title={editingPatient ? 'Editar Estado / Silla' : 'Registrar Nuevo Paciente'}
-          initialData={editingPatient || { shift: selectedShift, floor: selectedFloor, chairNumber: selectedChair || undefined, status: 'Ocupada' }}
+          initialData={editingPatient || { shift: selectedShift, floor: selectedFloor, chairNumber: selectedChair || undefined, status: 'Ocupada', date: selectedDate }}
+          patients={patients}
           hidePersonalFields={!!editingPatient}
           onClose={() => {
             setShowForm(false);
@@ -476,10 +671,9 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
         />
       )}
 
-      {/* Assign Patient Modal */}
       {showAssignModal && selectedChair && (
         <AssignPatientModal 
-          patients={patients}
+          patients={Array.from(new Map([...patients].reverse().map(p => [p.name, p])).values())}
           floor={selectedFloor}
           chairNumber={selectedChair}
           onClose={() => {
@@ -487,6 +681,11 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
             setSelectedChair(null);
           }}
           onAssign={handleAssign}
+          onRegisterNew={() => {
+            setShowAssignModal(false);
+            setEditingPatient(null);
+            setShowForm(true);
+          }}
         />
       )}
     </div>
