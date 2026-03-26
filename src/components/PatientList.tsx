@@ -162,6 +162,7 @@ export const PatientList = ({ patients, onRefresh }: PatientListProps) => {
         <PatientForm 
           title="Editar Ficha Técnica"
           initialData={editingPatient!}
+          patients={patients}
           hideOperationalFields={true}
           onClose={() => {
             setShowForm(false);
