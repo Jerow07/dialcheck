@@ -67,21 +67,13 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
   };
 
   const handleSave = async (patientData: Partial<Patient>) => {
-    console.log('handleSave starting with:', patientData);
-    alert('Iniciando guardado...');
-    if (!patientData.name) {
-      alert('El nombre del paciente es obligatorio');
-      return;
-    }
-    if (!patientData.chairNumber) {
-      alert('Debes seleccionar una silla en el mapa');
-      return;
-    }
-
     try {
       const isEditing = !!patientData.id;
       
-      // Check collision if chair/shift/floor is being set
+      if (!patientData.name) return;
+      if (!patientData.chairNumber) return;
+
+      // Check collision
       if (patientData.chairNumber && patientData.shift && patientData.floor) {
         const canProceed = await checkAndReleaseCollision(
           patientData.chairNumber,
@@ -108,13 +100,9 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
         onRefresh();
         setShowForm(false);
         setEditingPatient(null);
-      } else {
-        const errorData = await resp.json();
-        alert(`Error al guardar: ${errorData.error || 'Desconocido'}`);
       }
     } catch (err) {
       console.error('Error saving patient:', err);
-      alert('Error de conexión con el servidor');
     }
   };
 
