@@ -67,6 +67,15 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
   };
 
   const handleSave = async (patientData: Partial<Patient>) => {
+    if (!patientData.name) {
+      alert('El nombre del paciente es obligatorio');
+      return;
+    }
+    if (!patientData.chairNumber) {
+      alert('Debes seleccionar una silla en el mapa');
+      return;
+    }
+
     try {
       const isEditing = !!patientData.id;
       
@@ -97,9 +106,13 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
         onRefresh();
         setShowForm(false);
         setEditingPatient(null);
+      } else {
+        const errorData = await resp.json();
+        alert(`Error al guardar: ${errorData.error || 'Desconocido'}`);
       }
     } catch (err) {
       console.error('Error saving patient:', err);
+      alert('Error de conexión con el servidor');
     }
   };
 
