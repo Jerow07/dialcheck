@@ -40,7 +40,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-2 block tracking-widest">Nombre del Paciente</label>
+              <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Nombre del Paciente</label>
               <input 
                 required
                 readOnly={hidePersonalFields}
@@ -53,7 +53,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
             </div>
             {!hidePersonalFields && (
               <div>
-                <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-2 block tracking-widest">Teléfono</label>
+                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Teléfono</label>
                 <input 
                   type="text" 
                   placeholder="11 2233-4455"
@@ -65,7 +65,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
             )}
             {!hidePersonalFields && (
               <div className="col-span-2">
-                <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-2 block tracking-widest">Dirección</label>
+                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Dirección</label>
                 <input 
                   type="text" 
                   placeholder="Calle 123, Localidad"
@@ -79,7 +79,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
             {!hideOperationalFields && (
               <>
                 <div className="col-span-2">
-                  <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-2 block tracking-widest">Piso / Sector</label>
+                  <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Piso / Sector</label>
                   <select 
                     className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold appearance-none"
                     value={formData.floor || 1}
@@ -90,7 +90,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                   </select>
                 </div>
                 <div>
-                  <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-2 block tracking-widest">Turno</label>
+                  <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Turno</label>
                   <select 
                     className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold appearance-none"
                     value={formData.shift}
@@ -102,8 +102,8 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                   </select>
                 </div>
                 <div className="col-span-2">
-                  <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-4 block tracking-widest">Seleccionar Silla Disponible</label>
-                  <div className={`p-6 bg-black/5 dark:bg-white/5 rounded-[32px] border border-[var(--border-color)] overflow-hidden`}>
+                  <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-4 block tracking-widest">Seleccionar Silla Disponible</label>
+                  <div className={`p-6 bg-white/50 dark:bg-black/20 rounded-[32px] border border-[var(--border-color)] overflow-hidden`}>
                     <div className={formData.floor === 1 ? "grid grid-cols-8 gap-3" : "grid grid-cols-4 gap-3"}>
                       {(formData.floor === 2 ? [4,3,2,1,5,6,7,8,9,10,11,12] : Array.from({length: 16}, (_, i) => i + 1)).map(n => {
                         const occupant = patients.find(p => p.floor === formData.floor && p.shift === formData.shift && p.chairNumber === n && p.id !== formData.id);
@@ -120,7 +120,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                                 ? 'bg-red-500/10 border-red-500/20 text-red-500/40 cursor-not-allowed' 
                                 : isSelected
                                   ? 'bg-blue-500 border-blue-600 text-white shadow-lg shadow-blue-500/40 scale-110'
-                                  : 'bg-[var(--bg-accent)] border-[var(--border-color)] hover:border-blue-500/50 text-[var(--text-primary)]/40 hover:text-blue-500'
+                                  : 'bg-[var(--bg-accent)] border-[var(--border-color)] hover:border-blue-500/50 text-[var(--text-primary)]/60 hover:text-blue-500'
                             }`}
                           >
                             {n}
@@ -138,7 +138,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
 
             {!hideOperationalFields && formData.id && (
               <div className="col-span-2">
-                <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-2 block tracking-widest">Estado</label>
+                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Estado</label>
                 <select 
                   className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold appearance-none"
                   value={formData.status}
@@ -152,10 +152,10 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
 
             {!hidePersonalFields && (
               <div className="col-span-2 mt-4 pt-4 border-t border-[var(--border-color)]">
-                <label className="text-[10px] font-black uppercase opacity-40 ml-2 mb-4 block tracking-widest">Contacto de Emergencia</label>
+                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-4 block tracking-widest">Contacto de Emergencia</label>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-[8px] font-black uppercase opacity-30 ml-2 mb-2 block tracking-widest">Parentesco</label>
+                    <label className="text-[8px] font-black uppercase opacity-50 ml-2 mb-2 block tracking-widest">Parentesco</label>
                     <select 
                       className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold appearance-none"
                       value={formData.familyRelationship || 'Tutor'}
@@ -169,7 +169,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                     </select>
                   </div>
                   <div>
-                    <label className="text-[8px] font-black uppercase opacity-30 ml-2 mb-2 block tracking-widest">Teléfono</label>
+                    <label className="text-[8px] font-black uppercase opacity-50 ml-2 mb-2 block tracking-widest">Teléfono</label>
                     <input 
                       type="text" 
                       placeholder="11 5544-3322"

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, Copy } from 'lucide-react';
+import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, Copy, Coffee } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 import { AssignPatientModal } from './AssignPatientModal';
 
@@ -44,16 +44,66 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
     const isAfternoon = selectedShift === '3' || (selectedShift === '2' && rotation === 'PM');
     if (floor === 1) {
       const names = isAfternoon 
-        ? ['Clara Arias', 'Antonia', 'Daniel Rincon', 'Brisa Hidalgo']
-        : ['Norma', 'Andrea', 'Carolina', 'Edgar (el negro)'];
+        ? ['Analia Peralta', 'Antonia Quiroga', 'Daniel Rincon', 'Brisa Hidalgo']
+        : ['Norma Banega', 'Andrea Noriega', 'Carolina Camino', 'Edgar Martinez'];
       return names[block - 1] || `Enf. ${block}`;
     } else {
       const names = isAfternoon
-        ? ['Enf. P2 Tarde 1', 'Enf. P2 Tarde 2', 'Enf. P2 Tarde 3']
-        : ['Enf. P2 Mañana 1', 'Enf. P2 Mañana 2', 'Enf. P2 Mañana 3'];
+        ? ['CAROLINA SALVATIERRA', 'MARIANELA OCAMPO', 'AGUSTINA GUIDOGUOMO']
+        : ['Maria Saban', 'Daniel Mancueto', 'Maribel Gomez'];
       return names[block - 1] || `Enf. P2 ${block}`;
     }
   };
+
+  const renderServiceIsland = () => {
+    const isAfternoon = selectedShift === '3' || (selectedShift === '2' && rotation === 'PM');
+    const staff = isAfternoon 
+      ? ['Nadia Vazquez', 'Rocio Romero', 'Natalia Corvalan']
+      : ['NATALIA ORJA', 'GISELA MOLINA'];
+    
+    return (
+      <div className="bg-amber-500/10 border border-amber-500/30 px-8 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
+        <div className="w-12 h-12 rounded-full bg-amber-500 flex items-center justify-center text-white shadow-lg group-hover:rotate-12 transition-transform">
+          <Coffee size={20} />
+        </div>
+        <div>
+          <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40">Servicio</h4>
+          <p className="text-sm font-black uppercase tracking-tighter text-amber-500">Limpieza & Té</p>
+          <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1">
+            {staff.map((name, i) => (
+              <span key={i} className="text-[11px] font-bold text-amber-500/70 whitespace-nowrap capitalize">
+                {name}{i < staff.length - 1 ? " • " : ""}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const getDoctorName = (floor: number) => {
+    if (floor === 2) return "Por asignar";
+    
+    // dateObj = Tue Mar 27 2026 (for example)
+    const dateObj = new Date(selectedDate + 'T12:00:00');
+    const day = dateObj.getDay(); // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
+    const isAfternoon = selectedShift === '3' || (selectedShift === '2' && rotation === 'PM');
+
+    // Rules for Piso 1:
+    // Mon (1), Wed (3), Thu AM (4): Silvina Vazquez
+    // Thu PM (4), Sat (6): Gabriela Palminio
+    // Tue (2), Fri (5): Marisa Ochoa
+    
+    if (floor === 1) {
+      if (day === 1 || day === 3) return "Silvina Vazquez";
+      if (day === 4) return isAfternoon ? "Gabriela Palminio" : "Silvina Vazquez";
+      if (day === 2 || day === 5) return "Marisa Ochoa";
+      if (day === 6) return "Gabriela Palminio";
+      return "Silvina Vazquez"; // Default
+    }
+    return "Por asignar";
+  };
+  
   const [selectedChair, setSelectedChair] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [showAssignModal, setShowAssignModal] = useState(false);
@@ -235,8 +285,8 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
     const isAbsent = chair.patient?.status === 'Ausente';
     
     const shouldFlip = (selectedFloor === 1 && (
-      (chairNumber >= 1 && chairNumber <= 4) || 
-      (chairNumber >= 9 && chairNumber <= 12)
+      (chairNumber >= 1 && chairNumber <= 5) || 
+      (chairNumber >= 11 && chairNumber <= 15)
     )) || (selectedFloor === 2 && (
       chairNumber <= 6
     ));
@@ -470,59 +520,64 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
 
         <div className="flex flex-col gap-4">
           <div className="flex bg-white/40 dark:bg-white/10 p-1.5 rounded-2xl border border-[var(--border-color)]">
-            {[1, 2].map((f) => (
+            {[1, 2, 3].map((f) => (
               <button
                 key={f}
                 onClick={() => setSelectedFloor(f)}
-                className={`flex-1 px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${
+                className={`flex-1 flex flex-col items-center justify-center px-6 py-3 rounded-2xl transition-all duration-300 ${
                   selectedFloor === f 
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 translate-y-[-1px]' 
-                    : 'bg-slate-200 text-black hover:bg-slate-300'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 ring-4 ring-blue-500/10' 
+                    : 'bg-slate-100 dark:bg-white/5 text-slate-500 hover:bg-slate-200 dark:hover:bg-white/10'
                 }`}
               >
-                Piso {f}
+                <span className="text-[9px] font-black uppercase tracking-widest opacity-60">Piso</span>
+                <span className="text-xl font-black leading-tight">{f}</span>
               </button>
             ))}
           </div>
 
-          <div className="flex bg-white/40 dark:bg-white/10 p-1.5 rounded-2xl border border-[var(--border-color)]">
-            {['1', '2', '3'].map((s) => (
-              <button
-                key={s}
-                onClick={() => setSelectedShift(s)}
-                className={`flex flex-col items-center px-6 py-2 rounded-xl font-black transition-all ${
-                  selectedShift === s 
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-[1.05] translate-y-[-1px]' 
-                    : 'bg-slate-200 text-black hover:bg-slate-300'
-                }`}
-              >
-                <span className="text-xs uppercase tracking-widest">Turno {s}</span>
-                <span className={`text-[10px] font-bold ${selectedShift === s ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`}>
-                  {s === '1' ? '07 - 11hs' : s === '2' ? '12 - 16hs' : '17 - 21hs'}
-                </span>
-              </button>
-            ))}
-          </div>
+          {selectedFloor !== 3 && (
+            <>
+              <div className="flex bg-white/40 dark:bg-white/10 p-1.5 rounded-2xl border border-[var(--border-color)]">
+                {['1', '2', '3'].map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setSelectedShift(s)}
+                    className={`flex flex-col items-center px-6 py-2 rounded-xl font-black transition-all ${
+                      selectedShift === s 
+                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-[1.05] translate-y-[-1px]' 
+                        : 'bg-slate-200 text-black hover:bg-slate-300'
+                    }`}
+                  >
+                    <span className="text-xs uppercase tracking-widest">Turno {s}</span>
+                    <span className={`text-[10px] font-bold ${selectedShift === s ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`}>
+                      {s === '1' ? '07 - 11hs' : s === '2' ? '12 - 16hs' : '17 - 21hs'}
+                    </span>
+                  </button>
+                ))}
+              </div>
 
-          {selectedShift === '2' && (
-            <div className="flex justify-between bg-orange-500/10 p-1 rounded-xl border border-orange-500/20 animate-in fade-in slide-in-from-left-4">
-              <button
-                onClick={() => setRotation('AM')}
-                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all ${
-                  rotation === 'AM' ? 'bg-orange-500 text-white shadow-md' : 'opacity-60 hover:opacity-100'
-                }`}
-              >
-                Pre-14hs (AM)
-              </button>
-              <button
-                onClick={() => setRotation('PM')}
-                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all ${
-                  rotation === 'PM' ? 'bg-orange-500 text-white shadow-md' : 'opacity-60 hover:opacity-100'
-                }`}
-              >
-                Post-14hs (PM)
-              </button>
-            </div>
+              {selectedShift === '2' && (
+                <div className="flex justify-between bg-orange-500/10 p-1 rounded-xl border border-orange-500/20 animate-in fade-in slide-in-from-left-4">
+                  <button
+                    onClick={() => setRotation('AM')}
+                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all ${
+                      rotation === 'AM' ? 'bg-orange-500 text-white shadow-md' : 'opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    Pre-14hs (AM)
+                  </button>
+                  <button
+                    onClick={() => setRotation('PM')}
+                    className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all ${
+                      rotation === 'PM' ? 'bg-orange-500 text-white shadow-md' : 'opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    Post-14hs (PM)
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -565,14 +620,14 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                     <Users size={12} className="text-orange-500" />
                     <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 1)}</span>
                   </div>
-                  {[1, 2, 3, 4].map(n => renderChair(n))}
+                  {[1, 2, 3, 4, 5].map(n => renderChair(n))}
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
                     <Users size={12} className="text-orange-500" />
                     <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 2)}</span>
                   </div>
-                  {[5, 6, 7, 8].map(n => renderChair(n))}
+                  {[6, 7, 8, 9, 10].map(n => renderChair(n))}
                 </div>
                 <div className="absolute left-1/2 top-0 bottom-0 w-px bg-blue-500/10 -translate-x-1/2 hidden md:block" />
               </div>
@@ -586,14 +641,14 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                     <Users size={12} className="text-orange-500" />
                     <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 3)}</span>
                   </div>
-                  {[9, 10, 11, 12].map(n => renderChair(n))}
+                  {[11, 12, 13, 14, 15].map(n => renderChair(n))}
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
                     <Users size={12} className="text-orange-500" />
                     <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 4)}</span>
                   </div>
-                  {[13, 14, 15, 16].map(n => renderChair(n))}
+                  {[16, 17, 18, 19, 20].map(n => renderChair(n))}
                 </div>
                 <div className="absolute left-1/2 top-0 bottom-0 w-px bg-blue-500/10 -translate-x-1/2 hidden md:block" />
               </div>
@@ -608,28 +663,40 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               <div>
                 <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40">Responsable</h4>
                 <p className="text-sm font-black uppercase tracking-tighter text-orange-500">Doctor a cargo</p>
-                <p className="text-[12px] font-bold text-orange-500/60 leading-tight">Silvina Escudero</p>
+                <p className="text-[12px] font-bold text-orange-500/60 leading-tight">{getDoctorName(1)}</p>
               </div>
             </div>
 
-            <div className="bg-blue-600/10 border border-blue-500/30 px-6 md:px-20 lg:px-60 py-6 rounded-[32px] flex items-center gap-8 md:gap-16 backdrop-blur-md shadow-xl relative overflow-hidden group">
+            <div className="bg-blue-600/10 border border-blue-500/30 px-4 md:px-6 py-5 rounded-[32px] flex items-center gap-4 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-              <div className="flex -space-x-3">
-                <div className="w-12 h-12 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
-                  <Activity size={20} />
+              <div className="flex -space-x-3 shrink-0">
+                <div className="w-10 h-10 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
+                  <Activity size={18} />
                 </div>
-                <div className="w-12 h-12 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
-                  <Activity size={20} />
+                <div className="w-10 h-10 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
+                  <Activity size={18} />
                 </div>
               </div>
-              <div>
-                <h4 className="text-sm font-black uppercase tracking-widest text-blue-500">Estación Central de Enfermería</h4>
-                <p className="text-[10px] font-bold opacity-40 uppercase tracking-tighter">Monitoreo en tiempo real • Piso 1</p>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-sm font-black uppercase tracking-widest text-blue-500 truncate">Estación Central de Enfermería</h4>
+                <p className="text-[10px] font-bold opacity-40 uppercase tracking-tighter mb-1">Piso 1 • Monitoreo en tiempo real</p>
+                <div className="flex items-center gap-x-3 overflow-x-auto no-scrollbar py-0.5">
+                  {[1, 2, 3, 4].map((block, i) => (
+                    <div key={block} className="flex items-center gap-3 flex-none">
+                      <span className="text-[10px] font-black uppercase tracking-tight text-blue-500/80 whitespace-nowrap">
+                        {getNurseName(1, block)}
+                      </span>
+                      {i < 3 && <div className="w-1 h-3 border-r border-blue-500/20 shrink-0" />}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
+
+            {renderServiceIsland()}
           </div>
         </div>
-      ) : (
+      ) : selectedFloor === 2 ? (
         <div className="space-y-12">
           <div className="bg-[var(--bg-accent)]/30 p-4 md:p-12 rounded-[32px] md:rounded-[64px] border border-[var(--border-color)]">
             <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-12 text-center italic">Distribución en U (1-12)</h3>
@@ -652,8 +719,10 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                   </div>
                   {[4, 3, 2, 1].map(n => renderChair(n))}
                 </div>
-                <div className="col-span-2 flex items-center justify-center opacity-10">
-                  <Users size={80} strokeWidth={1} />
+                <div className="col-span-2 flex items-center justify-center">
+                  <div className="w-full max-w-[140px] md:max-w-[180px]">
+                    {renderChair(13)}
+                  </div>
                 </div>
                 <div className="space-y-6">
                   <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
@@ -678,19 +747,84 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               </div>
             </div>
 
-            <div className="bg-blue-600/10 border border-blue-500/30 px-60 py-6 rounded-[32px] flex items-center gap-16 backdrop-blur-md shadow-xl relative overflow-hidden group">
+            <div className="bg-blue-600/10 border border-blue-500/30 px-4 md:px-6 py-5 rounded-[32px] flex items-center gap-4 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-              <div className="flex -space-x-3">
-                <div className="w-12 h-12 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
-                  <Activity size={20} />
+              <div className="flex -space-x-3 shrink-0">
+                <div className="w-10 h-10 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
+                  <Activity size={18} />
                 </div>
-                <div className="w-12 h-12 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
-                  <Activity size={20} />
+                <div className="w-10 h-10 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
+                  <Activity size={18} />
                 </div>
               </div>
-              <div>
-                <h4 className="text-sm font-black uppercase tracking-widest text-blue-500">Estación Central de Enfermería</h4>
-                <p className="text-[10px] font-bold opacity-40 uppercase tracking-tighter">Monitoreo en tiempo real • Piso 2</p>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-sm font-black uppercase tracking-widest text-blue-500 truncate">Estación Central de Enfermería</h4>
+                <p className="text-[10px] font-bold opacity-40 uppercase tracking-tighter mb-1">Piso 2 • Monitoreo en tiempo real</p>
+                <div className="flex items-center gap-x-3 overflow-x-auto no-scrollbar py-0.5">
+                  {[1, 2, 3].map((block, i) => (
+                    <div key={block} className="flex items-center gap-3 flex-none">
+                      <span className="text-[10px] font-black uppercase tracking-tight text-blue-500/80 whitespace-nowrap">
+                        {getNurseName(2, block)}
+                      </span>
+                      {i < 2 && <div className="w-1 h-3 border-r border-blue-500/20 shrink-0" />}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {renderServiceIsland()}
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-4xl mx-auto py-12">
+          <div className="bg-[var(--bg-accent)]/30 p-8 md:p-12 rounded-[64px] border border-[var(--border-color)] relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] -translate-y-1/2 translate-x-1/2" />
+            
+            <div className="flex flex-col md:flex-row items-center gap-12">
+              <div className="w-full md:w-1/2 aspect-square rounded-[48px] overflow-hidden border border-white/10 shadow-2xl relative group-hover:scale-[1.02] transition-transform duration-700">
+                <img 
+                  src="/rehuso.png" 
+                  alt="Procesamiento de Filtros"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+              </div>
+
+              <div className="w-full md:w-1/2 space-y-8 text-center md:text-left">
+                <div>
+                  <h3 className="text-3xl font-black uppercase tracking-tighter text-blue-500 mb-2">Piso 3 • Rehuso</h3>
+                  <div className="h-1 w-20 bg-gradient-to-r from-blue-500 to-transparent rounded-full mx-auto md:mx-0" />
+                  <p className="text-sm font-bold opacity-40 uppercase tracking-[0.2em] mt-4">Procesamiento y Limpieza de Filtros</p>
+                </div>
+
+                <div className="bg-blue-500/10 border border-blue-500/20 p-8 rounded-[40px] backdrop-blur-md shadow-xl relative overflow-hidden text-center md:text-left">
+                  <div className="absolute top-0 right-0 p-4">
+                    <Activity size={24} className="text-blue-500/20" />
+                  </div>
+                  
+                  <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-4">Personal en Turno</h4>
+                  <div className="flex flex-col md:flex-row items-center gap-4">
+                    <div className="w-16 h-16 rounded-3xl bg-blue-500 flex items-center justify-center text-white shadow-lg shrink-0">
+                      <Users size={32} />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black uppercase tracking-tighter text-blue-500">
+                        {new Date().getHours() < 14 ? 'Susana Farias' : 'Florencia Padiggia'}
+                      </p>
+                      <p className="text-[10px] font-black opacity-30 uppercase tracking-widest mt-1">
+                        Turno {new Date().getHours() < 14 ? 'Mañana' : 'Tarde'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1">
+                  <div className="bg-white/5 border border-white/10 p-6 rounded-[24px]">
+                    <p className="text-[10px] font-black opacity-30 uppercase tracking-widest mb-1 text-center md:text-left">Estado del Sector</p>
+                    <p className="text-xl font-black text-emerald-500 text-center md:text-left">Operativo • Monitoreo Activo</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

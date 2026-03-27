@@ -8,7 +8,7 @@
     "familyRelationship": "Hijo",
     "shift": "1",
     "floor": 1,
-    "chairNumber": 6,
+    "chairNumber": 0,
     "status": "Ocupada",
     "date": "2026-03-26"
   },
@@ -21,7 +21,7 @@
     "familyRelationship": "Madre",
     "shift": "2",
     "floor": 1,
-    "chairNumber": 14,
+    "chairNumber": 0,
     "status": "Ocupada",
     "date": "2026-03-26"
   },
@@ -34,7 +34,7 @@
     "familyRelationship": "Hija",
     "shift": "2",
     "floor": 1,
-    "chairNumber": 10,
+    "chairNumber": 0,
     "status": "Ocupada",
     "date": "2026-03-26"
   },
@@ -47,7 +47,7 @@
     "familyRelationship": "Tutor",
     "shift": "2",
     "floor": 1,
-    "chairNumber": 13,
+    "chairNumber": 0,
     "status": "Ocupada",
     "date": "2026-03-26"
   },
@@ -60,7 +60,7 @@
     "familyRelationship": "Tutor",
     "shift": "2",
     "floor": 1,
-    "chairNumber": 12,
+    "chairNumber": 0,
     "status": "Ocupada",
     "date": "2026-03-26"
   },
@@ -128,18 +128,5 @@
     "chairNumber": 12,
     "status": "Ocupada",
     "date": "2026-03-27"
-  },
-  {
-    "id": "5fb0a5eb-9065-4fc4-a705-35c363fd71ac",
-    "name": "herctor",
-    "phone": "123213",
-    "address": "sfasf",
-    "familyContact": "213123",
-    "familyRelationship": "Tutor",
-    "shift": "1",
-    "floor": 1,
-    "chairNumber": 13,
-    "status": "Ocupada",
-    "date": "2026-03-26"
   }
 ]

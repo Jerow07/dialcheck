@@ -31,7 +31,7 @@ export const AssignPatientModal = ({ patients, onClose, onAssign, onRegisterNew,
 
         <div className="mb-8">
           <h3 className="text-2xl font-black tracking-tight mb-1">Asignar Paciente</h3>
-          <p className="text-xs font-bold opacity-40 uppercase tracking-widest text-blue-500">
+          <p className="text-xs font-bold opacity-60 uppercase tracking-widest text-blue-600 dark:text-blue-400">
             Silla {chairNumber} • Piso {floor}
           </p>
         </div>
@@ -60,7 +60,7 @@ export const AssignPatientModal = ({ patients, onClose, onAssign, onRegisterNew,
               >
                 <div>
                   <h4 className="font-black text-sm group-hover:text-white transition-colors">{p.name}</h4>
-                  <p className="text-[10px] font-bold opacity-40 group-hover:text-white/60 transition-colors uppercase tracking-widest">
+                  <p className="text-[10px] font-bold opacity-60 group-hover:text-white/80 transition-colors uppercase tracking-widest">
                     Hosp. {p.address.split(',')[0]}
                   </p>
                 </div>
@@ -71,7 +71,7 @@ export const AssignPatientModal = ({ patients, onClose, onAssign, onRegisterNew,
             ))
           ) : (
             <div className="py-12 text-center">
-              <p className="opacity-40 italic font-medium">No hay pacientes disponibles para asignar</p>
+              <p className="opacity-60 italic font-medium">No hay pacientes disponibles para asignar</p>
               <p className="text-[10px] uppercase font-black tracking-widest mt-2">Usa "Nuevo Paciente" para registrar uno de cero</p>
             </div>
           )}
@@ -86,7 +86,7 @@ export const AssignPatientModal = ({ patients, onClose, onAssign, onRegisterNew,
           </button>
           <button 
             onClick={onClose}
-            className="w-full h-14 rounded-2xl font-black uppercase text-[10px] tracking-widest opacity-40 hover:opacity-100 transition-all"
+            className="w-full h-14 rounded-2xl font-black uppercase text-[10px] tracking-widest opacity-60 hover:opacity-100 transition-all"
           >
             Cancelar
           </button>
