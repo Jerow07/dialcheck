@@ -1,13 +1,29 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, ChevronLeft, ChevronRight, Copy } from 'lucide-react';
+import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, Copy } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 import { AssignPatientModal } from './AssignPatientModal';
 
 const API_URL = '/api/patients';
 
 const getLocalDateString = (date: Date = new Date()) => {
-  return date.toISOString().split('T')[0];
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const getWeekDates = (baseDateStr: string) => {
+  const base = new Date(baseDateStr + 'T12:00:00'); // Use noon to avoid TZ shift
+  const day = base.getDay(); // 0 (Sun) to 6 (Sat)
+  const diff = base.getDate() - day + (day === 0 ? -6 : 1); // Adjust to Monday
+  const monday = new Date(base.setDate(diff));
+  
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return getLocalDateString(d);
+  });
 };
 
 interface NursingPanelProps {
@@ -301,39 +317,39 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
         </div>
 
         <div className="relative z-10 w-full flex justify-start">
-          <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border backdrop-blur-sm ${
+          <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border backdrop-blur-sm shadow-sm ${
             isOccupied 
-              ? isAbsent ? 'text-orange-500 border-orange-500/20 bg-orange-500/10' : 'text-red-500 border-red-500/20 bg-red-500/10' 
-              : 'text-blue-500 border-blue-500/20 bg-blue-500/10'
+              ? isAbsent ? 'text-orange-600 border-orange-500/30 bg-orange-500/20' : 'text-red-600 border-red-500/30 bg-red-500/20' 
+              : 'text-blue-600 border-blue-500/30 bg-blue-500/20'
           }`}>Silla {chair.number}</span>
         </div>
         
         <div className="relative z-10 w-full mt-auto">
           {movingPatient && !chair.patient ? (
-            <div className="bg-blue-500 text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-xl animate-bounce">
+            <div className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest shadow-xl animate-bounce">
               Mover Aquí
             </div>
           ) : chair.patient ? (
             <div className="flex flex-col items-center w-full space-y-0.5">
-              <div className="bg-white/95 dark:bg-black/95 backdrop-blur-md px-3 py-0.5 rounded-lg border border-white/10 shadow-lg w-full">
-                <span className="text-[11px] font-black tracking-tight leading-tight truncate block">{chair.patient.name}</span>
+              <div className="bg-slate-200 dark:bg-slate-200 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-300 shadow-sm w-full">
+                <span className="text-[11px] font-black tracking-tight leading-tight truncate block text-slate-900">{chair.patient.name}</span>
               </div>
-              <div className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full shadow-sm border border-[var(--border-color)] ${
-                 isAbsent ? 'bg-orange-500/20 text-orange-500' : 'bg-red-500/20 text-red-500'
+              <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full shadow-lg border ${
+                 isAbsent ? 'bg-orange-600 dark:bg-orange-500 text-white border-orange-400/30' : 'bg-red-600 dark:bg-red-500 text-white border-red-400/30'
               }`}>
                 {chair.patient.status === 'Ocupada' ? (
-                  <CheckCircle2 size={10} className="text-red-500" />
+                  <CheckCircle2 size={10} className="text-white" />
                 ) : (
-                  <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                  <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                 )}
-                <span className="text-[8px] font-black uppercase tracking-widest">
+                <span className="text-[9px] font-black uppercase tracking-widest">
                   {chair.patient.status}
                 </span>
               </div>
             </div>
           ) : (
-            <div className="opacity-90 flex flex-col items-center gap-1">
-              <p className="text-[9px] font-black uppercase tracking-widest italic text-blue-600 dark:text-blue-400 bg-white/40 dark:bg-black/40 px-3 py-0.5 rounded-full border border-white/10 backdrop-blur-sm">Libre</p>
+            <div className="opacity-100 flex flex-col items-center gap-1">
+              <p className="text-[10px] font-black uppercase tracking-[0.15em] text-white bg-blue-600 dark:bg-blue-500 px-5 py-1.5 rounded-full shadow-lg border border-blue-400/30">Libre</p>
             </div>
           )}
         </div>
@@ -343,83 +359,105 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 pb-20">
-      {/* Date Navigation Bar */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-[var(--bg-accent)] p-6 rounded-[32px] border border-[var(--border-color)]">
-        <div className="flex items-center gap-4">
-          <div className="bg-orange-500/10 p-3 rounded-2xl border border-orange-500/20 text-orange-500">
-            <Calendar size={20} />
+      {/* Weekly Date Navigation Strip */}
+      <div className="bg-[var(--bg-accent)] p-4 md:p-6 rounded-[32px] border border-[var(--border-color)] space-y-4">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="bg-orange-500/10 p-3 rounded-2xl border border-orange-500/20 text-orange-500">
+              <Calendar size={20} />
+            </div>
+            <div className="relative group cursor-pointer" onClick={() => (document.getElementById('hidden-date-picker') as HTMLInputElement)?.showPicker()}>
+              <h3 className="text-sm font-black uppercase tracking-widest leading-tight hover:text-orange-500 transition-colors">
+                {new Intl.DateTimeFormat('es-AR', { month: 'long', year: 'numeric' }).format(new Date(selectedDate + 'T12:00:00'))}
+              </h3>
+              <p className="text-[10px] font-bold opacity-40 uppercase tracking-tighter">Click para seleccionar fecha</p>
+              <input 
+                id="hidden-date-picker"
+                type="date" 
+                className="absolute inset-0 opacity-0 pointer-events-none"
+                onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
+              />
+            </div>
           </div>
-          <div>
-            <h3 className="text-sm font-black uppercase tracking-widest leading-tight">
-              {new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(selectedDate + 'T00:00:00'))}
-            </h3>
-            <p className="text-[10px] font-bold opacity-40 uppercase tracking-tighter">Planificación Diaria</p>
+
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => {
+                const prev = new Date(selectedDate + 'T12:00:00');
+                prev.setDate(prev.getDate() - 7);
+                setSelectedDate(getLocalDateString(prev));
+              }}
+              className="px-4 h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+            >
+              Semana Anterior
+            </button>
+            <button 
+              onClick={() => setSelectedDate(getLocalDateString())}
+              className={`px-4 h-10 ${selectedDate === getLocalDateString() ? 'bg-orange-500 text-white' : 'bg-slate-200 text-black'} hover:opacity-90 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all`}
+            >
+              Hoy
+            </button>
+            <button 
+              onClick={() => {
+                const next = new Date(selectedDate + 'T12:00:00');
+                next.setDate(next.getDate() + 7);
+                setSelectedDate(getLocalDateString(next));
+              }}
+              className="px-4 h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+            >
+              Semana Siguiente
+            </button>
+            
+            <div className="w-px h-6 bg-[var(--border-color)] mx-2" />
+            
+            <button 
+              onClick={() => {
+                const prevDay = new Date(selectedDate + 'T12:00:00');
+                prevDay.setDate(prevDay.getDate() - 1);
+                handleCloneSchedule(getLocalDateString(prevDay));
+              }}
+              className="flex items-center gap-2 px-4 h-10 bg-blue-500/10 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-blue-500/20"
+            >
+              <Copy size={14} />
+              Copiar Ayer
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 bg-black/5 dark:bg-white/5 p-1.5 rounded-2xl border border-[var(--border-color)]">
-          <button 
-            onClick={() => {
-              const prev = new Date(selectedDate + 'T00:00:00');
-              prev.setDate(prev.getDate() - 1);
-              setSelectedDate(getLocalDateString(prev));
-            }}
-            className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all opacity-40 hover:opacity-100"
-          >
-            <ChevronLeft size={18} />
-          </button>
-          
-          <button 
-            onClick={() => setSelectedDate(getLocalDateString())}
-            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-              selectedDate === getLocalDateString() ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'opacity-40 hover:opacity-100'
-            }`}
-          >
-            Hoy
-          </button>
-
-          <button 
-            onClick={() => {
-              const tomorrow = new Date();
-              tomorrow.setDate(tomorrow.getDate() + 1);
-              setSelectedDate(getLocalDateString(tomorrow));
-            }}
-            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-              selectedDate === getLocalDateString(new Date(Date.now() + 86400000)) ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'opacity-40 hover:opacity-100'
-            }`}
-          >
-            Mañana
-          </button>
-
-          <button 
-            onClick={() => {
-              const next = new Date(selectedDate + 'T00:00:00');
-              next.setDate(next.getDate() + 1);
-              setSelectedDate(getLocalDateString(next));
-            }}
-            className="w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white/10 transition-all opacity-40 hover:opacity-100"
-          >
-            <ChevronRight size={18} />
-          </button>
-          
-          <div className="w-px h-6 bg-[var(--border-color)] mx-2" />
-          
-          <button 
-            onClick={() => {
-              const prevDay = new Date(selectedDate + 'T00:00:00');
-              prevDay.setDate(prevDay.getDate() - 1);
-              handleCloneSchedule(getLocalDateString(prevDay));
-            }}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 text-blue-500 hover:bg-blue-500 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-blue-500/20"
-          >
-            <Copy size={14} />
-            Copiar de ayer
-          </button>
+        {/* 7-Day Strip */}
+        <div className="flex justify-between gap-2 overflow-x-auto pb-4 scrollbar-hide -mx-2 px-2 md:mx-0 md:px-0">
+          {getWeekDates(selectedDate).map(dateStr => {
+            const dateObj = new Date(dateStr + 'T12:00:00');
+            const isSelected = dateStr === selectedDate;
+            const isToday = dateStr === getLocalDateString();
+            
+            return (
+              <button
+                key={dateStr}
+                onClick={() => setSelectedDate(dateStr)}
+                className={`flex-1 min-w-[70px] p-3 rounded-2xl border transition-all flex flex-col items-center gap-1 group/day ${
+                  isSelected 
+                    ? 'bg-orange-500 border-orange-600 shadow-lg shadow-orange-500/20 scale-[1.02]' 
+                    : isToday
+                      ? 'bg-orange-500/10 border-orange-500/30'
+                      : 'bg-white/50 dark:bg-black/20 border-transparent hover:border-orange-500/30'
+                }`}
+              >
+                <span className={`text-[9px] font-black uppercase tracking-widest ${isSelected ? 'text-white' : 'opacity-40 group-hover/day:opacity-100'}`}>
+                  {new Intl.DateTimeFormat('es-AR', { weekday: 'short' }).format(dateObj).replace('.', '')}
+                </span>
+                <span className={`text-lg font-black ${isSelected ? 'text-white' : isToday ? 'text-orange-600' : ''}`}>
+                  {dateObj.getDate()}
+                </span>
+                {isToday && !isSelected && <div className="w-1 h-1 rounded-full bg-orange-500" />}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* Header & Shift Selector */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[var(--bg-accent)] p-8 rounded-[40px] border border-[var(--border-color)] backdrop-blur-xl">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[var(--bg-accent)] p-4 md:p-8 rounded-[32px] md:rounded-[40px] border border-[var(--border-color)] backdrop-blur-xl">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-blue-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/20">
             <Users className="text-white" size={32} />
@@ -431,15 +469,15 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="flex bg-black/5 dark:bg-black/40 p-1.5 rounded-2xl border border-[var(--border-color)]">
+          <div className="flex bg-white/40 dark:bg-white/10 p-1.5 rounded-2xl border border-[var(--border-color)]">
             {[1, 2].map((f) => (
               <button
                 key={f}
                 onClick={() => setSelectedFloor(f)}
                 className={`flex-1 px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${
                   selectedFloor === f 
-                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' 
-                    : 'opacity-40 hover:opacity-100'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 translate-y-[-1px]' 
+                    : 'bg-slate-200 text-black hover:bg-slate-300'
                 }`}
               >
                 Piso {f}
@@ -447,19 +485,19 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
             ))}
           </div>
 
-          <div className="flex bg-black/5 dark:bg-black/40 p-1.5 rounded-2xl border border-[var(--border-color)]">
+          <div className="flex bg-white/40 dark:bg-white/10 p-1.5 rounded-2xl border border-[var(--border-color)]">
             {['1', '2', '3'].map((s) => (
               <button
                 key={s}
                 onClick={() => setSelectedShift(s)}
                 className={`flex flex-col items-center px-6 py-2 rounded-xl font-black transition-all ${
                   selectedShift === s 
-                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30 scale-[1.05]' 
-                    : 'opacity-40 hover:opacity-100 hover:bg-blue-500/5'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-[1.05] translate-y-[-1px]' 
+                    : 'bg-slate-200 text-black hover:bg-slate-300'
                 }`}
               >
                 <span className="text-xs uppercase tracking-widest">Turno {s}</span>
-                <span className={`text-[10px] opacity-70 ${selectedShift === s ? 'text-white' : 'text-blue-500'}`}>
+                <span className={`text-[10px] font-bold ${selectedShift === s ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`}>
                   {s === '1' ? '07 - 11hs' : s === '2' ? '12 - 16hs' : '17 - 21hs'}
                 </span>
               </button>
@@ -471,7 +509,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               <button
                 onClick={() => setRotation('AM')}
                 className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all ${
-                  rotation === 'AM' ? 'bg-orange-500 text-white shadow-md' : 'opacity-40 hover:opacity-100'
+                  rotation === 'AM' ? 'bg-orange-500 text-white shadow-md' : 'opacity-60 hover:opacity-100'
                 }`}
               >
                 Pre-14hs (AM)
@@ -479,7 +517,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               <button
                 onClick={() => setRotation('PM')}
                 className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-tighter transition-all ${
-                  rotation === 'PM' ? 'bg-orange-500 text-white shadow-md' : 'opacity-40 hover:opacity-100'
+                  rotation === 'PM' ? 'bg-orange-500 text-white shadow-md' : 'opacity-60 hover:opacity-100'
                 }`}
               >
                 Post-14hs (PM)
@@ -518,10 +556,10 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
       {/* Realistic Chair Layout */}
       {selectedFloor === 1 ? (
         <div className="space-y-12">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
-            <div className="bg-[var(--bg-accent)]/30 p-8 rounded-[48px] border border-[var(--border-color)]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 max-w-5xl mx-auto">
+            <div className="bg-[var(--bg-accent)]/30 p-4 md:p-8 rounded-[32px] md:rounded-[48px] border border-[var(--border-color)]">
               <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-8 text-center italic">Sector ESTE</h3>
-              <div className="grid grid-cols-2 gap-6 relative">
+              <div className="grid grid-cols-2 gap-4 md:gap-6 relative">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
                     <Users size={12} className="text-orange-500" />
@@ -540,9 +578,9 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               </div>
             </div>
 
-            <div className="bg-[var(--bg-accent)]/30 p-8 rounded-[48px] border border-[var(--border-color)]">
+            <div className="bg-[var(--bg-accent)]/30 p-4 md:p-8 rounded-[32px] md:rounded-[48px] border border-[var(--border-color)]">
               <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-8 text-center italic">Sector OESTE</h3>
-              <div className="grid grid-cols-2 gap-6 relative">
+              <div className="grid grid-cols-2 gap-4 md:gap-6 relative">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
                     <Users size={12} className="text-orange-500" />
@@ -574,7 +612,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               </div>
             </div>
 
-            <div className="bg-blue-600/10 border border-blue-500/30 px-60 py-6 rounded-[32px] flex items-center gap-16 backdrop-blur-md shadow-xl relative overflow-hidden group">
+            <div className="bg-blue-600/10 border border-blue-500/30 px-6 md:px-20 lg:px-60 py-6 rounded-[32px] flex items-center gap-8 md:gap-16 backdrop-blur-md shadow-xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <div className="flex -space-x-3">
                 <div className="w-12 h-12 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
@@ -593,7 +631,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
         </div>
       ) : (
         <div className="space-y-12">
-          <div className="bg-[var(--bg-accent)]/30 p-12 rounded-[64px] border border-[var(--border-color)]">
+          <div className="bg-[var(--bg-accent)]/30 p-4 md:p-12 rounded-[32px] md:rounded-[64px] border border-[var(--border-color)]">
             <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-12 text-center italic">Distribución en U (1-12)</h3>
             <div className="max-w-4xl mx-auto">
               <div className="mb-12">
@@ -601,13 +639,13 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                   <Users size={12} className="text-orange-500" />
                   <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 2)}</span>
                 </div>
-                <div className="grid grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
                   {[5, 6, 7, 8].map(n => renderChair(n))}
                 </div>
               </div>
 
-              <div className="grid grid-cols-4 gap-6">
-                <div className="space-y-6">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
+                <div className="space-y-4 md:space-y-6">
                   <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
                     <Users size={12} className="text-orange-500" />
                     <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 1)}</span>
