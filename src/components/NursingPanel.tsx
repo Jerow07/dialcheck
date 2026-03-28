@@ -771,11 +771,23 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                   </div>
                   
                   <div className="pt-6 border-t border-slate-200 dark:border-white/10">
-                    <h4 className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-4 text-slate-900 dark:text-white">Directores Médicos Integrales</h4>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">Dario Campos</span>
-                      <span className="px-3 py-1.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">Osvaldo Torrado</span>
-                      <span className="px-3 py-1.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">Patricia Sidoruk</span>
+                    <div className="flex items-center gap-2 mb-4">
+                      <Stethoscope size={16} className="text-emerald-500" />
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Directores Médicos Generales</h4>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div className="flex items-center gap-3 bg-white/50 dark:bg-white/5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm">
+                        <div className="w-10 h-10 rounded-[12px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex shrink-0 items-center justify-center font-black text-sm">DC</div>
+                        <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 line-clamp-1">Dario Campos</span>
+                      </div>
+                      <div className="flex items-center gap-3 bg-white/50 dark:bg-white/5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm">
+                        <div className="w-10 h-10 rounded-[12px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex shrink-0 items-center justify-center font-black text-sm">OT</div>
+                        <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 line-clamp-1">Osvaldo Torrado</span>
+                      </div>
+                      <div className="flex items-center gap-3 bg-white/50 dark:bg-white/5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm md:col-span-2 lg:col-span-1">
+                        <div className="w-10 h-10 rounded-[12px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex shrink-0 items-center justify-center font-black text-sm">PS</div>
+                        <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200 line-clamp-1">Patricia Sidoruk</span>
+                      </div>
                     </div>
                   </div>
                 </div>
