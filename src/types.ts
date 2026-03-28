@@ -11,6 +11,8 @@ export interface Patient {
   status: 'Ocupada' | 'Ausente';
   date: string; // YYYY-MM-DD
   birthDate?: string; // YYYY-MM-DD
+  isHypertensive?: boolean;
+  isDiabetic?: boolean;
 }
 
 export interface Chair {

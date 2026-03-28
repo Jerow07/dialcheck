@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, Copy, Coffee, Cake } from 'lucide-react';
+import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, Copy, Coffee, Cake, History as HistoryIcon, Thermometer, Droplets } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 import { AssignPatientModal } from './AssignPatientModal';
 import { NotificationBell } from './NotificationBell';
@@ -32,14 +32,16 @@ const getWeekDates = (baseDateStr: string) => {
 interface NursingPanelProps {
   patients: Patient[];
   onRefresh: () => void;
+  currentUser?: string;
 }
 
-export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
+export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelProps) => {
   const [selectedShift, setSelectedShift] = useState('1');
   const [selectedFloor, setSelectedFloor] = useState(1);
   const [rotation, setRotation] = useState<'AM' | 'PM'>('AM'); // For Turno 2 (12-14 vs 14-16)
   const [selectedDate, setSelectedDate] = useState(getLocalDateString());
   const [movingPatient, setMovingPatient] = useState<Patient | null>(null);
+  const [showLogsDrawer, setShowLogsDrawer] = useState(false);
 
   const [birthdayFired, setBirthdayFired] = useState(false);
 
@@ -213,6 +215,38 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
       });
 
       if (resp.ok) {
+        // --- LOG LOGIC ---
+        const oldPatient = isEditing ? patients.find(p => p.id === patientData.id) : null;
+        let logAction = '';
+        let logDetail = '';
+
+        if (!isEditing) {
+          logAction = 'REGISTRO';
+          logDetail = `Ingresó al sistema en Piso ${patientData.floor} / Silla ${patientData.chairNumber}`;
+        } else if (oldPatient) {
+          if (oldPatient.chairNumber !== patientData.chairNumber || oldPatient.floor !== patientData.floor || oldPatient.shift !== patientData.shift) {
+            logAction = 'MOVIMIENTO';
+            logDetail = `Movido de Piso ${oldPatient.floor}-Silla ${oldPatient.chairNumber}-Turno ${oldPatient.shift} a Piso ${patientData.floor}-Silla ${patientData.chairNumber}-Turno ${patientData.shift}`;
+          } else {
+            logAction = 'EDICIÓN';
+            logDetail = `Actualizó datos personales/médicos`;
+          }
+        }
+
+        if (logAction) {
+          fetch('/api/logs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user: currentUser || 'Admin',
+              action: logAction,
+              patientName: patientData.name,
+              detail: logDetail
+            })
+          }).catch(console.error);
+        }
+        // ------------------
+
         onRefresh();
         setShowForm(false);
         setEditingPatient(null);
@@ -229,11 +263,26 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
   const releaseChair = async (id: string) => {
     if (!window.confirm('¿Liberar esta silla? (El paciente permanecerá en el sistema)')) return;
     try {
+      const patient = patients.find(p => p.id === id);
       await fetch(`${API_URL}/${id}`, { 
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chairNumber: 0 })
       });
+      
+      if (patient) {
+        fetch('/api/logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user: currentUser || 'Admin',
+            action: 'LIBERACIÓN',
+            patientName: patient.name,
+            detail: `Silla liberada manualmente en Piso ${patient.floor}`
+          })
+        }).catch(console.error);
+      }
+
       onRefresh();
     } catch (err) {
       console.error('Error releasing chair:', err);
@@ -420,12 +469,27 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
           )}
         </div>
 
-        <div className="relative z-10 w-full flex justify-start">
+        <div className="relative z-10 w-full flex justify-between items-center px-1">
           <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border backdrop-blur-sm shadow-sm ${
             isOccupied 
               ? isAbsent ? 'text-orange-600 border-orange-500/30 bg-orange-500/20' : 'text-red-600 border-red-500/30 bg-red-500/20' 
               : 'text-blue-600 border-blue-500/30 bg-blue-500/20'
           }`}>Silla {chair.number}</span>
+
+          {isOccupied && (
+            <div className="flex gap-1 items-center">
+              {chair.patient?.isHypertensive && (
+                <div title="Hipertensión" className="w-5 h-5 rounded-lg bg-red-500 text-white flex items-center justify-center shadow-lg shadow-red-500/40 animate-pulse border border-white/20">
+                  <Thermometer size={10} strokeWidth={3} />
+                </div>
+              )}
+              {chair.patient?.isDiabetic && (
+                <div title="Diabético" className="w-5 h-5 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/40 animate-pulse border border-white/20">
+                  <Droplets size={10} strokeWidth={3} />
+                </div>
+              )}
+            </div>
+          )}
         </div>
         
         <div className="relative z-10 w-full mt-auto">
@@ -524,6 +588,14 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
             >
               <Copy size={14} />
               Copiar Ayer
+            </button>
+
+            <button 
+              onClick={() => setShowLogsDrawer(true)}
+              className="flex items-center gap-2 px-4 h-10 bg-slate-800 text-white hover:bg-black rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg border border-white/10"
+            >
+              <HistoryIcon size={14} />
+              Ver Historial
             </button>
           </div>
         </div>
@@ -1099,6 +1171,92 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
           }}
         />
       )}
+      {/* Historial Drawer */}
+      {showLogsDrawer && (
+        <HistoryDrawer 
+          onClose={() => setShowLogsDrawer(false)} 
+        />
+      )}
+    </div>
+  );
+};
+
+const HistoryDrawer = ({ onClose }: { onClose: () => void }) => {
+  const [logs, setLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/logs')
+      .then(res => res.json())
+      .then(data => {
+        setLogs(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[200] flex justify-end">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-lg bg-[var(--bg-primary)] h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
+        <div className="p-8 border-b border-[var(--border-color)] flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500">
+              <HistoryIcon size={20} />
+            </div>
+            <div>
+              <h3 className="text-xl font-black tracking-tight leading-none">Bitácora</h3>
+              <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mt-1">Historial de movimientos</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-hide">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center h-40 opacity-20">
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4" />
+              <p className="text-[10px] font-black uppercase tracking-widest">Cargando eventos...</p>
+            </div>
+          ) : logs.length === 0 ? (
+            <div className="text-center py-20 opacity-30">
+              <p className="text-xs font-black uppercase tracking-widest">No hay movimientos registrados</p>
+            </div>
+          ) : (
+            logs.map((log) => (
+              <div key={log.id} className="bg-[var(--bg-accent)]/50 border border-[var(--border-color)] p-5 rounded-3xl relative overflow-hidden group">
+                <div className={`absolute top-0 left-0 w-1 h-full ${
+                  log.action === 'MOVIMIENTO' ? 'bg-orange-500' : 
+                  log.action === 'ELIMINACIÓN' ? 'bg-red-500' : 
+                  log.action === 'REGISTRO' ? 'bg-emerald-500' : 'bg-blue-500'
+                }`} />
+                <div className="flex justify-between items-start mb-2">
+                  <span className={`text-[8px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-md ${
+                    log.action === 'MOVIMIENTO' ? 'bg-orange-500/10 text-orange-500' : 
+                    log.action === 'ELIMINACIÓN' ? 'bg-red-500/10 text-red-500' : 
+                    log.action === 'REGISTRO' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-blue-500/10 text-blue-500'
+                  }`}>
+                    {log.action}
+                  </span>
+                  <span className="text-[9px] font-bold opacity-30">
+                    {new Date(log.timestamp).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })} hs
+                  </span>
+                </div>
+                <p className="text-sm font-black text-[var(--text-primary)] mb-1 uppercase tracking-tight">{log.patientName}</p>
+                <p className="text-xs opacity-60 font-medium leading-relaxed">{log.detail}</p>
+                <div className="mt-3 pt-3 border-t border-black/5 dark:border-white/5 flex items-center gap-2">
+                  <div className="w-5 h-5 rounded-full bg-blue-500 text-[8px] font-black text-white flex items-center justify-center uppercase">
+                    {log.user.substring(0, 2)}
+                  </div>
+                  <span className="text-[9px] font-black opacity-40 uppercase tracking-widest">Responsable: {log.user}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 };

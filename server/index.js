@@ -221,6 +221,46 @@ app.post('/api/auth/login', async (req, res) => {
   return res.status(401).json({ error: 'Credenciales inválidas o usuario incorrecto' });
 });
 
+// LOGS
+app.get('/api/logs', async (req, res) => {
+  let logs = [];
+  if (isKVAvailable) {
+    try {
+      logs = await kv.get('dialcheck_logs') || [];
+    } catch (err) {
+      console.error('Error fetching logs', err);
+    }
+  }
+  return res.json(Array.isArray(logs) ? logs : []);
+});
+
+app.post('/api/logs', async (req, res) => {
+  const { user, action, patientName, detail } = req.body;
+  if (!user || !action || !patientName) return res.status(400).json({ error: 'Missing fields' });
+
+  const newLog = {
+    id: Date.now().toString(),
+    user,
+    action,
+    patientName,
+    detail: detail || '',
+    timestamp: new Date().toISOString()
+  };
+
+  if (isKVAvailable) {
+    try {
+      let logs = await kv.get('dialcheck_logs') || [];
+      if (!Array.isArray(logs)) logs = [];
+      logs.unshift(newLog); // prepend
+      if (logs.length > 100) logs = logs.slice(0, 100);
+      await kv.set('dialcheck_logs', logs);
+    } catch (err) {
+      console.error('Error saving log', err);
+    }
+  }
+  return res.json({ success: true, log: newLog });
+});
+
 // For local testing
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {

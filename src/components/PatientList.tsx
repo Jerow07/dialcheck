@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { Search, MapPin, Phone, Users, History, ClipboardList, Trash2, Edit } from 'lucide-react';
+import { Search, MapPin, Phone, Users, History, ClipboardList, Trash2, Edit, Thermometer, Droplets, Plus } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 
 const API_URL = '/api/patients';
@@ -8,9 +8,10 @@ const API_URL = '/api/patients';
 interface PatientListProps {
   patients: Patient[];
   onRefresh: () => void;
+  currentUser?: string;
 }
 
-export const PatientList = ({ patients, onRefresh }: PatientListProps) => {
+export const PatientList = ({ patients, onRefresh, currentUser }: PatientListProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -21,28 +22,58 @@ export const PatientList = ({ patients, onRefresh }: PatientListProps) => {
 
   const handleSave = async (patientData: Partial<Patient>) => {
     try {
-      const url = `${API_URL}/${patientData.id}`;
+      const isEditing = !!patientData.id;
+      const url = isEditing ? `${API_URL}/${patientData.id}` : API_URL;
+      const method = isEditing ? 'PUT' : 'POST';
+
       const resp = await fetch(url, {
-        method: 'PUT',
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(patientData)
       });
 
       if (resp.ok) {
+        // Log action
+        fetch('/api/logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user: currentUser || 'Admin',
+            action: isEditing ? 'EDICIÓN' : 'REGISTRO',
+            patientName: patientData.name,
+            detail: isEditing ? 'Ficha técnica editada desde el Directorio' : 'Nuevo paciente registrado en el sistema'
+          })
+        }).catch(console.error);
+
         onRefresh();
         setShowForm(false);
         setEditingPatient(null);
       }
     } catch (err) {
-      console.error('Error updating patient:', err);
+      console.error('Error saving patient:', err);
     }
   };
 
   const deletePatient = async (id: string) => {
     if (!window.confirm('¿Está seguro de que desea eliminar este paciente del directorio?')) return;
     try {
-      await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-      onRefresh();
+      const patient = patients.find(p => p.id === id);
+      const resp = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      if (resp.ok) {
+        if (patient) {
+          fetch('/api/logs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user: currentUser || 'Admin',
+              action: 'ELIMINACIÓN',
+              patientName: patient.name,
+              detail: `Paciente eliminado permanentemente del Directorio`
+            })
+          }).catch(console.error);
+        }
+        onRefresh();
+      }
     } catch (err) {
       console.error('Error deleting patient:', err);
     }
@@ -62,7 +93,19 @@ export const PatientList = ({ patients, onRefresh }: PatientListProps) => {
           </div>
         </div>
 
-        <div className="relative w-full md:w-96">
+        <div className="flex items-center gap-6">
+          <button 
+            onClick={() => {
+              setEditingPatient(null);
+              setShowForm(true);
+            }}
+            className="h-14 px-8 bg-blue-500 text-white hover:bg-blue-600 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-xl shadow-blue-500/20 flex items-center gap-3 active:scale-95"
+          >
+            <Plus size={18} strokeWidth={3} />
+            Nuevo Registro
+          </button>
+
+          <div className="relative w-full md:w-96">
           <Search className="absolute left-6 top-1/2 -translate-y-1/2 opacity-30" size={20} />
           <input 
             type="text" 
@@ -73,6 +116,7 @@ export const PatientList = ({ patients, onRefresh }: PatientListProps) => {
           />
         </div>
       </div>
+    </div>
 
       {/* Patients Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -88,7 +132,25 @@ export const PatientList = ({ patients, onRefresh }: PatientListProps) => {
               </div>
             </div>
 
-            <h3 className="text-2xl font-black mb-6 tracking-tight">{patient.name}</h3>
+            <h3 className="text-2xl font-black mb-1 tracking-tight">{patient.name}</h3>
+            
+            <div className="flex gap-2 mb-6">
+              {patient.isHypertensive && (
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-500 scale-90 origin-left">
+                  <Thermometer size={10} strokeWidth={3} />
+                  <span className="text-[8px] font-black uppercase tracking-widest">Hipertenso</span>
+                </div>
+              )}
+              {patient.isDiabetic && (
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-500 scale-90 origin-left">
+                  <Droplets size={10} strokeWidth={3} />
+                  <span className="text-[8px] font-black uppercase tracking-widest">Diabético</span>
+                </div>
+              )}
+              {!patient.isHypertensive && !patient.isDiabetic && (
+                <div className="h-6" /> // Spacer
+              )}
+            </div>
 
             {/* Technical File */}
             <div className="space-y-4 mb-8">
@@ -160,8 +222,8 @@ export const PatientList = ({ patients, onRefresh }: PatientListProps) => {
       {/* Edit Form Modal */}
       {showForm && (
         <PatientForm 
-          title="Editar Ficha Técnica"
-          initialData={editingPatient!}
+          title={editingPatient ? "Editar Ficha Técnica" : "Nuevo Registro Clínico"}
+          initialData={editingPatient || {}}
           patients={patients}
           hideOperationalFields={true}
           onClose={() => {

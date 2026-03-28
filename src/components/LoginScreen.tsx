@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, User, Activity, AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 
-export const LoginScreen = ({ onLogin }: { onLogin: (token: string) => void }) => {
+export const LoginScreen = ({ onLogin }: { onLogin: (token: string, username: string) => void }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +29,7 @@ export const LoginScreen = ({ onLogin }: { onLogin: (token: string) => void }) =
       const data = await resp.json();
       
       if (resp.ok && data.success) {
-        onLogin(data.token);
+        onLogin(data.token, data.user.username);
       } else {
         setError(data.error || 'Autenticación fallida');
       }

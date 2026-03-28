@@ -23,6 +23,12 @@ function App() {
     }
     return false
   })
+  const [currentUser, setCurrentUser] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('auth_user') || 'Admin'
+    }
+    return 'Admin'
+  })
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -58,14 +64,18 @@ function App() {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
   }
 
-  const handleLogin = (token: string) => {
+  const handleLogin = (token: string, username: string) => {
     localStorage.setItem('auth_token', token)
+    localStorage.setItem('auth_user', username)
     setIsAuthenticated(true)
+    setCurrentUser(username)
   }
 
   const handleLogout = () => {
     localStorage.removeItem('auth_token')
+    localStorage.removeItem('auth_user')
     setIsAuthenticated(false)
+    setCurrentUser('')
   }
 
   if (!isAuthenticated) {
@@ -155,12 +165,14 @@ function App() {
         {activeTab === 'panel' ? (
           <NursingPanel 
             patients={patients} 
-            onRefresh={fetchPatients} 
+            onRefresh={fetchPatients}
+            currentUser={currentUser} 
           />
         ) : (
           <PatientList 
             patients={patients} 
-            onRefresh={fetchPatients} 
+            onRefresh={fetchPatients}
+            currentUser={currentUser}
           />
         )}
       </main>

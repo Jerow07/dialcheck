@@ -158,6 +158,41 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
               </div>
             )}
 
+              <div className="col-span-2 mt-4 pt-4 border-t border-[var(--border-color)]">
+                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-4 block tracking-widest">Condiciones Médicas</label>
+                <div className="flex gap-6 px-2">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={formData.isHypertensive || false}
+                        onChange={e => setFormData({...formData, isHypertensive: e.target.checked})}
+                        className="sr-only"
+                      />
+                      <div className={`w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center ${formData.isHypertensive ? 'bg-red-500 border-red-500 shadow-lg shadow-red-500/20' : 'bg-[var(--bg-accent)] border-[var(--border-color)]'}`}>
+                        {formData.isHypertensive && <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
+                      </div>
+                    </div>
+                    <span className={`text-xs font-black uppercase tracking-wider transition-colors ${formData.isHypertensive ? 'text-red-500' : 'opacity-40'}`}>Hipertensión</span>
+                  </label>
+
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className="relative">
+                      <input 
+                        type="checkbox" 
+                        checked={formData.isDiabetic || false}
+                        onChange={e => setFormData({...formData, isDiabetic: e.target.checked})}
+                        className="sr-only"
+                      />
+                      <div className={`w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center ${formData.isDiabetic ? 'bg-blue-500 border-blue-500 shadow-lg shadow-blue-500/20' : 'bg-[var(--bg-accent)] border-[var(--border-color)]'}`}>
+                        {formData.isDiabetic && <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
+                      </div>
+                    </div>
+                    <span className={`text-xs font-black uppercase tracking-wider transition-colors ${formData.isDiabetic ? 'text-blue-500' : 'opacity-40'}`}>Diabético</span>
+                  </label>
+                </div>
+              </div>
+
             {!hidePersonalFields && (
               <div className="col-span-2 mt-4 pt-4 border-t border-[var(--border-color)]">
                 <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-4 block tracking-widest">Contacto de Emergencia</label>
@@ -171,6 +206,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                     >
                       <option value="Hijo">Hijo</option>
                       <option value="Hija">Hija</option>
+                      <option value="Esposo/a">Esposo/a</option>
                       <option value="Padre">Padre</option>
                       <option value="Madre">Madre</option>
                       <option value="Tutor">Tutor</option>
