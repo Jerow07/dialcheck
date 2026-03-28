@@ -1,7 +1,7 @@
 [
   {
     "id": "1",
-    "name": "Juan Pérez martin",
+    "name": "Juan Pérez",
     "phone": "11 2233-4455",
     "address": "Av. Corrientes 1234, CABA",
     "familyContact": "11 5544-3322",
@@ -11,7 +11,7 @@
     "chairNumber": 0,
     "status": "Ocupada",
     "date": "2026-03-26",
-    "birthDate": "1987-03-27"
+    "birthDate": "1987-03-29"
   },
   {
     "id": "00622aad-664c-48f9-acdb-0d197aef86c5",
@@ -25,7 +25,7 @@
     "chairNumber": 0,
     "status": "Ocupada",
     "date": "2026-03-26",
-    "birthDate": "1995-01-07"
+    "birthDate": "1995-01-08"
   },
   {
     "id": "f154307c-f70a-4d7d-b646-f5ac3f7a4a9b",
@@ -129,6 +129,7 @@
     "floor": 1,
     "chairNumber": 12,
     "status": "Ocupada",
-    "date": "2026-03-27"
+    "date": "2026-03-27",
+    "birthDate": "2022-03-21"
   }
 ]
