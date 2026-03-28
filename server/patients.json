@@ -51,7 +51,8 @@
     "floor": 1,
     "chairNumber": 0,
     "status": "Ocupada",
-    "date": "2026-03-26"
+    "date": "2026-03-26",
+    "birthDate": "2001-01-02"
   },
   {
     "id": "2b0db7f4-aa9a-4be1-99bc-89d3c978b3cc",
@@ -130,6 +131,6 @@
     "chairNumber": 12,
     "status": "Ocupada",
     "date": "2026-03-27",
-    "birthDate": "2002-03-30"
+    "birthDate": "2002-03-29"
   }
 ]

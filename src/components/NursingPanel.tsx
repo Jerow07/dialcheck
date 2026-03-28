@@ -755,36 +755,43 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
             </div>
 
             {/* Tech Card / Project Details */}
-            <div className="bg-slate-900/40 p-8 md:p-12 rounded-[48px] border border-white/5 relative flex flex-col justify-between">
+            <div className="bg-slate-100 dark:bg-slate-800/80 p-8 md:p-12 rounded-[48px] border border-slate-200 dark:border-white/10 relative flex flex-col justify-between">
               <div className="space-y-6">
                 <div>
-                  <h4 className="text-[10px] font-black uppercase tracking-widest opacity-20 mb-6">Ficha Técnica del Centro</h4>
+                  <h4 className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-6 text-slate-900 dark:text-white">Ficha Técnica del Centro</h4>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-end border-b border-white/5 pb-3">
-                      <span className="text-[10px] font-black uppercase opacity-40">Identificación</span>
-                      <span className="text-sm font-black text-blue-400">CENTRO DE DIÁLISIS N° 088</span>
+                    <div className="flex justify-between items-end border-b border-slate-200 dark:border-white/10 pb-3">
+                      <span className="text-[10px] font-black uppercase opacity-60">Identificación</span>
+                      <span className="text-sm font-black text-blue-600 dark:text-blue-400">NEFRA MEDICAL CARE</span>
                     </div>
-                    <div className="flex justify-between items-end border-b border-white/5 pb-3">
-                      <span className="text-[10px] font-black uppercase opacity-40">Ubicación</span>
-                      <span className="text-sm font-black">PLANTA BAJA • ACCESO PRINCIPAL</span>
+                    <div className="flex justify-between items-end border-b border-slate-200 dark:border-white/10 pb-3">
+                      <span className="text-[10px] font-black uppercase opacity-60">Ubicación</span>
+                      <span className="text-sm font-black text-slate-800 dark:text-white">PLANTA BAJA • ACCESO PRINCIPAL</span>
                     </div>
-                    <div className="flex justify-between items-end border-b border-white/5 pb-3">
-                      <span className="text-[10px] font-black uppercase opacity-40">Sistema</span>
-                      <span className="text-xs font-bold font-mono opacity-60 tracking-widest">DIALCHECK v2.0.4</span>
+                    <div className="flex justify-between items-end border-b border-slate-200 dark:border-white/10 pb-3">
+                      <span className="text-[10px] font-black uppercase opacity-60">Sistema</span>
+                      <span className="text-xs font-bold font-mono opacity-80 tracking-widest text-slate-800 dark:text-white">DIALCHECK v2.0.4</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-12 bg-emerald-500/5 border border-emerald-500/10 p-6 rounded-[24px] flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] font-black opacity-30 uppercase tracking-widest mb-1">Estado Operativo</p>
-                  <p className="text-lg font-black text-emerald-500">SISTEMA ACTIVO</p>
-                </div>
-                <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-500">
-                  <CheckCircle2 size={24} />
-                </div>
-              </div>
+              {(() => {
+                const isSunday = new Date(selectedDate + 'T12:00:00').getDay() === 0;
+                return (
+                  <div className={`mt-12 border p-6 rounded-[24px] flex items-center justify-between ${isSunday ? 'bg-red-500/5 border-red-500/10' : 'bg-emerald-500/5 border-emerald-500/10'}`}>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Estado Operativo</p>
+                      <p className={`text-lg font-black ${isSunday ? 'text-red-500' : 'text-emerald-500'}`}>
+                        {isSunday ? 'SISTEMA INACTIVO' : 'SISTEMA ACTIVO'}
+                      </p>
+                    </div>
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${isSunday ? 'bg-red-500/20 text-red-500' : 'bg-emerald-500/20 text-emerald-500'}`}>
+                      {isSunday ? <X size={24} /> : <CheckCircle2 size={24} />}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
