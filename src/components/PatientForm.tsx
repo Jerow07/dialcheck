@@ -30,16 +30,21 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
       }
 
       // Check for duplicate names (case insensitive)
-      const patientsList = Array.isArray(patients) ? patients : [];
-      const isDuplicate = patientsList.some(p => 
-        p && p.name && 
-        p.name.toLowerCase().trim() === (formData.name || '').toLowerCase().trim() && 
-        p.id !== formData.id
-      );
+      // Solo verificamos si el nombre ha cambiado respecto al inicial
+      const hasNameChanged = formData.name?.toLowerCase().trim() !== (initialData?.name || '').toLowerCase().trim();
+      
+      if (hasNameChanged) {
+        const patientsList = Array.isArray(patients) ? patients : [];
+        const isDuplicate = patientsList.some(p => 
+          p && p.name && 
+          p.name.toLowerCase().trim() === (formData.name || '').toLowerCase().trim() && 
+          p.id !== formData.id
+        );
 
-      if (isDuplicate) {
-        alert(`Error: Ya existe un paciente registrado con el nombre "${formData.name}".`);
-        return;
+        if (isDuplicate) {
+          alert(`Error: Ya existe otro paciente registrado con el nombre "${formData.name}". No se pueden duplicar registros.`);
+          return;
+        }
       }
 
       console.log('Validaciones pasadas, llamando a onSave...');
