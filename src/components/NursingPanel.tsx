@@ -765,8 +765,19 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                       <span className="text-sm font-black text-blue-600 dark:text-blue-400">NEFRA MEDICAL CARE</span>
                     </div>
                     <div className="flex justify-between items-end border-b border-slate-200 dark:border-white/10 pb-3">
-                      <span className="text-[10px] font-black uppercase opacity-60">Ubicación</span>
-                      <span className="text-sm font-black text-slate-800 dark:text-white">PLANTA BAJA • ACCESO PRINCIPAL</span>
+                      <span className="text-[10px] font-black uppercase opacity-60">Teléfono</span>
+                      <span className="text-sm font-black text-slate-800 dark:text-white">47469507</span>
+                    </div>
+                    <div className="flex justify-between items-end border-b border-slate-200 dark:border-white/10 pb-3">
+                      <span className="text-[10px] font-black uppercase opacity-60">Dirección</span>
+                      <div className="text-right flex flex-col items-end">
+                        <span className="text-xs font-black text-slate-800 dark:text-white">LAS HERAS 985 • SAN FERNANDO</span>
+                        <span className="text-[9px] font-bold opacity-60 uppercase tracking-widest">BUENOS AIRES</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-end border-b border-slate-200 dark:border-white/10 pb-3">
+                      <span className="text-[10px] font-black uppercase opacity-60">Sector</span>
+                      <span className="text-xs font-black text-slate-800 dark:text-white">PLANTA BAJA • ACCESO PRINCIPAL</span>
                     </div>
                     <div className="flex justify-between items-end border-b border-slate-200 dark:border-white/10 pb-3">
                       <span className="text-[10px] font-black uppercase opacity-60">Sistema</span>
