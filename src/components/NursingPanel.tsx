@@ -762,7 +762,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                           <p className="text-lg font-black uppercase tracking-tighter text-indigo-600 dark:text-indigo-500">Karina Mabel Batla</p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <p className="text-[9px] font-black opacity-60 uppercase tracking-widest">En Línea</p>
+                            <p className="text-[9px] font-black opacity-60 uppercase tracking-widest">En Línea • 08:00 - 16:00 hs</p>
                           </div>
                         </div>
                       </div>
