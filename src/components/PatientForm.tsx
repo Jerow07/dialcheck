@@ -24,6 +24,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
     
     // Check for duplicate names (case insensitive)
     const isDuplicate = patients.some(p => 
+      p.name && 
       p.name.toLowerCase().trim() === (formData.name || '').toLowerCase().trim() && 
       p.id !== formData.id
     );
