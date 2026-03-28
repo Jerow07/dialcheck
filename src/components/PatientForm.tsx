@@ -18,26 +18,29 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
     floor: 1,
     status: 'Ocupada'
   });
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
     console.log('Iniciando guardado de paciente...', formData);
     
     try {
       if (!formData.name || formData.name.trim() === '') {
-        alert("Por favor, ingresa el nombre del paciente.");
+        setFormError("Por favor, ingresa el nombre del paciente.");
         return;
       }
 
-      // Check for duplicate names (case insensitive)
-      // Solo verificamos si el nombre ha cambiado realmente respecto al inicial
+      if (!hideOperationalFields && !formData.chairNumber) {
+        setFormError("Por favor seleccione una silla disponible en el mapa.");
+        return;
+      }
+      
       const currentName = (formData.name || '').toLowerCase().trim();
       const originalName = (initialData?.name || '').toLowerCase().trim();
       const isEditing = !!formData.id;
       const hasNameChanged = currentName !== originalName;
       
-      // Si el nombre no ha cambiado y estamos editando, no comprobamos duplicados
-      // Esto permite editar otros campos aunque ya exista un duplicado viejo en la DB
       if (hasNameChanged || !isEditing) {
         const patientsList = Array.isArray(patients) ? patients : [];
         const isDuplicate = patientsList.some(p => 
@@ -47,7 +50,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
         );
 
         if (isDuplicate) {
-          alert(`Error: El nombre "${formData.name}" ya está registrado para otro paciente.`);
+          setFormError(`Error: El nombre "${formData.name}" ya está registrado para otro paciente.`);
           return;
         }
       }
@@ -56,7 +59,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
       onSave(formData);
     } catch (err) {
       console.error('Error en el formulario:', err);
-      alert("Ocurrió un error inesperado al procesar el formulario.");
+      setFormError("Ocurrió un error inesperado al procesar el formulario.");
     }
   };
 
@@ -262,7 +265,13 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
             )}
           </div>
 
-          <div className="flex gap-4 pt-6">
+          {formError && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center animate-in fade-in zoom-in-95 duration-200">
+              {formError}
+            </div>
+          )}
+
+          <div className="flex gap-4 pt-4">
             <button 
               type="button" 
               onClick={onClose}

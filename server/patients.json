@@ -26,7 +26,7 @@
     "status": "Ocupada",
     "date": "2026-03-26",
     "birthDate": "1995-01-08",
-    "isHypertensive": true,
+    "isHypertensive": false,
     "isDiabetic": true
   },
   {
@@ -80,19 +80,5 @@
     "chairNumber": 13,
     "status": "Ocupada",
     "date": "2026-03-27"
-  },
-  {
-    "id": "622d996c-0ea8-4d4d-9718-3a49130cdedd",
-    "name": "molina",
-    "phone": "213123123",
-    "address": "san martin 123123",
-    "familyContact": "123123",
-    "familyRelationship": "Tutor",
-    "shift": "2",
-    "floor": 1,
-    "chairNumber": 12,
-    "status": "Ocupada",
-    "date": "2026-03-27",
-    "birthDate": "2002-03-29"
   }
 ]
