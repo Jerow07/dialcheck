@@ -524,10 +524,10 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
 
         <div className="relative z-10 w-full flex justify-between items-center px-1">
           <div className="flex items-center gap-1.5">
-            <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border backdrop-blur-sm shadow-sm ${
+            <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border shadow-sm ${
               isOccupied 
-                ? isAbsent ? 'text-orange-600 border-orange-500/30 bg-orange-500/20' : 'text-red-600 border-red-500/30 bg-red-500/20' 
-                : 'text-blue-600 border-blue-500/30 bg-blue-500/20'
+                ? isAbsent ? 'text-orange-700 bg-white border-orange-500/50 dark:bg-orange-500/30 dark:text-orange-200' : 'text-red-700 bg-white border-red-500/50 dark:bg-red-500/30 dark:text-red-200' 
+                : 'text-blue-700 bg-white border-blue-500/50 dark:bg-blue-500/30 dark:text-blue-200'
             }`}>Silla {chair.number}</span>
 
             {isOccupied && (
