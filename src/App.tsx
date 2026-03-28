@@ -124,7 +124,7 @@ function App() {
               >
                 <Info size={16} />
               </button>
-              <div className={`absolute left-0 md:left-full top-full md:top-1/2 mt-3 md:mt-0 md:-translate-y-1/2 md:ml-3 w-max min-w-[200px] bg-slate-900 text-white p-4 rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-2xl border border-white/10 pointer-events-none translate-y-2 md:translate-y-0 md:translate-x-1 group-hover:translate-x-0 group-hover:translate-y-0 ${
+              <div className={`absolute left-1/2 -translate-x-1/2 md:left-full md:translate-x-0 md:-translate-y-1/2 md:ml-3 top-full md:top-1/2 mt-3 md:mt-0 w-[calc(100vw-40px)] md:w-max min-w-[200px] max-w-[280px] bg-slate-900 text-white p-4 rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-2xl border border-white/10 pointer-events-none translate-y-2 md:translate-y-0 md:translate-x-1 group-hover:translate-x-0 group-hover:translate-y-0 ${
                 showCreateInfo ? 'opacity-100 visible translate-y-0 pointer-events-auto' : ''
               }`}>
                 <p className="text-[9px] font-black uppercase tracking-widest text-emerald-400 mb-2">Dialcheck Inc.</p>

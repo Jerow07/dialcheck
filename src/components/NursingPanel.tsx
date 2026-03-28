@@ -1072,36 +1072,40 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
             </div>
             <div className="min-w-[700px] lg:min-w-0">
               <h3 className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-8 md:mb-12 text-center italic">Distribución en U (1-12)</h3>
-              <div className="max-w-5xl mx-auto px-4">
+              <div className="max-w-5xl mx-auto px-1 md:px-4">
                 <div className="mb-8 md:mb-12">
                   <div className="flex items-center gap-2 mb-4 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20 w-fit mx-auto">
                     <Users size={12} className="text-orange-500" />
                     <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 2)}</span>
                   </div>
-                  <div className="grid grid-cols-4 md:grid-cols-6 gap-3 md:gap-6 justify-center">
-                    <div className="hidden md:block col-span-1" />
-                    {[5, 6, 7, 8].map(n => renderChair(n))}
-                    <div className="hidden md:block col-span-1" />
+                  <div className="grid grid-cols-6 gap-2 md:gap-6 justify-center">
+                    <div className="col-span-1" />
+                    {[5, 6, 7, 8].map(n => (
+                      <div key={n} className="col-span-1">
+                        {renderChair(n)}
+                      </div>
+                    ))}
+                    <div className="col-span-1" />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-6">
-                  <div className="space-y-3 md:space-y-6">
-                    <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
-                      <Users size={12} className="text-orange-500" />
-                      <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 1)}</span>
+                <div className="grid grid-cols-6 gap-2 md:gap-6 items-start">
+                  <div className="col-span-1 space-y-2 md:space-y-6">
+                    <div className="flex items-center gap-2 mb-2 px-2 py-1 bg-orange-500/10 rounded-full border border-orange-500/20 justify-center">
+                      <Users size={10} className="text-orange-500" />
+                      <span className="text-[8px] md:text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 1)}</span>
                     </div>
                     {[4, 3, 2, 1].map(n => renderChair(n))}
                   </div>
-                  <div className="col-span-1 md:col-span-4 flex items-center justify-center">
-                    <div className="w-full max-w-[120px] md:max-w-[160px]">
+                  <div className="col-span-4 flex items-center justify-center pt-10 md:pt-20">
+                    <div className="w-full max-w-[80px] sm:max-w-[120px] md:max-w-[160px]">
                       {renderChair(13)}
                     </div>
                   </div>
-                  <div className="space-y-3 md:space-y-6">
-                    <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
-                      <Users size={12} className="text-orange-500" />
-                      <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 3)}</span>
+                  <div className="col-span-1 space-y-2 md:space-y-6">
+                    <div className="flex items-center gap-2 mb-2 px-2 py-1 bg-orange-500/10 rounded-full border border-orange-500/20 justify-center">
+                      <Users size={10} className="text-orange-500" />
+                      <span className="text-[8px] md:text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 3)}</span>
                     </div>
                     {[9, 10, 11, 12].map(n => renderChair(n))}
                   </div>
