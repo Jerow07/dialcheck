@@ -30,19 +30,24 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
       }
 
       // Check for duplicate names (case insensitive)
-      // Solo verificamos si el nombre ha cambiado respecto al inicial
-      const hasNameChanged = formData.name?.toLowerCase().trim() !== (initialData?.name || '').toLowerCase().trim();
+      // Solo verificamos si el nombre ha cambiado realmente respecto al inicial
+      const currentName = (formData.name || '').toLowerCase().trim();
+      const originalName = (initialData?.name || '').toLowerCase().trim();
+      const isEditing = !!formData.id;
+      const hasNameChanged = currentName !== originalName;
       
-      if (hasNameChanged) {
+      // Si el nombre no ha cambiado y estamos editando, no comprobamos duplicados
+      // Esto permite editar otros campos aunque ya exista un duplicado viejo en la DB
+      if (hasNameChanged || !isEditing) {
         const patientsList = Array.isArray(patients) ? patients : [];
         const isDuplicate = patientsList.some(p => 
           p && p.name && 
-          p.name.toLowerCase().trim() === (formData.name || '').toLowerCase().trim() && 
-          p.id !== formData.id
+          p.id !== formData.id && // Diferente ID
+          p.name.toLowerCase().trim() === currentName // Mismo Nombre
         );
 
         if (isDuplicate) {
-          alert(`Error: Ya existe otro paciente registrado con el nombre "${formData.name}". No se pueden duplicar registros.`);
+          alert(`Error: El nombre "${formData.name}" ya está registrado para otro paciente.`);
           return;
         }
       }

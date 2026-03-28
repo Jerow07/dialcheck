@@ -56,19 +56,6 @@
     "date": "2026-03-26"
   },
   {
-    "id": "afbf098a-04d5-407a-a1f5-6afb63b8505f",
-    "name": "Juan Pérez",
-    "phone": "11 2233-4455",
-    "address": "Av. Corrientes 1234, CABA",
-    "familyContact": "11 5544-3322",
-    "familyRelationship": "Hijo",
-    "shift": "1",
-    "floor": 1,
-    "chairNumber": 6,
-    "status": "Ocupada",
-    "date": "2026-03-27"
-  },
-  {
     "id": "2a124400-e737-4b8a-a2fe-4d06bcd6a47a",
     "name": "miguel albarracin",
     "phone": "119492002",
