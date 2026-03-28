@@ -116,10 +116,11 @@ app.get(['/api/patients', '/'], async (req, res) => {
 
 // POST new patient
 app.post(['/api/patients', '/'], async (req, res) => {
-  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic } = req.body;
+  const body = req.body || {};
+  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic } = body;
   
   if (!name || !shift) {
-    return res.status(400).json({ error: 'Name and shift are required' });
+    return res.status(400).json({ error: `Name and shift are required. Received name: "${name}", shift: "${shift}", all body keys: [${Object.keys(body).join(',')}]` });
   }
 
   const newPatient = {
