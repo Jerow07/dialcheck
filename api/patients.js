@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { kv } from '@vercel/kv';
+import Redis from 'ioredis';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,9 +17,11 @@ app.use(express.json());
 // Persistence Helper
 const DATA_FILE = path.join(__dirname, 'db/patients.json');
 
+const redisUrl = process.env.REDIS_URL || process.env.REDIS_TLS_URL;
+const redis = redisUrl ? new Redis(redisUrl) : null;
 const isKVAvailable = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
 
-if (process.env.VERCEL && !isKVAvailable) {
+if (process.env.VERCEL && !isKVAvailable && !redis) {
   console.warn('DIAGNOSTICO KV VERCEL:', {
     hasURL: !!process.env.KV_REST_API_URL,
     hasToken: !!process.env.KV_REST_API_TOKEN,
@@ -27,7 +30,16 @@ if (process.env.VERCEL && !isKVAvailable) {
 }
 
 const getPatients = async () => {
-  if (isKVAvailable) {
+  if (redis) {
+    try {
+      const data = await redis.get('dialcheck_patients');
+      return data ? JSON.parse(data) : [];
+    } catch (err) {
+      console.error('Redis get error:', err);
+      // If we are on Vercel, don't fallback to FS (it's read-only)
+      if (process.env.VERCEL) return [];
+    }
+  } else if (isKVAvailable) {
     try {
       const data = await kv.get('dialcheck_patients');
       return Array.isArray(data) ? data : [];
@@ -51,7 +63,15 @@ const getPatients = async () => {
 };
 
 const savePatients = async (data) => {
-  if (isKVAvailable) {
+  if (redis) {
+    try {
+      await redis.set('dialcheck_patients', JSON.stringify(data));
+      return { success: true };
+    } catch (err) {
+      console.error('Redis set error:', err);
+      return { success: false, error: err.message };
+    }
+  } else if (isKVAvailable) {
     try {
       await kv.set('dialcheck_patients', data);
       return { success: true };
@@ -66,7 +86,7 @@ const savePatients = async (data) => {
     const envKeys = Object.keys(process.env).filter(k => k.includes('KV') || k.includes('REDIS'));
     return { 
       success: false, 
-      error: `Base de datos KV no detectada. Variables encontradas: [${envKeys.join(', ')}]. Si ya la conectaste, haz un "Redeploy" manual en Vercel.` 
+      error: `Base de datos KV/Redis no detectada. Variables: [${envKeys.join(', ')}].` 
     };
   }
 
