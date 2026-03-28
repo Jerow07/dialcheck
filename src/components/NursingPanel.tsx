@@ -119,16 +119,16 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
     }
     
     return (
-      <div className="bg-amber-500/10 border border-amber-500/30 px-8 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
+      <div className="bg-amber-50/80 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/30 px-8 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
         <div className="w-12 h-12 rounded-full bg-amber-500 flex items-center justify-center text-white shadow-lg group-hover:rotate-12 transition-transform">
           <Coffee size={20} />
         </div>
         <div>
-          <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40">Servicio</h4>
-          <p className="text-sm font-black uppercase tracking-tighter text-amber-500">Limpieza & Té</p>
+          <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40 text-amber-900 dark:text-amber-400">Servicio</h4>
+          <p className="text-sm font-black uppercase tracking-tighter text-amber-600 dark:text-amber-500">Limpieza & Té</p>
           <div className="flex flex-wrap gap-x-2 gap-y-0.5 mt-1">
             {staff.map((name, i) => (
-              <span key={i} className="text-[11px] font-bold text-amber-500/70 whitespace-nowrap capitalize">
+              <span key={i} className="text-[11px] font-bold text-amber-900/70 dark:text-amber-500/70 whitespace-nowrap capitalize">
                 {name}{i < staff.length - 1 ? " • " : ""}
               </span>
             ))}
@@ -1024,18 +1024,18 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           </div>
 
           <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-            <div className="bg-orange-500/10 border border-orange-500/30 px-10 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
+            <div className="bg-orange-50/80 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/30 px-10 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
               <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
                 <Stethoscope size={20} />
               </div>
               <div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40">Responsable</h4>
-                <p className="text-sm font-black uppercase tracking-tighter text-orange-500">Doctor a cargo</p>
-                <p className="text-[12px] font-bold text-orange-500/60 leading-tight">{getDoctorName(1)}</p>
+                <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40 text-orange-900 dark:text-orange-400">Responsable</h4>
+                <p className="text-sm font-black uppercase tracking-tighter text-orange-600 dark:text-orange-500">Doctor a cargo</p>
+                <p className="text-[12px] font-black text-orange-800 dark:text-orange-300 leading-tight">{getDoctorName(1)}</p>
               </div>
             </div>
 
-            <div className="bg-blue-600/10 border border-blue-500/30 px-4 md:px-6 py-5 rounded-[32px] flex items-center gap-4 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group">
+            <div className="bg-blue-50/80 dark:bg-blue-600/10 border border-blue-200 dark:border-blue-500/30 px-4 md:px-6 py-5 rounded-[32px] flex items-center gap-4 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <div className="flex -space-x-3 shrink-0">
                 <div className="w-10 h-10 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
@@ -1109,18 +1109,18 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           </div>
 
           <div className="flex flex-col md:flex-row justify-center items-center gap-8">
-            <div className="bg-orange-500/10 border border-orange-500/30 px-10 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
+            <div className="bg-orange-50/80 dark:bg-orange-500/10 border border-orange-200 dark:border-orange-500/30 px-10 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
               <div className="w-12 h-12 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
                 <Stethoscope size={20} />
               </div>
               <div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40">Responsable</h4>
-                <p className="text-sm font-black uppercase tracking-tighter text-orange-500">Doctor a cargo</p>
-                <p className="text-[12px] font-bold text-orange-500/60 leading-tight italic">Por asignar</p>
+                <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40 text-orange-900 dark:text-orange-400">Responsable</h4>
+                <p className="text-sm font-black uppercase tracking-tighter text-orange-600 dark:text-orange-500">Doctor a cargo</p>
+                <p className="text-[12px] font-black text-orange-800 dark:text-orange-300 leading-tight">{getDoctorName(2)}</p>
               </div>
             </div>
 
-            <div className="bg-blue-600/10 border border-blue-500/30 px-4 md:px-6 py-5 rounded-[32px] flex items-center gap-4 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group">
+            <div className="bg-blue-50/80 dark:bg-blue-600/10 border border-blue-200 dark:border-blue-500/30 px-4 md:px-6 py-5 rounded-[32px] flex items-center gap-4 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <div className="flex -space-x-3 shrink-0">
                 <div className="w-10 h-10 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
