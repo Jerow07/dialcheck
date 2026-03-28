@@ -22,12 +22,15 @@ const getPatients = async () => {
   if (isKVAvailable) {
     try {
       const data = await kv.get('dialcheck_patients');
-      if (data) return data;
+      return Array.isArray(data) ? data : [];
     } catch (err) {
       console.error('KV get error:', err);
+      // If we are on Vercel, don't fallback to FS (it's read-only)
+      if (process.env.VERCEL) return [];
     }
   }
-  // Fallback to local FS
+  
+  // Fallback to local FS (only for local dev)
   try {
     if (fs.existsSync(DATA_FILE)) {
       const data = fs.readFileSync(DATA_FILE, 'utf8');
@@ -50,7 +53,11 @@ const savePatients = async (data) => {
     }
   }
   
-  // Fallback to local FS
+  // Fallback to local FS (only if not on Vercel)
+  if (process.env.VERCEL) {
+    return { success: false, error: 'Base de datos KV no configurada en Vercel' };
+  }
+
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
     return { success: true };
