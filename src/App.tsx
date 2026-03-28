@@ -124,11 +124,11 @@ function App() {
               >
                 <Info size={16} />
               </button>
-              <div className={`fixed left-1/2 -translate-x-1/2 md:absolute md:left-full md:translate-x-0 md:-translate-y-1/2 md:ml-3 top-24 md:top-1/2 w-[calc(100vw-24px)] md:w-max min-w-[280px] max-w-[340px] bg-slate-900 text-white p-5 md:p-6 rounded-[24px] md:rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[1001] shadow-2xl border border-white/10 pointer-events-none translate-y-2 md:translate-y-0 md:translate-x-1 group-hover:translate-x-0 group-hover:translate-y-0 ${
+              <div className={`fixed left-4 right-4 md:absolute md:left-full md:translate-x-0 md:-translate-y-1/2 md:ml-3 top-24 md:top-1/2 md:w-max min-w-[280px] md:max-w-[340px] bg-slate-900 text-white p-6 rounded-[24px] md:rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[1001] shadow-2xl border border-white/10 pointer-events-none translate-y-2 md:translate-y-0 md:translate-x-1 group-hover:translate-x-0 group-hover:translate-y-0 ${
                 showCreateInfo ? 'opacity-100 visible translate-y-0 pointer-events-auto' : ''
               }`}>
-                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-3 text-center md:text-left">Dialcheck Inc.</p>
-                <div className="space-y-2 text-center md:text-left">
+                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-3">Dialcheck Inc.</p>
+                <div className="space-y-2">
                   <p className="text-xs font-bold leading-tight whitespace-normal break-words">Designed by Jerónimo Parra Sanhueza</p>
                   <p className="text-[10px] opacity-60 leading-tight whitespace-normal break-words">Visual by Jerónimo Parra Sanhueza</p>
                 </div>
