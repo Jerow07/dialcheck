@@ -73,9 +73,13 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
           }).catch(console.error);
         }
         onRefresh();
+      } else {
+        const data = await resp.json().catch(() => ({}));
+        alert(`Error al eliminar: ${data.error || 'No se pudo completar la operación'}`);
       }
     } catch (err) {
       console.error('Error deleting patient:', err);
+      alert("Error de conexión al intentar eliminar al paciente.");
     }
   };
 

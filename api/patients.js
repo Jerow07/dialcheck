@@ -70,13 +70,13 @@ const today = getLocalDateString();
 
 
 // GET all patients
-app.get('/api/patients', async (req, res) => {
+app.get(['/api/patients', '/'], async (req, res) => {
   const patients = await getPatients();
   res.json(patients);
 });
 
 // POST new patient
-app.post('/api/patients', async (req, res) => {
+app.post(['/api/patients', '/'], async (req, res) => {
   const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic } = req.body;
   
   if (!name || !shift) {
@@ -108,7 +108,7 @@ app.post('/api/patients', async (req, res) => {
 });
 
 // DELETE patient
-app.delete('/api/patients/:id', async (req, res) => {
+app.delete(['/api/patients/:id', '/:id'], async (req, res) => {
   const { id } = req.params;
   
   let patients = await getPatients();
@@ -125,7 +125,7 @@ app.delete('/api/patients/:id', async (req, res) => {
 });
 
 // UPDATE patient
-app.put('/api/patients/:id', async (req, res) => {
+app.put(['/api/patients/:id', '/:id'], async (req, res) => {
   const { id } = req.params;
   const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic } = req.body;
   
