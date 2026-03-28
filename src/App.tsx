@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Activity, Sun, Moon, LayoutGrid, Users as UsersIcon, Info } from 'lucide-react'
+import { Activity, Sun, Moon, LayoutGrid, Users as UsersIcon, Info, LogOut } from 'lucide-react'
 import { NursingPanel } from './components/NursingPanel'
 import { PatientList } from './components/PatientList'
+import { LoginScreen } from './components/LoginScreen'
 import type { Patient } from './types'
 
 const API_URL = '/api/patients';
@@ -16,6 +17,12 @@ function App() {
 
   const [activeTab, setActiveTab] = useState<'panel' | 'directory'>('panel')
   const [patients, setPatients] = useState<Patient[]>([])
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return !!localStorage.getItem('auth_token')
+    }
+    return false
+  })
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -49,6 +56,20 @@ function App() {
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'light' ? 'dark' : 'light')
+  }
+
+  const handleLogin = (token: string) => {
+    localStorage.setItem('auth_token', token)
+    setIsAuthenticated(true)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth_token')
+    setIsAuthenticated(false)
+  }
+
+  if (!isAuthenticated) {
+    return <LoginScreen onLogin={handleLogin} />
   }
 
   return (
@@ -118,6 +139,13 @@ function App() {
               aria-label="Toggle Theme"
             >
               {theme === 'light' ? <Moon size={18} className="text-blue-600" /> : <Sun size={18} className="text-orange-400" />}
+            </button>
+            <button 
+              onClick={handleLogout}
+              className="w-11 h-11 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl flex items-center justify-center hover:scale-105 hover:bg-red-500 hover:text-white active:scale-95 transition-all shadow-xl shadow-black/5 ml-1"
+              title="Cerrar Sesión"
+            >
+              <LogOut size={16} />
             </button>
           </div>
         </div>

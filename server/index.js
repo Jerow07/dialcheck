@@ -18,6 +18,10 @@ app.use(express.json());
 // Persistence Helper
 const DATA_FILE = path.join(__dirname, 'patients.json');
 
+const defaultUsers = [
+  { username: 'jeronimo1995', password: 'admin123', role: 'admin' },
+];
+
 const isKVAvailable = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
 
 const getPatients = async () => {
@@ -179,6 +183,42 @@ app.put('/api/patients/:id', async (req, res) => {
   
   await savePatients(patients);
   res.json(patients[index]);
+});
+
+// AUTH LOGIN
+app.post('/api/auth/login', async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Debes ingresar usuario y contraseña' });
+  }
+
+  let users = defaultUsers;
+
+  if (isKVAvailable) {
+    try {
+      let kvUsers = await kv.get('dialcheck_users');
+      if (!kvUsers) {
+        await kv.set('dialcheck_users', defaultUsers);
+        kvUsers = defaultUsers;
+      }
+      users = kvUsers;
+    } catch (err) {
+      console.error('Error de autenticación con KV:', err);
+    }
+  }
+
+  const user = users.find(u => u.username === username && u.password === password);
+  
+  if (user) {
+    const token = Buffer.from(`${user.username}-${Date.now()}`).toString('base64');
+    return res.json({ 
+      success: true, 
+      token, 
+      user: { username: user.username, role: user.role } 
+    });
+  }
+
+  return res.status(401).json({ error: 'Credenciales inválidas o usuario incorrecto' });
 });
 
 // For local testing
