@@ -470,26 +470,28 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
         </div>
 
         <div className="relative z-10 w-full flex justify-between items-center px-1">
-          <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border backdrop-blur-sm shadow-sm ${
-            isOccupied 
-              ? isAbsent ? 'text-orange-600 border-orange-500/30 bg-orange-500/20' : 'text-red-600 border-red-500/30 bg-red-500/20' 
-              : 'text-blue-600 border-blue-500/30 bg-blue-500/20'
-          }`}>Silla {chair.number}</span>
+          <div className="flex items-center gap-1.5">
+            <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-full border backdrop-blur-sm shadow-sm ${
+              isOccupied 
+                ? isAbsent ? 'text-orange-600 border-orange-500/30 bg-orange-500/20' : 'text-red-600 border-red-500/30 bg-red-500/20' 
+                : 'text-blue-600 border-blue-500/30 bg-blue-500/20'
+            }`}>Silla {chair.number}</span>
 
-          {isOccupied && (
-            <div className="flex gap-1 items-center">
-              {chair.patient?.isHypertensive && (
-                <div title="Hipertensión" className="w-5 h-5 rounded-lg bg-red-500 text-white flex items-center justify-center shadow-lg shadow-red-500/40 animate-pulse border border-white/20">
-                  <Thermometer size={10} strokeWidth={3} />
-                </div>
-              )}
-              {chair.patient?.isDiabetic && (
-                <div title="Diabético" className="w-5 h-5 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/40 animate-pulse border border-white/20">
-                  <Droplets size={10} strokeWidth={3} />
-                </div>
-              )}
-            </div>
-          )}
+            {isOccupied && (
+              <div className="flex gap-1 items-center">
+                {chair.patient?.isHypertensive && (
+                  <div title="Hipertensión" className="w-5 h-5 rounded-lg bg-red-500 text-white flex items-center justify-center shadow-lg shadow-red-500/40 animate-pulse border border-white/20">
+                    <Thermometer size={11} strokeWidth={3} />
+                  </div>
+                )}
+                {chair.patient?.isDiabetic && (
+                  <div title="Diabético" className="w-5 h-5 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-lg shadow-blue-500/40 animate-pulse border border-white/20">
+                    <Droplets size={11} strokeWidth={3} />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
         
         <div className="relative z-10 w-full mt-auto">
