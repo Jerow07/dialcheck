@@ -79,8 +79,8 @@ app.get('/api/patients', async (req, res) => {
 app.post('/api/patients', async (req, res) => {
   const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic } = req.body;
   
-  if (!name || !shift || chairNumber === undefined) {
-    return res.status(400).json({ error: 'Name, shift and chairNumber are required' });
+  if (!name || !shift) {
+    return res.status(400).json({ error: 'Name and shift are required' });
   }
 
   const newPatient = {
@@ -92,7 +92,7 @@ app.post('/api/patients', async (req, res) => {
     familyRelationship: familyRelationship || 'Tutor',
     shift,
     floor: floor || 1,
-    chairNumber,
+    chairNumber: chairNumber !== undefined ? chairNumber : 0,
     status: status || 'Ocupada',
     date: date || today,
     birthDate: birthDate || '',

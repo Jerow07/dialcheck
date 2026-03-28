@@ -21,20 +21,33 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Iniciando guardado de paciente...', formData);
     
-    // Check for duplicate names (case insensitive)
-    const isDuplicate = patients.some(p => 
-      p.name && 
-      p.name.toLowerCase().trim() === (formData.name || '').toLowerCase().trim() && 
-      p.id !== formData.id
-    );
+    try {
+      if (!formData.name || formData.name.trim() === '') {
+        alert("Por favor, ingresa el nombre del paciente.");
+        return;
+      }
 
-    if (isDuplicate) {
-      alert(`Error: Ya existe un paciente registrado con el nombre "${formData.name}". Por favor, verifica los datos.`);
-      return;
+      // Check for duplicate names (case insensitive)
+      const patientsList = Array.isArray(patients) ? patients : [];
+      const isDuplicate = patientsList.some(p => 
+        p && p.name && 
+        p.name.toLowerCase().trim() === (formData.name || '').toLowerCase().trim() && 
+        p.id !== formData.id
+      );
+
+      if (isDuplicate) {
+        alert(`Error: Ya existe un paciente registrado con el nombre "${formData.name}".`);
+        return;
+      }
+
+      console.log('Validaciones pasadas, llamando a onSave...');
+      onSave(formData);
+    } catch (err) {
+      console.error('Error en el formulario:', err);
+      alert("Ocurrió un error inesperado al procesar el formulario.");
     }
-
-    onSave(formData);
   };
 
   return (
