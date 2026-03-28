@@ -468,7 +468,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           />
         </div>
 
-        <div className="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] flex gap-2 opacity-0 group-hover:opacity-100 transition-all z-20 scale-95 group-hover:scale-100">
           {chair.patient && (
             <>
               <button 
@@ -477,28 +477,28 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                   setEditingPatient(chair.patient!);
                   setShowForm(true);
                 }}
-                className="w-7 h-7 rounded-lg bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 shadow-lg transition-transform active:scale-90"
+                className="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 shadow-xl transition-all hover:scale-110 active:scale-90"
               >
-                <Edit2 size={12} />
+                <Edit2 size={16} strokeWidth={2.5} />
               </button>
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
                   setMovingPatient(chair.patient!);
                 }}
-                className="w-7 h-7 rounded-lg bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 shadow-lg transition-transform active:scale-90"
+                className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 shadow-xl transition-all hover:scale-110 active:scale-90"
                 title="Mover Silla"
               >
-                <ArrowLeftRight size={12} />
+                <ArrowLeftRight size={16} strokeWidth={2.5} />
               </button>
               <button 
                 onClick={(e) => {
                   e.stopPropagation();
                   releaseChair(chair.patient!.id);
                 }}
-                className="w-7 h-7 rounded-lg bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-lg transition-transform active:scale-90"
+                className="w-10 h-10 rounded-xl bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-xl transition-all hover:scale-110 active:scale-90"
               >
-                <UserX size={12} />
+                <UserX size={16} strokeWidth={2.5} />
               </button>
             </>
           )}
