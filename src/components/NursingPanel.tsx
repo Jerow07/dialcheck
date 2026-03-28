@@ -455,6 +455,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
         } ${movingPatient && chair.patient && movingPatient.id !== chair.patient.id ? 'opacity-20 pointer-events-none' : ''} ${isActive ? 'ring-4 ring-blue-500/40 border-blue-500' : ''}`}
         onClick={(e) => {
           e.stopPropagation();
+          e.preventDefault(); // Prevents ghost clicks on some mobile browsers
           if (movingPatient) {
             if (!chair.patient) {
               handleMove(chair.number);
@@ -482,7 +483,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           />
         </div>
 
-        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] flex gap-2 opacity-0 group-hover:opacity-100 transition-all z-20 scale-95 group-hover:scale-100 ${isActive ? 'opacity-100 scale-100 pointer-events-auto' : ''}`}>
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] flex gap-2 opacity-0 group-hover:opacity-100 transition-all z-50 scale-95 group-hover:scale-100 ${isActive ? 'opacity-100 scale-100 pointer-events-auto' : 'pointer-events-none'}`}>
           {chair.patient && (
             <>
               <button 
