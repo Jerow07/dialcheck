@@ -43,20 +43,20 @@ const savePatients = async (data) => {
   if (isKVAvailable) {
     try {
       await kv.set('dialcheck_patients', data);
-      return true;
+      return { success: true };
     } catch (err) {
       console.error('KV set error:', err);
-      return false; // On Vercel, if KV fails, we can't save to FS anyway
+      return { success: false, error: err.message };
     }
   }
   
   // Fallback to local FS
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-    return true;
+    return { success: true };
   } catch (err) {
-    console.error('Error saving patients to FS (likely read-only on Vercel):', err);
-    return false;
+    console.error('Error saving patients to FS:', err);
+    return { success: false, error: err.message };
   }
 };
 
@@ -102,8 +102,8 @@ app.post(['/api/patients', '/'], async (req, res) => {
 
   const patients = await getPatients();
   patients.push(newPatient);
-  const ok = await savePatients(patients);
-  if (!ok) return res.status(500).json({ error: 'Failed to save to database (KV)' });
+  const result = await savePatients(patients);
+  if (!result.success) return res.status(500).json({ error: `Error en base de datos: ${result.error}` });
   res.status(201).json(newPatient);
 });
 
@@ -119,8 +119,8 @@ app.delete(['/api/patients/:id', '/:id'], async (req, res) => {
     return res.status(404).json({ error: 'Patient not found' });
   }
   
-  const ok = await savePatients(patients);
-  if (!ok) return res.status(500).json({ error: 'Failed to delete from database (KV)' });
+  const result = await savePatients(patients);
+  if (!result.success) return res.status(500).json({ error: `Error al eliminar en base de datos: ${result.error}` });
   res.status(204).send();
 });
 
@@ -150,8 +150,8 @@ app.put(['/api/patients/:id', '/:id'], async (req, res) => {
   if (isHypertensive !== undefined) patients[index].isHypertensive = !!isHypertensive;
   if (isDiabetic !== undefined) patients[index].isDiabetic = !!isDiabetic;
   
-  const ok = await savePatients(patients);
-  if (!ok) return res.status(500).json({ error: 'Failed to update database (KV)' });
+  const result = await savePatients(patients);
+  if (!result.success) return res.status(500).json({ error: `Error al actualizar en base de datos: ${result.error}` });
   res.json(patients[index]);
 });
 
