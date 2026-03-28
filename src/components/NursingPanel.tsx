@@ -580,11 +580,11 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-6 pb-20">
+    <div className="w-full max-w-7xl mx-auto space-y-6 pb-20 px-2 md:px-0">
       {/* Weekly Date Navigation Strip */}
-      <div className="bg-[var(--bg-accent)] p-4 md:p-6 rounded-[32px] border border-[var(--border-color)] space-y-4">
+      <div className="bg-[var(--bg-accent)] p-3 md:p-6 rounded-[24px] md:rounded-[32px] border border-[var(--border-color)] space-y-4 overflow-hidden shadow-sm">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
             <div className="bg-orange-500/10 p-3 rounded-2xl border border-orange-500/20 text-orange-500">
               <Calendar size={20} />
             </div>
@@ -602,20 +602,20 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap justify-center md:justify-start items-center gap-1.5 md:gap-2 w-full md:w-auto">
             <button 
               onClick={() => {
                 const prev = new Date(selectedDate + 'T12:00:00');
                 prev.setDate(prev.getDate() - 7);
                 setSelectedDate(getLocalDateString(prev));
               }}
-              className="px-3 md:px-4 h-9 md:h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all"
+              className="px-2.5 md:px-4 h-8 md:h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all"
             >
-              Semana Ant.
+              Sem. Ant.
             </button>
             <button 
               onClick={() => setSelectedDate(getLocalDateString())}
-              className={`px-3 md:px-4 h-9 md:h-10 ${selectedDate === getLocalDateString() ? 'bg-orange-500 text-white' : 'bg-slate-200 text-black'} hover:opacity-90 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all`}
+              className={`px-3 md:px-4 h-8 md:h-10 ${selectedDate === getLocalDateString() ? 'bg-orange-500 text-white' : 'bg-slate-200 text-black'} hover:opacity-90 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all`}
             >
               Hoy
             </button>
@@ -625,12 +625,12 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                 next.setDate(next.getDate() + 7);
                 setSelectedDate(getLocalDateString(next));
               }}
-              className="px-3 md:px-4 h-9 md:h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all"
+              className="px-2.5 md:px-4 h-8 md:h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all"
             >
-              Semana Sig.
+              Sem. Sig.
             </button>
             
-            <div className="w-px h-6 bg-[var(--border-color)] mx-2" />
+            <div className="w-px h-6 bg-[var(--border-color)] mx-1" />
             
             <button 
               onClick={() => {
@@ -638,19 +638,18 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                 prevDay.setDate(prevDay.getDate() - 1);
                 handleCloneSchedule(getLocalDateString(prevDay));
               }}
-              className="flex items-center gap-2 px-3 md:px-4 h-9 md:h-10 bg-blue-500/10 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all border border-blue-500/20"
+              className="flex items-center gap-1 px-3 md:px-4 h-8 md:h-10 bg-blue-500/10 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all border border-blue-500/20"
             >
-              <Copy size={13} />
-              <span className="hidden xs:inline">Copiar Ayer</span>
-              <span className="xs:hidden">Copiar</span>
+              <Copy size={12} />
+              <span className="xs:inline">Copiar</span>
             </button>
 
             <button 
               onClick={() => setShowLogsDrawer(true)}
-              className="flex items-center gap-2 px-4 h-10 bg-slate-800 text-white hover:bg-black rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-lg border border-white/10"
+              className="flex items-center gap-1.5 px-3 md:px-4 h-8 md:h-10 bg-slate-800 text-white hover:bg-black rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all shadow-lg border border-white/10"
             >
-              <HistoryIcon size={14} />
-              Ver Historial
+              <HistoryIcon size={12} />
+              Historial
             </button>
           </div>
         </div>
@@ -1035,7 +1034,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
               </div>
             </div>
 
-            <div className="bg-blue-50/80 dark:bg-blue-600/10 border border-blue-200 dark:border-blue-500/30 px-4 md:px-6 py-5 rounded-[32px] flex items-center gap-4 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group">
+            <div className="bg-blue-50/80 dark:bg-blue-600/10 border border-blue-200 dark:border-blue-500/30 px-3 md:px-6 py-4 md:py-5 rounded-[24px] md:rounded-[32px] flex items-center gap-3 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group w-full md:w-auto max-w-full">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <div className="flex -space-x-3 shrink-0">
                 <div className="w-10 h-10 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
@@ -1120,7 +1119,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
               </div>
             </div>
 
-            <div className="bg-blue-50/80 dark:bg-blue-600/10 border border-blue-200 dark:border-blue-500/30 px-4 md:px-6 py-5 rounded-[32px] flex items-center gap-4 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group">
+            <div className="bg-blue-50/80 dark:bg-blue-600/10 border border-blue-200 dark:border-blue-500/30 px-3 md:px-6 py-4 md:py-5 rounded-[24px] md:rounded-[32px] flex items-center gap-3 md:gap-6 backdrop-blur-md shadow-xl relative overflow-hidden group w-full md:w-auto max-w-full">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-500/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               <div className="flex -space-x-3 shrink-0">
                 <div className="w-10 h-10 rounded-full bg-blue-500 border-4 border-[var(--bg-primary)] flex items-center justify-center text-white shadow-lg">
