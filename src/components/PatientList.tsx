@@ -3,7 +3,7 @@ import type { Patient } from '../types';
 import { Search, MapPin, Phone, Users, History, ClipboardList, Trash2, Edit } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 
-const API_URL = 'http://localhost:3001/api/patients';
+const API_URL = '/api/patients';
 
 interface PatientListProps {
   patients: Patient[];
