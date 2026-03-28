@@ -16,7 +16,15 @@ app.use(express.json());
 // Persistence Helper
 const DATA_FILE = path.join(__dirname, 'db/patients.json');
 
-const isKVAvailable = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+const isKVAvailable = !!(process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN);
+
+if (process.env.VERCEL && !isKVAvailable) {
+  console.warn('DIAGNOSTICO KV VERCEL:', {
+    hasURL: !!process.env.KV_REST_API_URL,
+    hasToken: !!process.env.KV_REST_API_TOKEN,
+    env: Object.keys(process.env).filter(k => k.includes('KV') || k.includes('REDIS'))
+  });
+}
 
 const getPatients = async () => {
   if (isKVAvailable) {
@@ -55,7 +63,10 @@ const savePatients = async (data) => {
   
   // Fallback to local FS (only if not on Vercel)
   if (process.env.VERCEL) {
-    return { success: false, error: 'Base de datos KV no configurada en Vercel' };
+    return { 
+      success: false, 
+      error: 'Base de datos KV no detectada. Si ya la conectaste, recuerda que debes hacer un "Redeploy" en Vercel para activar los cambios.' 
+    };
   }
 
   try {
