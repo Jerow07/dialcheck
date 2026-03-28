@@ -470,7 +470,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           }
         }}
       >
-        <div className="absolute top-2 left-0 right-0 bottom-14 flex items-center justify-center pointer-events-none z-0">
+        <div className="absolute top-6 left-0 right-0 bottom-14 flex items-center justify-center pointer-events-none z-0">
           <img 
             src="/assets/chair.png" 
             alt="Dialysis Chair"
