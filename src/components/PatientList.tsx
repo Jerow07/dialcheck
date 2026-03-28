@@ -20,7 +20,7 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSave = async (patientData: Partial<Patient>) => {
+  const handleSave = async (patientData: Partial<Patient>): Promise<string | void> => {
     try {
       const isEditing = !!patientData.id;
       const url = isEditing ? `${API_URL}/${patientData.id}` : API_URL;
@@ -48,9 +48,13 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
         onRefresh();
         setShowForm(false);
         setEditingPatient(null);
+      } else {
+        const data = await resp.json().catch(() => ({}));
+        return `Error del servidor al guardar: ${data.error || 'Intenta de nuevo'}`;
       }
     } catch (err) {
       console.error('Error saving patient:', err);
+      return 'Error de conexión con el servidor.';
     }
   };
 

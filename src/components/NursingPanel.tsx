@@ -178,17 +178,15 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
     return true;
   };
 
-  const handleSave = async (patientData: Partial<Patient>) => {
+  const handleSave = async (patientData: Partial<Patient>): Promise<string | void> => {
     try {
       const isEditing = !!patientData.id;
       
       if (!patientData.name) {
-        alert("Por favor ingrese el nombre del paciente.");
-        return;
+        return "Por favor ingrese el nombre del paciente.";
       }
       if (!patientData.chairNumber) {
-        alert("Por favor seleccione una silla disponible.");
-        return;
+        return "Por favor seleccione una silla disponible.";
       }
 
       // Check collision
@@ -251,12 +249,12 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
         setShowForm(false);
         setEditingPatient(null);
       } else {
-        const data = await resp.json();
-        alert(`Error al guardar: ${data.error || 'Ocurrió un error inesperado'}`);
+        const data = await resp.json().catch(() => ({}));
+        return `Error al guardar: ${data.error || 'Ocurrió un error inesperado'}`;
       }
     } catch (err) {
       console.error('Error saving patient:', err);
-      alert("No se pudo conectar con el servidor. ¿Está el backend encendido?");
+      return "No se pudo conectar con el servidor. ¿Está el backend encendido?";
     }
   };
 

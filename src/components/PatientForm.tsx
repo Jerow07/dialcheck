@@ -5,7 +5,7 @@ import { X } from 'lucide-react';
 interface PatientFormProps {
   initialData?: Partial<Patient>;
   onClose: () => void;
-  onSave: (patient: Partial<Patient>) => void;
+  onSave: (patient: Partial<Patient>) => Promise<string | void> | void;
   title: string;
   patients: Patient[];
   hideOperationalFields?: boolean;
@@ -20,7 +20,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
   });
   const [formError, setFormError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
     console.log('Iniciando guardado de paciente...', formData);
@@ -56,7 +56,10 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
       }
 
       console.log('Validaciones pasadas, llamando a onSave...');
-      onSave(formData);
+      const errorResponse = await onSave(formData);
+      if (typeof errorResponse === 'string') {
+        setFormError(errorResponse);
+      }
     } catch (err) {
       console.error('Error en el formulario:', err);
       setFormError("Ocurrió un error inesperado al procesar el formulario.");
