@@ -42,8 +42,19 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
   const [selectedDate, setSelectedDate] = useState(getLocalDateString());
   const [movingPatient, setMovingPatient] = useState<Patient | null>(null);
   const [showLogsDrawer, setShowLogsDrawer] = useState(false);
+  const [activeChair, setActiveChair] = useState<{floor: number, number: number | null} | null>(null);
 
   const [birthdayFired, setBirthdayFired] = useState(false);
+
+  useEffect(() => {
+    const handleGlobalClick = () => setActiveChair(null);
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, []);
+
+  useEffect(() => {
+    setActiveChair(null);
+  }, [selectedShift, selectedFloor, selectedDate, rotation]);
 
   useEffect(() => {
     const today = new Date();
@@ -421,6 +432,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
 
     const isOccupied = !!chair.patient;
     const isAbsent = chair.patient?.status === 'Ausente';
+    const isActive = activeChair?.floor === selectedFloor && activeChair?.number === chairNumber;
     
     const shouldFlip = (selectedFloor === 1 && (
       (chairNumber >= 1 && chairNumber <= 5) || 
@@ -430,30 +442,32 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
     ));
 
     return (
-      <div
+      <div 
         key={chair.number}
-        onClick={() => {
+        className={`relative group aspect-square flex flex-col p-2 rounded-xl md:rounded-3xl border-2 transition-all duration-500 shadow-2xl ${
+          movingPatient?.id === chair.patient?.id 
+          ? 'bg-blue-500/20 border-blue-500 animate-pulse ring-4 ring-blue-500/20 z-50 scale-[1.05]'
+          : isOccupied 
+            ? isAbsent
+              ? 'bg-orange-500/20 border-orange-500/40 cursor-default'
+              : 'bg-red-500/20 border-red-500/40 shadow-[inset_0_0_20px_rgba(239,68,68,0.2)] cursor-default'
+            : 'bg-blue-500/10 border-dashed border-blue-500/30 opacity-95 hover:opacity-100 hover:scale-[1.02] hover:bg-blue-500/20 shadow-[inset_0_0_20px_rgba(59,130,246,0.1)]'
+        } ${movingPatient && chair.patient && movingPatient.id !== chair.patient.id ? 'opacity-20 pointer-events-none' : ''} ${isActive ? 'ring-4 ring-blue-500/40 border-blue-500' : ''}`}
+        onClick={(e) => {
+          e.stopPropagation();
           if (movingPatient) {
             if (!chair.patient) {
               handleMove(chair.number);
             }
             return;
           }
-          if (!chair.patient) {
-            setEditingPatient(null);
-            setSelectedChair(chair.number);
+          if (isOccupied) {
+            setActiveChair(isActive ? null : {floor: selectedFloor, number: chairNumber});
+          } else {
+            setSelectedChair(chairNumber);
             setShowAssignModal(true);
           }
         }}
-        className={`aspect-square min-w-0 md:min-w-0 rounded-[18px] md:rounded-[24px] px-2 md:px-4 pt-2 md:pt-4 pb-1 md:pb-3 flex flex-col items-center justify-between text-center transition-all border-2 relative group cursor-pointer overflow-hidden ${
-          movingPatient && !chair.patient
-            ? 'bg-blue-500/20 border-blue-500 animate-pulse ring-4 ring-blue-500/20 z-50 scale-[1.05]'
-            : isOccupied 
-              ? isAbsent
-                ? 'bg-orange-500/20 border-orange-500/40 cursor-default'
-                : 'bg-red-500/20 border-red-500/40 shadow-[inset_0_0_20px_rgba(239,68,68,0.2)] cursor-default'
-              : 'bg-blue-500/10 border-dashed border-blue-500/30 opacity-95 hover:opacity-100 hover:scale-[1.02] hover:bg-blue-500/20 shadow-[inset_0_0_20px_rgba(59,130,246,0.1)]'
-        } ${movingPatient && chair.patient && movingPatient.id !== chair.patient.id ? 'opacity-20 pointer-events-none' : ''}`}
       >
         <div className="absolute top-2 left-0 right-0 bottom-14 flex items-center justify-center pointer-events-none z-0">
           <img 
@@ -468,7 +482,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           />
         </div>
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] flex gap-2 opacity-0 group-hover:opacity-100 transition-all z-20 scale-95 group-hover:scale-100">
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[60%] flex gap-2 opacity-0 group-hover:opacity-100 transition-all z-20 scale-95 group-hover:scale-100 ${isActive ? 'opacity-100 scale-100 pointer-events-auto' : ''}`}>
           {chair.patient && (
             <>
               <button 
@@ -476,6 +490,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                   e.stopPropagation();
                   setEditingPatient(chair.patient!);
                   setShowForm(true);
+                  setActiveChair(null);
                 }}
                 className="w-10 h-10 rounded-xl bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 shadow-xl transition-all hover:scale-110 active:scale-90"
               >
@@ -485,6 +500,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                 onClick={(e) => {
                   e.stopPropagation();
                   setMovingPatient(chair.patient!);
+                  setActiveChair(null);
                 }}
                 className="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600 shadow-xl transition-all hover:scale-110 active:scale-90"
                 title="Mover Silla"
@@ -495,6 +511,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                 onClick={(e) => {
                   e.stopPropagation();
                   releaseChair(chair.patient!.id);
+                  setActiveChair(null);
                 }}
                 className="w-10 h-10 rounded-xl bg-red-500 text-white flex items-center justify-center hover:bg-red-600 shadow-xl transition-all hover:scale-110 active:scale-90"
               >
