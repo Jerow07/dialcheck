@@ -97,7 +97,7 @@ function App() {
         <div className="absolute -bottom-[20%] -right-[10%] w-[60%] h-[60%] bg-purple-600/5 blur-[120px] rounded-full" />
       </div>
 
-      <header className="relative z-10 pt-6 md:pt-12 flex flex-col items-center">
+      <header className="relative z-50 pt-6 md:pt-12 flex flex-col items-center">
         <div className="w-full max-w-7xl px-4 md:px-12 flex flex-col md:flex-row flex-wrap gap-4 md:gap-2 justify-between items-center mb-8 md:mb-12">
           {/* Logo & Brand */}
           <div className="flex items-center gap-3">
@@ -124,7 +124,7 @@ function App() {
               >
                 <Info size={16} />
               </button>
-              <div className={`absolute left-1/2 -translate-x-1/2 md:left-full md:translate-x-0 md:-translate-y-1/2 md:ml-3 top-full md:top-1/2 mt-3 md:mt-0 w-[calc(100vw-40px)] md:w-max min-w-[200px] max-w-[280px] bg-slate-900 text-white p-4 rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-2xl border border-white/10 pointer-events-none translate-y-2 md:translate-y-0 md:translate-x-1 group-hover:translate-x-0 group-hover:translate-y-0 ${
+              <div className={`fixed left-1/2 -translate-x-1/2 md:absolute md:left-full md:translate-x-0 md:-translate-y-1/2 md:ml-3 top-24 md:top-1/2 w-[calc(100vw-40px)] md:w-max min-w-[200px] max-w-[320px] bg-slate-900 text-white p-6 rounded-[24px] md:rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] shadow-2xl border border-white/10 pointer-events-none translate-y-2 md:translate-y-0 md:translate-x-1 group-hover:translate-x-0 group-hover:translate-y-0 ${
                 showCreateInfo ? 'opacity-100 visible translate-y-0 pointer-events-auto' : ''
               }`}>
                 <p className="text-[9px] font-black uppercase tracking-widest text-emerald-400 mb-2">Dialcheck Inc.</p>
