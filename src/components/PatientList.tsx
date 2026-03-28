@@ -231,7 +231,7 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
       {showForm && (
         <PatientForm 
           title={editingPatient ? "Editar Ficha Técnica" : "Nuevo Registro Clínico"}
-          initialData={editingPatient || {}}
+          initialData={editingPatient || undefined}
           patients={patients}
           hideOperationalFields={true}
           onClose={() => {

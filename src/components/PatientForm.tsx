@@ -13,10 +13,14 @@ interface PatientFormProps {
 }
 
 export const PatientForm = ({ initialData, onClose, onSave, title, patients, hideOperationalFields, hidePersonalFields }: PatientFormProps) => {
-  const [formData, setFormData] = useState<Partial<Patient>>(initialData || {
-    shift: '1',
-    floor: 1,
-    status: 'Ocupada'
+  const [formData, setFormData] = useState<Partial<Patient>>(() => {
+    const data = initialData || {};
+    return {
+      shift: data.shift || '1',
+      floor: data.floor || 1,
+      status: data.status || 'Ocupada',
+      ...data
+    };
   });
   const [formError, setFormError] = useState<string | null>(null);
 
