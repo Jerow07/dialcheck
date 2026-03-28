@@ -78,7 +78,6 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
             <div className="col-span-2">
               <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Nombre del Paciente</label>
               <input 
-                required
                 type="text" 
                 placeholder="Ej: Hector Rossi"
                 value={formData.name || ''}
