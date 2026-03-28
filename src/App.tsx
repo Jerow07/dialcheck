@@ -110,7 +110,7 @@ function App() {
         </div>
       </header>
 
-      <main className="relative z-20 px-4 max-w-7xl mx-auto">
+      <main className="relative z-20 px-4 max-w-7xl mx-auto pb-40">
         {activeTab === 'panel' ? (
           <NursingPanel 
             patients={patients} 
@@ -124,7 +124,7 @@ function App() {
         )}
       </main>
 
-      <footer className="relative z-0 mt-20 text-center pb-20 opacity-20 hover:opacity-100 transition-opacity">
+      <footer className="relative z-0 mt-40 text-center pb-20 opacity-20 hover:opacity-100 transition-opacity">
         <div className="h-px w-20 bg-[var(--text-primary)]/10 mx-auto mb-6" />
         <p className="text-[9px] font-black uppercase tracking-[0.5em]">Premium Healthcare Systems © 2026</p>
       </footer>
