@@ -319,6 +319,18 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
       });
 
       if (resp.ok) {
+        // Log movement
+        fetch('/api/logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user: currentUser || 'Admin',
+            action: 'MOVIMIENTO',
+            patientName: patient.name,
+            detail: `Asignado a Piso ${selectedFloor} / Silla ${selectedChair} / Turno ${selectedShift}`
+          })
+        }).catch(console.error);
+
         onRefresh();
         setShowAssignModal(false);
         setSelectedChair(null);
@@ -351,6 +363,19 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           })
         });
       }
+
+      // Log the batch action
+      fetch('/api/logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user: currentUser || 'Admin',
+          action: 'REGISTRO',
+          patientName: 'Sistema (Múltiple)',
+          detail: `Agenda clonada de ${sourceDate} a ${selectedDate} (${patientsToClone.length} pacientes)`
+        })
+      }).catch(console.error);
+
       onRefresh();
       alert('Plan copiado con éxito');
     } catch (err) {
@@ -370,6 +395,18 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
       });
 
       if (resp.ok) {
+        // Log movement
+        fetch('/api/logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user: currentUser || 'Admin',
+            action: 'MOVIMIENTO',
+            patientName: movingPatient.name,
+            detail: `Movido manualmente a Silla ${targetChair} (Piso ${selectedFloor})`
+          })
+        }).catch(console.error);
+
         onRefresh();
         setMovingPatient(null);
       }

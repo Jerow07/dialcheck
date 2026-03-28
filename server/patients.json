@@ -25,7 +25,9 @@
     "chairNumber": 0,
     "status": "Ocupada",
     "date": "2026-03-26",
-    "birthDate": "1995-01-08"
+    "birthDate": "1995-01-08",
+    "isHypertensive": true,
+    "isDiabetic": true
   },
   {
     "id": "f154307c-f70a-4d7d-b646-f5ac3f7a4a9b",
@@ -115,11 +117,27 @@
     "familyRelationship": "Madre",
     "shift": "2",
     "floor": 1,
-    "chairNumber": 11,
+    "chairNumber": 0,
     "status": "Ocupada",
     "date": "2026-03-28",
     "birthDate": "1995-01-08",
     "isHypertensive": false,
     "isDiabetic": false
+  },
+  {
+    "id": "afe4331c-097b-4144-b45f-8c57466389f3",
+    "name": "Jeronimo parra ",
+    "phone": "1168618977",
+    "address": "Vivaldi 1363",
+    "familyContact": "1166196831",
+    "familyRelationship": "Madre",
+    "shift": "2",
+    "floor": 1,
+    "chairNumber": 11,
+    "status": "Ocupada",
+    "date": "2026-03-28",
+    "birthDate": "1995-01-08",
+    "isHypertensive": true,
+    "isDiabetic": true
   }
 ]
