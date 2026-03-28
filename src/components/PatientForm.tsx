@@ -21,6 +21,18 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check for duplicate names (case insensitive)
+    const isDuplicate = patients.some(p => 
+      p.name.toLowerCase().trim() === (formData.name || '').toLowerCase().trim() && 
+      p.id !== formData.id
+    );
+
+    if (isDuplicate) {
+      alert(`Error: Ya existe un paciente registrado con el nombre "${formData.name}". Por favor, verifica los datos.`);
+      return;
+    }
+
     onSave(formData);
   };
 

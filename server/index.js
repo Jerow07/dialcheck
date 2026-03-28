@@ -15,8 +15,9 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-// Persistence Helper
+// Persistence Helpers
 const DATA_FILE = path.join(__dirname, 'patients.json');
+const LOGS_FILE = path.join(__dirname, 'logs.json');
 
 const defaultUsers = [
   { username: 'jeronimo1995', password: 'admin123', role: 'admin' },
@@ -225,16 +226,48 @@ app.post('/api/auth/login', async (req, res) => {
   return res.status(401).json({ error: 'Credenciales inválidas o usuario incorrecto' });
 });
 
-// LOGS
-app.get('/api/logs', async (req, res) => {
-  let logs = [];
+// LOGS HELPERS
+const getLogs = async () => {
   if (isKVAvailable) {
     try {
-      logs = await kv.get('dialcheck_logs') || [];
+      const data = await kv.get('dialcheck_logs');
+      if (data) return data;
     } catch (err) {
-      console.error('Error fetching logs', err);
+      console.error('KV get error:', err);
     }
   }
+  try {
+    if (fs.existsSync(LOGS_FILE)) {
+      const data = fs.readFileSync(LOGS_FILE, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error('Error loading logs from FS:', err);
+  }
+  return [];
+};
+
+const saveLogs = async (data) => {
+  if (isKVAvailable) {
+    try {
+      await kv.set('dialcheck_logs', data);
+      return true;
+    } catch (err) {
+      console.error('KV set error:', err);
+    }
+  }
+  try {
+    fs.writeFileSync(LOGS_FILE, JSON.stringify(data, null, 2));
+    return true;
+  } catch (err) {
+    console.error('Error saving logs to FS:', err);
+    return false;
+  }
+};
+
+// LOGS ROUTES
+app.get('/api/logs', async (req, res) => {
+  const logs = await getLogs();
   return res.json(Array.isArray(logs) ? logs : []);
 });
 
@@ -251,17 +284,11 @@ app.post('/api/logs', async (req, res) => {
     timestamp: new Date().toISOString()
   };
 
-  if (isKVAvailable) {
-    try {
-      let logs = await kv.get('dialcheck_logs') || [];
-      if (!Array.isArray(logs)) logs = [];
-      logs.unshift(newLog); // prepend
-      if (logs.length > 100) logs = logs.slice(0, 100);
-      await kv.set('dialcheck_logs', logs);
-    } catch (err) {
-      console.error('Error saving log', err);
-    }
-  }
+  const logs = await getLogs();
+  logs.unshift(newLog); // prepend
+  const limitedLogs = logs.slice(0, 100);
+  await saveLogs(limitedLogs);
+  
   return res.json({ success: true, log: newLog });
 });
 
