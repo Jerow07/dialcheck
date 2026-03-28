@@ -1155,8 +1155,8 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           </div>
         </div>
       ) : (
-        <div className="max-w-4xl mx-auto py-12">
-          <div className="bg-[var(--bg-accent)]/30 p-8 md:p-12 rounded-[64px] border border-[var(--border-color)] relative overflow-hidden group">
+        <div className="max-w-5xl mx-auto py-6 md:py-12 px-4 md:px-0 w-full overflow-x-hidden">
+          <div className="bg-[var(--bg-accent)]/30 p-4 sm:p-8 md:p-12 rounded-[32px] md:rounded-[64px] border border-[var(--border-color)] relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] -translate-y-1/2 translate-x-1/2" />
             
             <div className="flex flex-col md:flex-row items-center gap-12">
