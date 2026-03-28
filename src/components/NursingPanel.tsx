@@ -1065,38 +1065,40 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           </div>
         </div>
       ) : selectedFloor === 2 ? (
-        <div className="space-y-12 overflow-x-hidden">
-          <div className="bg-[var(--bg-accent)]/30 p-3 md:p-12 rounded-[24px] md:rounded-[64px] border border-[var(--border-color)] overflow-x-auto scrollbar-hide relative group/map">
+        <div className="space-y-12 overflow-x-hidden px-4 md:px-0">
+          <div className="bg-[var(--bg-accent)]/30 p-3 md:p-8 rounded-[24px] md:rounded-[48px] border border-[var(--border-color)] overflow-x-auto scrollbar-hide relative group/map">
             <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-blue-500/20 text-blue-500 px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest md:hidden animate-pulse border border-blue-500/30 z-50">
               ⟷ Desplace para ver mapa
             </div>
             <div className="min-w-[700px] lg:min-w-0">
               <h3 className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-8 md:mb-12 text-center italic">Distribución en U (1-12)</h3>
-              <div className="max-w-4xl mx-auto">
-                <div className="mb-12">
+              <div className="max-w-5xl mx-auto px-4">
+                <div className="mb-8 md:mb-12">
                   <div className="flex items-center gap-2 mb-4 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20 w-fit mx-auto">
                     <Users size={12} className="text-orange-500" />
                     <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 2)}</span>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
+                  <div className="grid grid-cols-4 md:grid-cols-6 gap-3 md:gap-6 justify-center">
+                    <div className="hidden md:block col-span-1" />
                     {[5, 6, 7, 8].map(n => renderChair(n))}
+                    <div className="hidden md:block col-span-1" />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
-                  <div className="space-y-4 md:space-y-6">
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-3 md:gap-6">
+                  <div className="space-y-3 md:space-y-6">
                     <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
                       <Users size={12} className="text-orange-500" />
                       <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 1)}</span>
                     </div>
                     {[4, 3, 2, 1].map(n => renderChair(n))}
                   </div>
-                  <div className="col-span-2 flex items-center justify-center">
-                    <div className="w-full max-w-[140px] md:max-w-[180px]">
+                  <div className="col-span-1 md:col-span-4 flex items-center justify-center">
+                    <div className="w-full max-w-[120px] md:max-w-[160px]">
                       {renderChair(13)}
                     </div>
                   </div>
-                  <div className="space-y-6">
+                  <div className="space-y-3 md:space-y-6">
                     <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
                       <Users size={12} className="text-orange-500" />
                       <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 3)}</span>
