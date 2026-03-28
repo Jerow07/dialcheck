@@ -17,6 +17,7 @@ function App() {
 
   const [activeTab, setActiveTab] = useState<'panel' | 'directory'>('panel')
   const [patients, setPatients] = useState<Patient[]>([])
+  const [showCreateInfo, setShowCreateInfo] = useState(false)
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return !!localStorage.getItem('auth_token')
@@ -47,6 +48,12 @@ function App() {
     const interval = setInterval(fetchPatients, 5000)
     return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+    const handleGlobalClick = () => setShowCreateInfo(false);
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, []);
 
   const fetchPatients = async () => {
     try {
@@ -103,10 +110,23 @@ function App() {
             </div>
             {/* Creator Info Button */}
             <div className="relative group ml-2 mt-1">
-              <button aria-label="Creator info" className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800/80 flex items-center justify-center text-slate-500 cursor-help hover:bg-blue-500 hover:text-white transition-all duration-300 shadow-sm border border-slate-300 dark:border-white/10">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowCreateInfo(!showCreateInfo);
+                }}
+                aria-label="Creator info" 
+                className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300 shadow-sm border ${
+                  showCreateInfo 
+                    ? 'bg-blue-500 text-white border-blue-400' 
+                    : 'bg-slate-200 dark:bg-slate-800/80 text-slate-500 border-slate-300 dark:border-white/10 hover:bg-blue-500 hover:text-white'
+                }`}
+              >
                 <Info size={16} />
               </button>
-              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 w-max min-w-[200px] bg-slate-900 text-white p-4 rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-2xl border border-white/10 pointer-events-none translate-x-1 group-hover:translate-x-0">
+              <div className={`absolute left-0 md:left-full top-full md:top-1/2 mt-3 md:mt-0 md:-translate-y-1/2 md:ml-3 w-max min-w-[200px] bg-slate-900 text-white p-4 rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-2xl border border-white/10 pointer-events-none translate-y-2 md:translate-y-0 md:translate-x-1 group-hover:translate-x-0 group-hover:translate-y-0 ${
+                showCreateInfo ? 'opacity-100 visible translate-y-0 pointer-events-auto' : ''
+              }`}>
                 <p className="text-[9px] font-black uppercase tracking-widest text-emerald-400 mb-2">Dialcheck Inc.</p>
                 <div className="space-y-1">
                   <p className="text-xs font-bold leading-tight">Designed by Jerónimo Parra Sanhueza</p>
