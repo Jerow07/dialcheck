@@ -70,13 +70,13 @@ const today = getLocalDateString();
 
 
 // GET all patients
-app.get('/api/patients', async (req, res) => {
+app.get('/', async (req, res) => {
   const patients = await getPatients();
   res.json(patients);
 });
 
 // POST new patient
-app.post('/api/patients', async (req, res) => {
+app.post('/', async (req, res) => {
   const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic } = req.body;
   
   if (!name || !shift || chairNumber === undefined) {
@@ -102,12 +102,13 @@ app.post('/api/patients', async (req, res) => {
 
   const patients = await getPatients();
   patients.push(newPatient);
-  await savePatients(patients);
+  const ok = await savePatients(patients);
+  if (!ok) return res.status(500).json({ error: 'Failed to save to database (KV)' });
   res.status(201).json(newPatient);
 });
 
 // DELETE patient
-app.delete('/api/patients/:id', async (req, res) => {
+app.delete('/:id', async (req, res) => {
   const { id } = req.params;
   
   let patients = await getPatients();
@@ -118,12 +119,13 @@ app.delete('/api/patients/:id', async (req, res) => {
     return res.status(404).json({ error: 'Patient not found' });
   }
   
-  await savePatients(patients);
+  const ok = await savePatients(patients);
+  if (!ok) return res.status(500).json({ error: 'Failed to delete from database (KV)' });
   res.status(204).send();
 });
 
 // UPDATE patient
-app.put('/api/patients/:id', async (req, res) => {
+app.put('/:id', async (req, res) => {
   const { id } = req.params;
   const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic } = req.body;
   
@@ -148,7 +150,8 @@ app.put('/api/patients/:id', async (req, res) => {
   if (isHypertensive !== undefined) patients[index].isHypertensive = !!isHypertensive;
   if (isDiabetic !== undefined) patients[index].isDiabetic = !!isDiabetic;
   
-  await savePatients(patients);
+  const ok = await savePatients(patients);
+  if (!ok) return res.status(500).json({ error: 'Failed to update database (KV)' });
   res.json(patients[index]);
 });
 

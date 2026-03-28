@@ -6,11 +6,19 @@
       "destination": "/api/auth.js"
     },
     {
-      "source": "/api/logs(.*)",
+      "source": "/api/logs/(.*)",
       "destination": "/api/logs.js"
     },
     {
-      "source": "/api/patients(.*)",
+      "source": "/api/logs",
+      "destination": "/api/logs.js"
+    },
+    {
+      "source": "/api/patients/(.*)",
+      "destination": "/api/patients.js"
+    },
+    {
+      "source": "/api/patients",
       "destination": "/api/patients.js"
     },
     {
