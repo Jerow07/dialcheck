@@ -86,7 +86,7 @@ app.get('/api/patients', (req, res) => {
 
 // POST new patient
 app.post('/api/patients', (req, res) => {
-  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date } = req.body;
+  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate } = req.body;
   
   if (!name || !shift || chairNumber === undefined) {
     return res.status(400).json({ error: 'Name, shift and chairNumber are required' });
@@ -103,7 +103,8 @@ app.post('/api/patients', (req, res) => {
     floor: floor || 1,
     chairNumber,
     status: status || 'Ocupada',
-    date: date || today
+    date: date || today,
+    birthDate: birthDate || ''
   };
 
   patients.push(newPatient);
@@ -128,7 +129,7 @@ app.delete('/api/patients/:id', (req, res) => {
 // UPDATE patient
 app.put('/api/patients/:id', (req, res) => {
   const { id } = req.params;
-  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date } = req.body;
+  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate } = req.body;
   
   const index = patients.findIndex(p => p.id === id);
   if (index === -1) {
@@ -146,6 +147,7 @@ app.put('/api/patients/:id', (req, res) => {
   if (chairNumber !== undefined) patients[index].chairNumber = chairNumber;
   if (status) patients[index].status = status;
   if (date) patients[index].date = date;
+  if (birthDate !== undefined) patients[index].birthDate = birthDate;
   
   savePatients(patients);
   res.json(patients[index]);

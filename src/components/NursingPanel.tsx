@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, Copy, Coffee } from 'lucide-react';
+import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, Copy, Coffee, Cake } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 import { AssignPatientModal } from './AssignPatientModal';
+import { NotificationBell } from './NotificationBell';
+import confetti from 'canvas-confetti';
+import { useEffect } from 'react';
 
 const API_URL = '/api/patients';
 
@@ -38,6 +41,43 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
   const [selectedDate, setSelectedDate] = useState(getLocalDateString());
   const [movingPatient, setMovingPatient] = useState<Patient | null>(null);
 
+  const [birthdayFired, setBirthdayFired] = useState(false);
+
+  useEffect(() => {
+    const today = new Date();
+    const birthDayStr = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    const birthdayPatients = patients.filter(p => p.birthDate?.endsWith(birthDayStr));
+
+    if (birthdayPatients.length > 0 && !birthdayFired) {
+      setBirthdayFired(true);
+      
+      const fire = (particleRatio: number, opts: any) => {
+        confetti({
+          ...opts,
+          origin: { y: 0.7 },
+          particleCount: Math.floor(200 * particleRatio),
+        });
+      };
+
+      // Triple burst sequence
+      setTimeout(() => {
+        fire(0.25, { spread: 26, startVelocity: 55 });
+        setTimeout(() => fire(0.2, { spread: 60 }), 200);
+        setTimeout(() => fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 }), 400);
+
+        // Push notification (only once)
+        if (Notification.permission === 'granted') {
+          birthdayPatients.forEach(p => {
+             new Notification(`Cumpleaños Hoy: ${p.name} 🎂`, {
+               body: '¡No olvides saludarlo en el centro!',
+               icon: '/pwa-192x192.png'
+             });
+          });
+        }
+      }, 1000);
+    }
+  }, [patients, birthdayFired]);
+
   // Map of nurses per block (1-4) for Piso 1.
   // Morning includes T1 and T2-AM. Afternoon includes T2-PM and T3.
   const getNurseName = (floor: number, block: number) => {
@@ -57,9 +97,13 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
 
   const renderServiceIsland = () => {
     const isAfternoon = selectedShift === '3' || (selectedShift === '2' && rotation === 'PM');
-    const staff = isAfternoon 
+    let staff = isAfternoon 
       ? ['Nadia Vazquez', 'Rocio Romero', 'Natalia Corvalan']
       : ['NATALIA ORJA', 'GISELA MOLINA'];
+    
+    if (selectedFloor === 2 && isAfternoon) {
+      staff = ['NELIDA RAMOS'];
+    }
     
     return (
       <div className="bg-amber-500/10 border border-amber-500/30 px-8 py-6 rounded-[32px] flex items-center gap-4 backdrop-blur-md shadow-xl group">
@@ -136,8 +180,14 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
     try {
       const isEditing = !!patientData.id;
       
-      if (!patientData.name) return;
-      if (!patientData.chairNumber) return;
+      if (!patientData.name) {
+        alert("Por favor ingrese el nombre del paciente.");
+        return;
+      }
+      if (!patientData.chairNumber) {
+        alert("Por favor seleccione una silla disponible.");
+        return;
+      }
 
       // Check collision
       if (patientData.chairNumber && patientData.shift && patientData.floor) {
@@ -166,9 +216,13 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
         onRefresh();
         setShowForm(false);
         setEditingPatient(null);
+      } else {
+        const data = await resp.json();
+        alert(`Error al guardar: ${data.error || 'Ocurrió un error inesperado'}`);
       }
     } catch (err) {
       console.error('Error saving patient:', err);
+      alert("No se pudo conectar con el servidor. ¿Está el backend encendido?");
     }
   };
 
@@ -506,6 +560,56 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
         </div>
       </div>
 
+      {/* Birthday Festive Banner */}
+      {(() => {
+        const today = new Date();
+        const birthDayStr = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        const birthdayPatients = patients.filter(p => p.birthDate?.endsWith(birthDayStr));
+
+        if (birthdayPatients.length === 0) return null;
+
+        return (
+          <div className="bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-indigo-500/20 border border-pink-500/30 p-6 rounded-[32px] flex flex-col md:flex-row items-center justify-between gap-6 backdrop-blur-xl shadow-2xl relative overflow-hidden group animate-in slide-in-from-top duration-700">
+            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+            <div className="flex items-center gap-6 relative z-10">
+              <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-600 rounded-3xl flex items-center justify-center text-white shadow-xl animate-bounce">
+                <Cake size={32} />
+              </div>
+              <div>
+                <h3 className="text-xl font-black tracking-tight text-pink-500">🎉 ¡Hoy es un día especial!</h3>
+                <p className="font-bold opacity-60 uppercase text-xs tracking-widest mt-1">
+                  {birthdayPatients.length === 1 
+                    ? `Hoy es el cumpleaños de ${birthdayPatients[0].name}`
+                    : `Hoy es el cumpleaños de: ${birthdayPatients.map(p => p.name).join(', ')}`}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                confetti({
+                  particleCount: 150,
+                  spread: 70,
+                  origin: { y: 0.6 },
+                  colors: ['#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b']
+                });
+                
+                if (Notification.permission === 'granted') {
+                  birthdayPatients.forEach(p => {
+                    new Notification(`¡Feliz Cumpleaños ${p.name}! 🎂`, {
+                      body: 'Deseale un gran día en su sesión de hoy.',
+                      icon: '/pwa-192x192.png'
+                    });
+                  });
+                }
+              }}
+              className="px-8 h-14 bg-pink-500 text-white rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-pink-600 transition-all shadow-xl shadow-pink-500/20 relative z-10 active:scale-95"
+            >
+              ¡Celebrar! 🎈
+            </button>
+          </div>
+        );
+      })()}
+
       {/* Header & Shift Selector */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[var(--bg-accent)] p-4 md:p-8 rounded-[32px] md:rounded-[40px] border border-[var(--border-color)] backdrop-blur-xl">
         <div className="flex items-center gap-4">
@@ -520,7 +624,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
 
         <div className="flex flex-col gap-4">
           <div className="flex bg-white/40 dark:bg-white/10 p-1.5 rounded-2xl border border-[var(--border-color)]">
-            {[1, 2, 3].map((f) => (
+            {[0, 1, 2, 3].map((f) => (
               <button
                 key={f}
                 onClick={() => setSelectedFloor(f)}
@@ -531,12 +635,12 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                 }`}
               >
                 <span className="text-[9px] font-black uppercase tracking-widest opacity-60">Piso</span>
-                <span className="text-xl font-black leading-tight">{f}</span>
+                <span className="text-xl font-black leading-tight">{f === 0 ? 'PB' : f}</span>
               </button>
             ))}
           </div>
 
-          {selectedFloor !== 3 && (
+          {selectedFloor !== 3 && selectedFloor !== 0 && (
             <>
               <div className="flex bg-white/40 dark:bg-white/10 p-1.5 rounded-2xl border border-[var(--border-color)]">
                 {['1', '2', '3'].map((s) => (
@@ -581,35 +685,110 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
           )}
         </div>
 
-        {movingPatient ? (
-          <div className="flex flex-col items-center gap-2 bg-orange-500/10 p-6 rounded-[32px] border border-orange-500/30 animate-in zoom-in-95 duration-300">
-            <h3 className="text-sm font-black uppercase tracking-widest text-orange-500">Moviendo a {movingPatient.name}</h3>
-            <p className="text-[10px] font-bold opacity-60 uppercase">Selecciona una silla vacía para trasladarlo</p>
+        <div className="flex items-center gap-4">
+          <NotificationBell />
+          <div className="w-px h-10 bg-[var(--border-color)] hidden md:block" />
+          
+          {movingPatient ? (
+            <div className="flex flex-col items-center gap-2 bg-orange-500/10 p-6 rounded-[32px] border border-orange-500/30 animate-in zoom-in-95 duration-300">
+              <h3 className="text-sm font-black uppercase tracking-widest text-orange-500">Moviendo a {movingPatient.name}</h3>
+              <p className="text-[10px] font-bold opacity-60 uppercase">Selecciona una silla vacía para trasladarlo</p>
+              <button 
+                onClick={() => setMovingPatient(null)}
+                className="mt-2 px-6 py-2 bg-orange-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-orange-600 transition-all flex items-center gap-2"
+              >
+                <X size={12} />
+                Cancelar Movimiento
+              </button>
+            </div>
+          ) : (
             <button 
-              onClick={() => setMovingPatient(null)}
-              className="mt-2 px-6 py-2 bg-orange-500 text-white rounded-xl font-black uppercase text-[10px] tracking-widest hover:bg-orange-600 transition-all flex items-center gap-2"
+              onClick={() => {
+                setEditingPatient(null);
+                setSelectedChair(null);
+                setShowForm(true);
+              }}
+              className="px-8 h-14 bg-[var(--text-primary)] text-[var(--bg-primary)] rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-blue-500 hover:text-white transition-all flex items-center gap-3 shadow-xl"
             >
-              <X size={12} />
-              Cancelar Movimiento
+              <UserPlus size={18} />
+              Nuevo Paciente
             </button>
-          </div>
-        ) : (
-          <button 
-            onClick={() => {
-              setEditingPatient(null);
-              setSelectedChair(null);
-              setShowForm(true);
-            }}
-            className="px-8 h-14 bg-[var(--text-primary)] text-[var(--bg-primary)] rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-blue-500 hover:text-white transition-all flex items-center gap-3 shadow-xl"
-          >
-            <UserPlus size={18} />
-            Nuevo Paciente
-          </button>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Realistic Chair Layout */}
-      {selectedFloor === 1 ? (
+      {selectedFloor === 0 ? (
+        <div className="max-w-5xl mx-auto py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Reception Module */}
+            <div className="bg-[var(--bg-accent)]/30 p-8 md:p-12 rounded-[48px] border border-[var(--border-color)] relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] -translate-y-1/2 translate-x-1/2" />
+              
+              <div className="relative space-y-8">
+                <div className="flex items-center gap-6">
+                  <div className="w-20 h-20 bg-blue-600 rounded-[32px] flex items-center justify-center text-white shadow-2xl shadow-blue-600/30">
+                    <Users size={40} />
+                  </div>
+                  <div>
+                    <h3 className="text-3xl font-black uppercase tracking-tighter text-blue-500">Recepción</h3>
+                    <p className="text-[10px] font-black opacity-40 uppercase tracking-[0.2em] mt-1">Atención Administrativa</p>
+                  </div>
+                </div>
+
+                <div className="bg-white/5 border border-white/10 p-8 rounded-[40px] backdrop-blur-md shadow-xl">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-4">Administradora de Turno</h4>
+                  <div className="flex items-center gap-5">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-lg">
+                      AV
+                    </div>
+                    <div>
+                      <p className="text-2xl font-black uppercase tracking-tighter text-blue-500">Angie Velazco</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <p className="text-[10px] font-black opacity-60 uppercase tracking-widest">En Línea • 09:00 - 16:00 hs</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tech Card / Project Details */}
+            <div className="bg-slate-900/40 p-8 md:p-12 rounded-[48px] border border-white/5 relative flex flex-col justify-between">
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-[10px] font-black uppercase tracking-widest opacity-20 mb-6">Ficha Técnica del Centro</h4>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-end border-b border-white/5 pb-3">
+                      <span className="text-[10px] font-black uppercase opacity-40">Identificación</span>
+                      <span className="text-sm font-black text-blue-400">CENTRO DE DIÁLISIS N° 088</span>
+                    </div>
+                    <div className="flex justify-between items-end border-b border-white/5 pb-3">
+                      <span className="text-[10px] font-black uppercase opacity-40">Ubicación</span>
+                      <span className="text-sm font-black">PLANTA BAJA • ACCESO PRINCIPAL</span>
+                    </div>
+                    <div className="flex justify-between items-end border-b border-white/5 pb-3">
+                      <span className="text-[10px] font-black uppercase opacity-40">Sistema</span>
+                      <span className="text-xs font-bold font-mono opacity-60 tracking-widest">DIALCHECK v2.0.4</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-12 bg-emerald-500/5 border border-emerald-500/10 p-6 rounded-[24px] flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-black opacity-30 uppercase tracking-widest mb-1">Estado Operativo</p>
+                  <p className="text-lg font-black text-emerald-500">SISTEMA ACTIVO</p>
+                </div>
+                <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-emerald-500">
+                  <CheckCircle2 size={24} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : selectedFloor === 1 ? (
         <div className="space-y-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 max-w-5xl mx-auto">
             <div className="bg-[var(--bg-accent)]/30 p-4 md:p-8 rounded-[32px] md:rounded-[48px] border border-[var(--border-color)]">
@@ -680,13 +859,13 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               <div className="min-w-0 flex-1">
                 <h4 className="text-sm font-black uppercase tracking-widest text-blue-500 truncate">Estación Central de Enfermería</h4>
                 <p className="text-[10px] font-bold opacity-40 uppercase tracking-tighter mb-1">Piso 1 • Monitoreo en tiempo real</p>
-                <div className="flex items-center gap-x-3 overflow-x-auto no-scrollbar py-0.5">
+                <div className="flex items-center gap-x-1.5 overflow-x-auto no-scrollbar py-0.5">
                   {[1, 2, 3, 4].map((block, i) => (
-                    <div key={block} className="flex items-center gap-3 flex-none">
-                      <span className="text-[10px] font-black uppercase tracking-tight text-blue-500/80 whitespace-nowrap">
+                    <div key={block} className="flex items-center gap-1.5 flex-none">
+                      <span className="text-[8px] font-black uppercase tracking-tighter text-blue-500/80 whitespace-nowrap">
                         {getNurseName(1, block)}
                       </span>
-                      {i < 3 && <div className="w-1 h-3 border-r border-blue-500/20 shrink-0" />}
+                      {i < 3 && <div className="w-1 h-3 border-r border-blue-500/10 shrink-0" />}
                     </div>
                   ))}
                 </div>
@@ -760,13 +939,13 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               <div className="min-w-0 flex-1">
                 <h4 className="text-sm font-black uppercase tracking-widest text-blue-500 truncate">Estación Central de Enfermería</h4>
                 <p className="text-[10px] font-bold opacity-40 uppercase tracking-tighter mb-1">Piso 2 • Monitoreo en tiempo real</p>
-                <div className="flex items-center gap-x-3 overflow-x-auto no-scrollbar py-0.5">
+                <div className="flex items-center gap-x-1.5 overflow-x-auto no-scrollbar py-0.5">
                   {[1, 2, 3].map((block, i) => (
-                    <div key={block} className="flex items-center gap-3 flex-none">
-                      <span className="text-[10px] font-black uppercase tracking-tight text-blue-500/80 whitespace-nowrap">
+                    <div key={block} className="flex items-center gap-1.5 flex-none">
+                      <span className="text-[8px] font-black uppercase tracking-tighter text-blue-500/80 whitespace-nowrap">
                         {getNurseName(2, block)}
                       </span>
-                      {i < 2 && <div className="w-1 h-3 border-r border-blue-500/20 shrink-0" />}
+                      {i < 2 && <div className="w-1 h-3 border-r border-blue-500/10 shrink-0" />}
                     </div>
                   ))}
                 </div>
@@ -834,7 +1013,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
       {showForm && (
         <PatientForm 
           title={editingPatient ? 'Editar Estado / Silla' : 'Registrar Nuevo Paciente'}
-          initialData={editingPatient || { shift: selectedShift, floor: selectedFloor, chairNumber: selectedChair || undefined, status: 'Ocupada', date: selectedDate }}
+          initialData={editingPatient || { shift: selectedShift, floor: selectedFloor === 0 ? 1 : selectedFloor, chairNumber: selectedChair || undefined, status: 'Ocupada', date: selectedDate }}
           patients={patients}
           hidePersonalFields={!!editingPatient}
           onClose={() => {

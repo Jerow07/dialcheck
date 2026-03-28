@@ -10,7 +10,8 @@
     "floor": 1,
     "chairNumber": 0,
     "status": "Ocupada",
-    "date": "2026-03-26"
+    "date": "2026-03-26",
+    "birthDate": "1987-03-27"
   },
   {
     "id": "00622aad-664c-48f9-acdb-0d197aef86c5",
@@ -23,7 +24,8 @@
     "floor": 1,
     "chairNumber": 0,
     "status": "Ocupada",
-    "date": "2026-03-26"
+    "date": "2026-03-26",
+    "birthDate": "1995-01-07"
   },
   {
     "id": "f154307c-f70a-4d7d-b646-f5ac3f7a4a9b",

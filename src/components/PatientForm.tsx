@@ -52,16 +52,27 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
               />
             </div>
             {!hidePersonalFields && (
-              <div>
-                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Teléfono</label>
-                <input 
-                  type="text" 
-                  placeholder="11 2233-4455"
-                  value={formData.phone || ''}
-                  className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
-                  onChange={e => setFormData({...formData, phone: e.target.value})}
-                />
-              </div>
+              <>
+                <div>
+                  <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Fecha de Nacimiento</label>
+                  <input 
+                    type="date" 
+                    value={formData.birthDate || ''}
+                    className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
+                    onChange={e => setFormData({...formData, birthDate: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Teléfono</label>
+                  <input 
+                    type="text" 
+                    placeholder="11 2233-4455"
+                    value={formData.phone || ''}
+                    className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
+                    onChange={e => setFormData({...formData, phone: e.target.value})}
+                  />
+                </div>
+              </>
             )}
             {!hidePersonalFields && (
               <div className="col-span-2">

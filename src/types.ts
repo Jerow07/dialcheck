@@ -10,6 +10,7 @@ export interface Patient {
   chairNumber: number; // 1-16 (Floor 1) or 1-12 (Floor 2)
   status: 'Ocupada' | 'Ausente';
   date: string; // YYYY-MM-DD
+  birthDate?: string; // YYYY-MM-DD
 }
 
 export interface Chair {
