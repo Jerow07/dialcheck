@@ -63,9 +63,10 @@ const savePatients = async (data) => {
   
   // Fallback to local FS (only if not on Vercel)
   if (process.env.VERCEL) {
+    const envKeys = Object.keys(process.env).filter(k => k.includes('KV') || k.includes('REDIS'));
     return { 
       success: false, 
-      error: 'Base de datos KV no detectada. Si ya la conectaste, recuerda que debes hacer un "Redeploy" en Vercel para activar los cambios.' 
+      error: `Base de datos KV no detectada. Variables encontradas: [${envKeys.join(', ')}]. Si ya la conectaste, haz un "Redeploy" manual en Vercel.` 
     };
   }
 
