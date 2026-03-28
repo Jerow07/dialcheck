@@ -795,7 +795,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
             </div>
 
             {/* Tech Card / Project Details */}
-            <div className="bg-slate-100 dark:bg-slate-800/80 p-8 md:p-12 rounded-[48px] border border-slate-200 dark:border-white/10 relative flex flex-col justify-between">
+            <div className="bg-slate-100 dark:bg-slate-800/80 p-8 md:p-12 rounded-[48px] border border-slate-200 dark:border-white/10 relative flex flex-col justify-start">
               <div className="space-y-6">
                 <div>
                   <h4 className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-6 text-slate-900 dark:text-white">Ficha Técnica del Centro</h4>
@@ -830,7 +830,7 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
               {(() => {
                 const isSunday = new Date(selectedDate + 'T12:00:00').getDay() === 0;
                 return (
-                  <div className={`mt-12 border p-6 rounded-[24px] flex items-center justify-between ${isSunday ? 'bg-red-500/5 border-red-500/10' : 'bg-emerald-500/5 border-emerald-500/10'}`}>
+                  <div className={`mt-6 border p-6 rounded-[24px] flex items-center justify-between ${isSunday ? 'bg-red-500/5 border-red-500/10' : 'bg-emerald-500/5 border-emerald-500/10'}`}>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest mb-1 opacity-60">Estado Operativo</p>
                       <p className={`text-lg font-black ${isSunday ? 'text-red-500' : 'text-emerald-500'}`}>
