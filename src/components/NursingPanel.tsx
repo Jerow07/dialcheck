@@ -1015,7 +1015,6 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
           title={editingPatient ? 'Editar Estado / Silla' : 'Registrar Nuevo Paciente'}
           initialData={editingPatient || { shift: selectedShift, floor: selectedFloor === 0 ? 1 : selectedFloor, chairNumber: selectedChair || undefined, status: 'Ocupada', date: selectedDate }}
           patients={patients}
-          hidePersonalFields={!!editingPatient}
           onClose={() => {
             setShowForm(false);
             setEditingPatient(null);

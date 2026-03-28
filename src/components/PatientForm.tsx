@@ -43,49 +43,46 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
               <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Nombre del Paciente</label>
               <input 
                 required
-                readOnly={hidePersonalFields}
                 type="text" 
                 placeholder="Ej: Hector Rossi"
                 value={formData.name || ''}
-                className={`w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold focus:outline-none transition-all ${hidePersonalFields ? 'opacity-50 cursor-not-allowed' : 'focus:ring-4 focus:ring-blue-500/20'}`}
-                onChange={hidePersonalFields ? undefined : e => setFormData({...formData, name: e.target.value})}
+                className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold focus:outline-none transition-all focus:ring-4 focus:ring-blue-500/20"
+                onChange={e => setFormData({...formData, name: e.target.value})}
               />
             </div>
-            {!hidePersonalFields && (
-              <>
-                <div>
-                  <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Fecha de Nacimiento</label>
-                  <input 
-                    type="date" 
-                    value={formData.birthDate || ''}
-                    className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
-                    onChange={e => setFormData({...formData, birthDate: e.target.value})}
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Teléfono</label>
-                  <input 
-                    type="text" 
-                    placeholder="11 2233-4455"
-                    value={formData.phone || ''}
-                    className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
-                    onChange={e => setFormData({...formData, phone: e.target.value})}
-                  />
-                </div>
-              </>
-            )}
-            {!hidePersonalFields && (
-              <div className="col-span-2">
-                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Dirección</label>
+            
+            <div className="grid grid-cols-2 gap-4 col-span-2">
+              <div>
+                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Fecha de Nacimiento</label>
                 <input 
-                  type="text" 
-                  placeholder="Calle 123, Localidad"
-                  value={formData.address || ''}
+                  type="date" 
+                  value={formData.birthDate || ''}
                   className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
-                  onChange={e => setFormData({...formData, address: e.target.value})}
+                  onChange={e => setFormData({...formData, birthDate: e.target.value})}
                 />
               </div>
-            )}
+              <div>
+                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Teléfono</label>
+                <input 
+                  type="text" 
+                  placeholder="11 2233-4455"
+                  value={formData.phone || ''}
+                  className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
+                  onChange={e => setFormData({...formData, phone: e.target.value})}
+                />
+              </div>
+            </div>
+
+            <div className="col-span-2">
+              <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Dirección</label>
+              <input 
+                type="text" 
+                placeholder="Calle 123, Localidad"
+                value={formData.address || ''}
+                className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
+                onChange={e => setFormData({...formData, address: e.target.value})}
+              />
+            </div>
 
             {!hideOperationalFields && (
               <>
