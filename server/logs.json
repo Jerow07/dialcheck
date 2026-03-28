@@ -1,0 +1,82 @@
+[
+  {
+    "id": "1774722249674",
+    "user": "jeronimo1995",
+    "action": "EDICIÓN",
+    "patientName": "molina",
+    "detail": "Actualizó datos personales/médicos",
+    "timestamp": "2026-03-28T18:24:09.674Z"
+  },
+  {
+    "id": "1774722237873",
+    "user": "jeronimo1995",
+    "action": "MOVIMIENTO",
+    "patientName": "molina",
+    "detail": "Asignado a Piso 1 / Silla 11 / Turno 1",
+    "timestamp": "2026-03-28T18:23:57.873Z"
+  },
+  {
+    "id": "1774720078647",
+    "user": "jeronimo1995",
+    "action": "ELIMINACIÓN",
+    "patientName": "molina",
+    "detail": "Paciente eliminado permanentemente del Directorio",
+    "timestamp": "2026-03-28T17:47:58.647Z"
+  },
+  {
+    "id": "1774720069521",
+    "user": "jeronimo1995",
+    "action": "EDICIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Ficha técnica editada desde el Directorio",
+    "timestamp": "2026-03-28T17:47:49.521Z"
+  },
+  {
+    "id": "1774716495766",
+    "user": "jeronimo1995",
+    "action": "ELIMINACIÓN",
+    "patientName": "Juan Pérez",
+    "detail": "Paciente eliminado permanentemente del Directorio",
+    "timestamp": "2026-03-28T16:48:15.766Z"
+  },
+  {
+    "id": "1774716485399",
+    "user": "jeronimo1995",
+    "action": "EDICIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Ficha técnica editada desde el Directorio",
+    "timestamp": "2026-03-28T16:48:05.399Z"
+  },
+  {
+    "id": "1774716370522",
+    "user": "jeronimo1995",
+    "action": "EDICIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Ficha técnica editada desde el Directorio",
+    "timestamp": "2026-03-28T16:46:10.522Z"
+  },
+  {
+    "id": "1774714855171",
+    "user": "Admin",
+    "action": "ELIMINACIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Paciente eliminado permanentemente del Directorio",
+    "timestamp": "2026-03-28T16:20:55.171Z"
+  },
+  {
+    "id": "1774714849555",
+    "user": "Admin",
+    "action": "ELIMINACIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Paciente eliminado permanentemente del Directorio",
+    "timestamp": "2026-03-28T16:20:49.555Z"
+  },
+  {
+    "id": "1774714415696",
+    "user": "Admin",
+    "action": "MOVIMIENTO",
+    "patientName": "Jeronimo parra ",
+    "detail": "Movido manualmente a Silla 11 (Piso 1)",
+    "timestamp": "2026-03-28T16:13:35.696Z"
+  }
+]

@@ -90,48 +90,48 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
   return (
     <div className="w-full space-y-8 pb-20">
       {/* Search Header */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[var(--bg-accent)] p-8 rounded-[40px] border border-[var(--border-color)] backdrop-blur-xl">
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-blue-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/20">
-            <ClipboardList className="text-white" size={32} />
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[var(--bg-accent)] p-4 md:p-8 rounded-[32px] md:rounded-[40px] border border-[var(--border-color)] backdrop-blur-xl">
+        <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto">
+          <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-500 rounded-2xl md:rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/20 shrink-0">
+            <ClipboardList className="text-white" size={24} />
           </div>
           <div>
-            <h2 className="text-3xl font-black tracking-tight">Directorio de Pacientes</h2>
-            <p className="opacity-40 font-medium">Búsqueda y Fichas Técnicas</p>
+            <h2 className="text-xl md:text-3xl font-black tracking-tight">Directorio de Pacientes</h2>
+            <p className="opacity-40 font-medium text-[10px] md:text-base">Búsqueda y Fichas Técnicas</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col md:flex-row items-stretch md:items-center gap-4 md:gap-6 w-full md:w-auto">
           <button 
             onClick={() => {
               setEditingPatient(null);
               setShowForm(true);
             }}
-            className="h-14 px-8 bg-blue-500 text-white hover:bg-blue-600 rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-xl shadow-blue-500/20 flex items-center gap-3 active:scale-95"
+            className="h-12 md:h-14 px-4 md:px-8 bg-blue-500 text-white hover:bg-blue-600 rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all shadow-xl shadow-blue-500/20 flex items-center justify-center gap-3 active:scale-95"
           >
-            <Plus size={18} strokeWidth={3} />
+            <Plus size={16} strokeWidth={3} />
             Nuevo Registro
           </button>
 
           <div className="relative w-full md:w-96">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 opacity-30" size={20} />
-          <input 
-            type="text" 
-            placeholder="Buscar por nombre..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-14 bg-black/5 dark:bg-black/40 border border-[var(--border-color)] rounded-2xl pl-16 pr-6 font-bold focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all"
-          />
+            <Search className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 opacity-30" size={18} />
+            <input 
+              type="text" 
+              placeholder="Buscar por nombre..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full h-12 md:h-14 bg-black/5 dark:bg-black/40 border border-[var(--border-color)] rounded-xl md:rounded-2xl pl-12 md:pl-16 pr-6 font-bold focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all text-sm md:text-base"
+            />
+          </div>
         </div>
-      </div>
     </div>
 
       {/* Patients Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {filteredPatients.map((patient) => (
           <div 
             key={patient.id}
-            className="group bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-[40px] p-8 hover:border-blue-500/30 transition-all hover:shadow-2xl hover:shadow-blue-500/5 relative overflow-hidden"
+            className="group bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-[32px] md:rounded-[40px] p-5 md:p-8 hover:border-blue-500/30 transition-all hover:shadow-2xl hover:shadow-blue-500/5 relative overflow-hidden"
           >
             {/* Top Info */}
             <div className="flex justify-between items-start mb-8">

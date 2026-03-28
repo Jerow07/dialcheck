@@ -72,37 +72,37 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-      <div className="bg-[var(--bg-primary)] border border-[var(--border-color)] p-8 md:p-10 rounded-[48px] w-full max-w-xl shadow-2xl relative max-h-[95vh] overflow-y-auto scrollbar-hide">
+      <div className="bg-[var(--bg-primary)] border border-[var(--border-color)] p-5 md:p-10 rounded-[32px] md:rounded-[48px] w-full max-w-xl shadow-2xl relative max-h-[95vh] overflow-y-auto scrollbar-hide">
         <button 
           onClick={onClose}
-          className="absolute top-8 right-8 w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all"
+          className="absolute top-5 md:top-8 right-5 md:right-8 w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all z-10"
         >
           <X size={20} />
         </button>
 
-        <h3 className="text-3xl font-black mb-8 tracking-tight">{title}</h3>
+        <h3 className="text-xl md:text-3xl font-black mb-6 md:mb-8 tracking-tight">{title}</h3>
         
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="col-span-1 md:col-span-2">
               <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Nombre del Paciente</label>
               <input 
                 type="text" 
                 placeholder="Ej: Hector Rossi"
                 value={formData.name || ''}
-                className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold focus:outline-none transition-all focus:ring-4 focus:ring-blue-500/20"
+                className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold focus:outline-none transition-all focus:ring-4 focus:ring-blue-500/20 text-sm md:text-base"
                 onChange={e => setFormData({...formData, name: e.target.value})}
               />
             </div>
             
-            <div className="grid grid-cols-2 gap-4 col-span-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 col-span-1 md:col-span-2">
               <div>
                 <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Fecha de Nacimiento</label>
                 <input 
                   type="date" 
                   value={formData.birthDate || ''}
-                  className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
+                  className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold text-sm md:text-base"
                   onChange={e => setFormData({...formData, birthDate: e.target.value})}
                 />
               </div>
@@ -112,29 +112,29 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                   type="text" 
                   placeholder="11 2233-4455"
                   value={formData.phone || ''}
-                  className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
+                  className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold text-sm md:text-base"
                   onChange={e => setFormData({...formData, phone: e.target.value})}
                 />
               </div>
             </div>
 
-            <div className="col-span-2">
+            <div className="col-span-1 md:col-span-2">
               <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Dirección</label>
               <input 
                 type="text" 
                 placeholder="Calle 123, Localidad"
                 value={formData.address || ''}
-                className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
+                className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold text-sm md:text-base"
                 onChange={e => setFormData({...formData, address: e.target.value})}
               />
             </div>
 
             {!hideOperationalFields && (
               <>
-                <div className="col-span-2">
+                <div className="col-span-1 md:col-span-2">
                   <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Piso / Sector</label>
                   <select 
-                    className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold appearance-none"
+                    className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold appearance-none text-sm md:text-base"
                     value={formData.floor || 1}
                     onChange={e => setFormData({...formData, floor: parseInt(e.target.value)})}
                   >
@@ -145,7 +145,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                 <div>
                   <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Turno</label>
                   <select 
-                    className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold appearance-none"
+                    className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold appearance-none text-sm md:text-base"
                     value={formData.shift}
                     onChange={e => setFormData({...formData, shift: e.target.value})}
                   >
@@ -154,10 +154,10 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                     <option value="3">Turno 3</option>
                   </select>
                 </div>
-                <div className="col-span-2">
+                <div className="col-span-1 md:col-span-2">
                   <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-4 block tracking-widest">Seleccionar Silla Disponible</label>
-                  <div className={`p-6 bg-white/50 dark:bg-black/20 rounded-[32px] border border-[var(--border-color)] overflow-hidden`}>
-                    <div className={formData.floor === 1 ? "grid grid-cols-8 gap-3" : "grid grid-cols-4 gap-3"}>
+                  <div className={`p-4 md:p-6 bg-white/50 dark:bg-black/20 rounded-[24px] md:rounded-[32px] border border-[var(--border-color)] overflow-hidden`}>
+                    <div className={formData.floor === 1 ? "grid grid-cols-4 md:grid-cols-8 gap-2 md:gap-3" : "grid grid-cols-4 gap-2 md:gap-3"}>
                       {(formData.floor === 2 ? [4,3,2,1,5,6,7,8,9,10,11,12] : Array.from({length: 16}, (_, i) => i + 1)).map(n => {
                         const occupant = patients.find(p => p.floor === formData.floor && p.shift === formData.shift && p.chairNumber === n && p.id !== formData.id);
                         const isSelected = formData.chairNumber === n;
@@ -168,7 +168,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                             type="button"
                             disabled={!!occupant}
                             onClick={() => setFormData({...formData, chairNumber: n})}
-                            className={`aspect-square rounded-xl flex items-center justify-center text-[10px] font-black transition-all border-2 ${
+                            className={`aspect-square rounded-lg md:rounded-xl flex items-center justify-center text-[10px] font-black transition-all border-2 ${
                               occupant 
                                 ? 'bg-red-500/10 border-red-500/20 text-red-500/40 cursor-not-allowed' 
                                 : isSelected
@@ -181,7 +181,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                         );
                       })}
                     </div>
-                    <p className="text-[9px] font-medium opacity-30 mt-4 text-center uppercase tracking-tighter">
+                    <p className="text-[8px] md:text-[9px] font-medium opacity-30 mt-4 text-center uppercase tracking-tighter">
                       {formData.floor === 1 ? 'Vista simplificada: 1 al 16' : 'Disposición en U: Costados y Superior'}
                     </p>
                   </div>
@@ -190,10 +190,10 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
             )}
 
             {!hideOperationalFields && formData.id && (
-              <div className="col-span-2">
+              <div className="col-span-1 md:col-span-2">
                 <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Estado</label>
                 <select 
-                  className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold appearance-none"
+                  className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold appearance-none text-sm md:text-base"
                   value={formData.status}
                   onChange={e => setFormData({...formData, status: e.target.value as 'Ocupada' | 'Ausente'})}
                 >
@@ -203,49 +203,49 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
               </div>
             )}
 
-              <div className="col-span-2 mt-4 pt-4 border-t border-[var(--border-color)]">
-                <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-4 block tracking-widest">Condiciones Médicas</label>
-                <div className="flex gap-6 px-2">
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <div className="relative">
-                      <input 
-                        type="checkbox" 
-                        checked={formData.isHypertensive || false}
-                        onChange={e => setFormData({...formData, isHypertensive: e.target.checked})}
-                        className="sr-only"
-                      />
-                      <div className={`w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center ${formData.isHypertensive ? 'bg-red-500 border-red-500 shadow-lg shadow-red-500/20' : 'bg-[var(--bg-accent)] border-[var(--border-color)]'}`}>
-                        {formData.isHypertensive && <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
-                      </div>
+            <div className="col-span-1 md:col-span-2 mt-2 md:mt-4 pt-4 border-t border-[var(--border-color)] text-sm md:text-base">
+              <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-4 block tracking-widest">Condiciones Médicas</label>
+              <div className="flex flex-col md:flex-row gap-4 md:gap-10 px-2">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative">
+                    <input 
+                      type="checkbox" 
+                      checked={formData.isHypertensive || false}
+                      onChange={e => setFormData({...formData, isHypertensive: e.target.checked})}
+                      className="sr-only"
+                    />
+                    <div className={`w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center ${formData.isHypertensive ? 'bg-red-500 border-red-500 shadow-lg shadow-red-500/20' : 'bg-[var(--bg-accent)] border-[var(--border-color)]'}`}>
+                      {formData.isHypertensive && <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
                     </div>
-                    <span className={`text-xs font-black uppercase tracking-wider transition-colors ${formData.isHypertensive ? 'text-red-500' : 'opacity-40'}`}>Hipertensión</span>
-                  </label>
+                  </div>
+                  <span className={`text-[11px] md:text-xs font-black uppercase tracking-wider transition-colors ${formData.isHypertensive ? 'text-red-500' : 'opacity-40'}`}>Hipertensión</span>
+                </label>
 
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <div className="relative">
-                      <input 
-                        type="checkbox" 
-                        checked={formData.isDiabetic || false}
-                        onChange={e => setFormData({...formData, isDiabetic: e.target.checked})}
-                        className="sr-only"
-                      />
-                      <div className={`w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center ${formData.isDiabetic ? 'bg-blue-500 border-blue-500 shadow-lg shadow-blue-500/20' : 'bg-[var(--bg-accent)] border-[var(--border-color)]'}`}>
-                        {formData.isDiabetic && <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
-                      </div>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div className="relative">
+                    <input 
+                      type="checkbox" 
+                      checked={formData.isDiabetic || false}
+                      onChange={e => setFormData({...formData, isDiabetic: e.target.checked})}
+                      className="sr-only"
+                    />
+                    <div className={`w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center ${formData.isDiabetic ? 'bg-blue-500 border-blue-500 shadow-lg shadow-blue-500/20' : 'bg-[var(--bg-accent)] border-[var(--border-color)]'}`}>
+                      {formData.isDiabetic && <div className="w-2 h-2 rounded-full bg-white animate-pulse" />}
                     </div>
-                    <span className={`text-xs font-black uppercase tracking-wider transition-colors ${formData.isDiabetic ? 'text-blue-500' : 'opacity-40'}`}>Diabético</span>
-                  </label>
-                </div>
+                  </div>
+                  <span className={`text-[11px] md:text-xs font-black uppercase tracking-wider transition-colors ${formData.isDiabetic ? 'text-blue-500' : 'opacity-40'}`}>Diabético</span>
+                </label>
               </div>
+            </div>
 
             {!hidePersonalFields && (
-              <div className="col-span-2 mt-4 pt-4 border-t border-[var(--border-color)]">
+              <div className="col-span-1 md:col-span-2 mt-2 md:mt-4 pt-4 border-t border-[var(--border-color)]">
                 <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-4 block tracking-widest">Contacto de Emergencia</label>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-[8px] font-black uppercase opacity-50 ml-2 mb-2 block tracking-widest">Parentesco</label>
                     <select 
-                      className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold appearance-none"
+                      className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold appearance-none text-sm md:text-base"
                       value={formData.familyRelationship || 'Tutor'}
                       onChange={e => setFormData({...formData, familyRelationship: e.target.value})}
                     >
@@ -263,7 +263,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
                       type="text" 
                       placeholder="11 5544-3322"
                       value={formData.familyContact || ''}
-                      className="w-full h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl px-6 font-bold"
+                      className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold text-sm md:text-base"
                       onChange={e => setFormData({...formData, familyContact: e.target.value})}
                     />
                   </div>
@@ -278,19 +278,19 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
             </div>
           )}
 
-          <div className="flex gap-4 pt-4">
+          <div className="flex gap-3 md:gap-4 pt-4">
             <button 
               type="button" 
               onClick={onClose}
-              className="flex-1 h-16 bg-[var(--bg-accent)] hover:opacity-80 rounded-2xl font-black uppercase text-xs tracking-widest transition-all"
+              className="flex-1 h-14 md:h-16 bg-[var(--bg-accent)] hover:opacity-80 rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all"
             >
               Cancelar
             </button>
             <button 
               type="submit"
-              className="flex-1 h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest transition-all shadow-xl shadow-blue-500/20"
+              className="flex-1 h-14 md:h-16 bg-blue-500 hover:bg-blue-600 text-white rounded-xl md:rounded-2xl font-black uppercase text-[10px] md:text-xs tracking-widest transition-all shadow-xl shadow-blue-500/20"
             >
-              {formData.id ? 'Guardar Cambios' : 'Registrar Paciente'}
+              {formData.id ? 'Guardar' : 'Registrar'}
             </button>
           </div>
         </form>

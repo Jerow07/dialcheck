@@ -445,7 +445,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
             setShowAssignModal(true);
           }
         }}
-        className={`aspect-square rounded-[24px] px-4 pt-4 pb-3 flex flex-col items-center justify-between text-center transition-all border-2 relative group cursor-pointer overflow-hidden ${
+        className={`aspect-square min-w-0 md:min-w-0 rounded-[18px] md:rounded-[24px] px-2 md:px-4 pt-2 md:pt-4 pb-1 md:pb-3 flex flex-col items-center justify-between text-center transition-all border-2 relative group cursor-pointer overflow-hidden ${
           movingPatient && !chair.patient
             ? 'bg-blue-500/20 border-blue-500 animate-pulse ring-4 ring-blue-500/20 z-50 scale-[1.05]'
             : isOccupied 
@@ -592,13 +592,13 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                 prev.setDate(prev.getDate() - 7);
                 setSelectedDate(getLocalDateString(prev));
               }}
-              className="px-4 h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+              className="px-3 md:px-4 h-9 md:h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all"
             >
-              Semana Anterior
+              Semana Ant.
             </button>
             <button 
               onClick={() => setSelectedDate(getLocalDateString())}
-              className={`px-4 h-10 ${selectedDate === getLocalDateString() ? 'bg-orange-500 text-white' : 'bg-slate-200 text-black'} hover:opacity-90 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all`}
+              className={`px-3 md:px-4 h-9 md:h-10 ${selectedDate === getLocalDateString() ? 'bg-orange-500 text-white' : 'bg-slate-200 text-black'} hover:opacity-90 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all`}
             >
               Hoy
             </button>
@@ -608,9 +608,9 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                 next.setDate(next.getDate() + 7);
                 setSelectedDate(getLocalDateString(next));
               }}
-              className="px-4 h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all"
+              className="px-3 md:px-4 h-9 md:h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all"
             >
-              Semana Siguiente
+              Semana Sig.
             </button>
             
             <div className="w-px h-6 bg-[var(--border-color)] mx-2" />
@@ -621,10 +621,11 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                 prevDay.setDate(prevDay.getDate() - 1);
                 handleCloneSchedule(getLocalDateString(prevDay));
               }}
-              className="flex items-center gap-2 px-4 h-10 bg-blue-500/10 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-blue-500/20"
+              className="flex items-center gap-2 px-3 md:px-4 h-9 md:h-10 bg-blue-500/10 text-blue-600 hover:bg-blue-600 hover:text-white rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all border border-blue-500/20"
             >
-              <Copy size={14} />
-              Copiar Ayer
+              <Copy size={13} />
+              <span className="hidden xs:inline">Copiar Ayer</span>
+              <span className="xs:hidden">Copiar</span>
             </button>
 
             <button 
@@ -726,25 +727,25 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
             <Users className="text-white" size={32} />
           </div>
           <div>
-            <h2 className="text-3xl font-black tracking-tight">Panel de Enfermería</h2>
-            <p className="opacity-40 font-medium">Gestión de Sillas y Pacientes</p>
+            <h2 className="text-xl md:text-3xl font-black tracking-tight">Panel de Enfermería</h2>
+            <p className="opacity-40 font-medium text-xs md:text-base">Gestión de Sillas y Pacientes</p>
           </div>
         </div>
 
         <div className="flex flex-col gap-4">
-          <div className="flex bg-white/40 dark:bg-white/10 p-1.5 rounded-2xl border border-[var(--border-color)]">
+          <div className="flex bg-white/40 dark:bg-white/10 p-1 rounded-2xl border border-[var(--border-color)]">
             {[0, 1, 2, 3].map((f) => (
               <button
                 key={f}
                 onClick={() => setSelectedFloor(f)}
-                className={`flex-1 flex flex-col items-center justify-center px-6 py-3 rounded-2xl transition-all duration-300 ${
+                className={`flex-1 flex flex-col items-center justify-center px-2 md:px-6 py-2 md:py-3 rounded-2xl transition-all duration-300 ${
                   selectedFloor === f 
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 ring-4 ring-blue-500/10' 
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40' 
                     : 'bg-slate-100 dark:bg-white/5 text-slate-500 hover:bg-slate-200 dark:hover:bg-white/10'
                 }`}
               >
-                <span className="text-[9px] font-black uppercase tracking-widest opacity-60">Piso</span>
-                <span className="text-xl font-black leading-tight">{f === 0 ? 'PB' : f}</span>
+                <span className="text-[7px] md:text-[9px] font-black uppercase tracking-widest opacity-60">Piso</span>
+                <span className="text-lg md:text-xl font-black leading-tight">{f === 0 ? 'PB' : f}</span>
               </button>
             ))}
           </div>
@@ -956,47 +957,51 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           </div>
         </div>
       ) : selectedFloor === 1 ? (
-        <div className="space-y-12">
+        <div className="space-y-12 overflow-x-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 max-w-5xl mx-auto">
-            <div className="bg-[var(--bg-accent)]/30 p-4 md:p-8 rounded-[32px] md:rounded-[48px] border border-[var(--border-color)]">
-              <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-8 text-center italic">Sector ESTE</h3>
-              <div className="grid grid-cols-2 gap-4 md:gap-6 relative">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
-                    <Users size={12} className="text-orange-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 1)}</span>
+            <div className="bg-[var(--bg-accent)]/30 p-3 md:p-8 rounded-[24px] md:rounded-[48px] border border-[var(--border-color)] overflow-x-auto scrollbar-hide">
+              <div className="min-w-0 md:min-w-0">
+                <h3 className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-4 md:mb-8 text-center italic">Sector ESTE</h3>
+                <div className="grid grid-cols-2 gap-4 md:gap-6 relative">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                      <Users size={12} className="text-orange-500" />
+                      <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 1)}</span>
+                    </div>
+                    {[1, 2, 3, 4, 5].map(n => renderChair(n))}
                   </div>
-                  {[1, 2, 3, 4, 5].map(n => renderChair(n))}
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
-                    <Users size={12} className="text-orange-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 2)}</span>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                      <Users size={12} className="text-orange-500" />
+                      <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 2)}</span>
+                    </div>
+                    {[6, 7, 8, 9, 10].map(n => renderChair(n))}
                   </div>
-                  {[6, 7, 8, 9, 10].map(n => renderChair(n))}
+                  <div className="absolute left-1/2 top-0 bottom-0 w-px bg-blue-500/10 -translate-x-1/2 hidden md:block" />
                 </div>
-                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-blue-500/10 -translate-x-1/2 hidden md:block" />
               </div>
             </div>
 
-            <div className="bg-[var(--bg-accent)]/30 p-4 md:p-8 rounded-[32px] md:rounded-[48px] border border-[var(--border-color)]">
-              <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-8 text-center italic">Sector OESTE</h3>
-              <div className="grid grid-cols-2 gap-4 md:gap-6 relative">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
-                    <Users size={12} className="text-orange-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 3)}</span>
+            <div className="bg-[var(--bg-accent)]/30 p-3 md:p-8 rounded-[24px] md:rounded-[48px] border border-[var(--border-color)] overflow-x-auto scrollbar-hide">
+              <div className="min-w-0 md:min-w-0">
+                <h3 className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-4 md:mb-8 text-center italic">Sector OESTE</h3>
+                <div className="grid grid-cols-2 gap-4 md:gap-6 relative">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                      <Users size={12} className="text-orange-500" />
+                      <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 3)}</span>
+                    </div>
+                    {[11, 12, 13, 14, 15].map(n => renderChair(n))}
                   </div>
-                  {[11, 12, 13, 14, 15].map(n => renderChair(n))}
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
-                    <Users size={12} className="text-orange-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 4)}</span>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                      <Users size={12} className="text-orange-500" />
+                      <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(1, 4)}</span>
+                    </div>
+                    {[16, 17, 18, 19, 20].map(n => renderChair(n))}
                   </div>
-                  {[16, 17, 18, 19, 20].map(n => renderChair(n))}
+                  <div className="absolute left-1/2 top-0 bottom-0 w-px bg-blue-500/10 -translate-x-1/2 hidden md:block" />
                 </div>
-                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-blue-500/10 -translate-x-1/2 hidden md:block" />
               </div>
             </div>
           </div>
@@ -1043,39 +1048,44 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           </div>
         </div>
       ) : selectedFloor === 2 ? (
-        <div className="space-y-12">
-          <div className="bg-[var(--bg-accent)]/30 p-4 md:p-12 rounded-[32px] md:rounded-[64px] border border-[var(--border-color)]">
-            <h3 className="text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-12 text-center italic">Distribución en U (1-12)</h3>
-            <div className="max-w-4xl mx-auto">
-              <div className="mb-12">
-                <div className="flex items-center gap-2 mb-4 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20 w-fit mx-auto">
-                  <Users size={12} className="text-orange-500" />
-                  <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 2)}</span>
+        <div className="space-y-12 overflow-x-hidden">
+          <div className="bg-[var(--bg-accent)]/30 p-3 md:p-12 rounded-[24px] md:rounded-[64px] border border-[var(--border-color)] overflow-x-auto scrollbar-hide relative group/map">
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-blue-500/20 text-blue-500 px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest md:hidden animate-pulse border border-blue-500/30 z-50">
+              ⟷ Desplace para ver mapa
+            </div>
+            <div className="min-w-[700px] lg:min-w-0">
+              <h3 className="text-[10px] md:text-sm font-black uppercase tracking-[0.3em] opacity-30 mb-8 md:mb-12 text-center italic">Distribución en U (1-12)</h3>
+              <div className="max-w-4xl mx-auto">
+                <div className="mb-12">
+                  <div className="flex items-center gap-2 mb-4 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20 w-fit mx-auto">
+                    <Users size={12} className="text-orange-500" />
+                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 2)}</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
+                    {[5, 6, 7, 8].map(n => renderChair(n))}
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
-                  {[5, 6, 7, 8].map(n => renderChair(n))}
-                </div>
-              </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
-                <div className="space-y-4 md:space-y-6">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
-                    <Users size={12} className="text-orange-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 1)}</span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 md:gap-6">
+                  <div className="space-y-4 md:space-y-6">
+                    <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                      <Users size={12} className="text-orange-500" />
+                      <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 1)}</span>
+                    </div>
+                    {[4, 3, 2, 1].map(n => renderChair(n))}
                   </div>
-                  {[4, 3, 2, 1].map(n => renderChair(n))}
-                </div>
-                <div className="col-span-2 flex items-center justify-center">
-                  <div className="w-full max-w-[140px] md:max-w-[180px]">
-                    {renderChair(13)}
+                  <div className="col-span-2 flex items-center justify-center">
+                    <div className="w-full max-w-[140px] md:max-w-[180px]">
+                      {renderChair(13)}
+                    </div>
                   </div>
-                </div>
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
-                    <Users size={12} className="text-orange-500" />
-                    <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 3)}</span>
+                  <div className="space-y-6">
+                    <div className="flex items-center gap-2 mb-2 px-3 py-1 bg-orange-500/10 rounded-full border border-orange-500/20">
+                      <Users size={12} className="text-orange-500" />
+                      <span className="text-[10px] font-black uppercase tracking-tighter text-orange-500">{getNurseName(2, 3)}</span>
+                    </div>
+                    {[9, 10, 11, 12].map(n => renderChair(n))}
                   </div>
-                  {[9, 10, 11, 12].map(n => renderChair(n))}
                 </div>
               </div>
             </div>
