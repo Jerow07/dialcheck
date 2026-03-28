@@ -68,7 +68,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
         setTimeout(() => fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 }), 400);
 
         // Push notification (only once)
-        if (Notification.permission === 'granted') {
+        if ('Notification' in window && Notification.permission === 'granted') {
           birthdayPatients.forEach(p => {
              new Notification(`Cumpleaños Hoy: ${p.name} 🎂`, {
                body: '¡No olvides saludarlo en el centro!',
@@ -702,7 +702,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                   colors: ['#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b']
                 });
                 
-                if (Notification.permission === 'granted') {
+                if ('Notification' in window && Notification.permission === 'granted') {
                   birthdayPatients.forEach(p => {
                     new Notification(`¡Feliz Cumpleaños ${p.name}! 🎂`, {
                       body: 'Deseale un gran día en su sesión de hoy.',

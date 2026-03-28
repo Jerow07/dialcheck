@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import { Bell, BellOff, BellRing } from 'lucide-react';
 
 export const NotificationBell = () => {
-  const [permission, setPermission] = useState<NotificationPermission>(
-    typeof window !== 'undefined' ? Notification.permission : 'default'
-  );
+  const [permission, setPermission] = useState<NotificationPermission>(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      return Notification.permission;
+    }
+    return 'default';
+  });
   const [isSupported, setIsSupported] = useState(false);
 
   useEffect(() => {
-    setIsSupported('Notification' in window);
+    setIsSupported(typeof window !== 'undefined' && 'Notification' in window);
   }, []);
 
   const requestPermission = async () => {
