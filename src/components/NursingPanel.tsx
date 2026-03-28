@@ -736,18 +736,46 @@ export const NursingPanel = ({ patients, onRefresh }: NursingPanelProps) => {
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 p-8 rounded-[40px] backdrop-blur-md shadow-xl">
-                  <h4 className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-4">Administradora de Turno</h4>
-                  <div className="flex items-center gap-5">
-                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-black text-xl shadow-lg">
-                      AV
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black uppercase tracking-tighter text-blue-500">Angie Velazco</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <p className="text-[10px] font-black opacity-60 uppercase tracking-widest">En Línea • 09:00 - 16:00 hs</p>
+                <div className="bg-white/5 border border-slate-200 dark:border-white/10 p-8 rounded-[40px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none space-y-6">
+                  <div>
+                    <h4 className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-4 text-slate-900 dark:text-white">Administrativas</h4>
+                    <div className="space-y-4">
+                      
+                      <div className="flex items-center gap-5">
+                        <div className="w-12 h-12 rounded-[16px] bg-gradient-to-br from-blue-500 to-indigo-600 flex shrink-0 items-center justify-center text-white font-black shadow-lg">
+                          MS
+                        </div>
+                        <div>
+                          <p className="text-lg font-black uppercase tracking-tighter text-blue-600 dark:text-blue-500">M. de los Angeles Suarez</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <p className="text-[9px] font-black opacity-60 uppercase tracking-widest">En Línea • 08:00 - 16:00 hs</p>
+                          </div>
+                        </div>
                       </div>
+
+                      <div className="flex items-center gap-5">
+                        <div className="w-12 h-12 rounded-[16px] bg-gradient-to-br from-indigo-500 to-purple-600 flex shrink-0 items-center justify-center text-white font-black shadow-lg">
+                          KB
+                        </div>
+                        <div>
+                          <p className="text-lg font-black uppercase tracking-tighter text-indigo-600 dark:text-indigo-500">Karina Mabel Batla</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <p className="text-[9px] font-black opacity-60 uppercase tracking-widest">En Línea</p>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                  
+                  <div className="pt-6 border-t border-slate-200 dark:border-white/10">
+                    <h4 className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-4 text-slate-900 dark:text-white">Directores Médicos Integrales</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-3 py-1.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">Dario Campos</span>
+                      <span className="px-3 py-1.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">Osvaldo Torrado</span>
+                      <span className="px-3 py-1.5 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-[10px] font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">Patricia Sidoruk</span>
                     </div>
                   </div>
                 </div>
