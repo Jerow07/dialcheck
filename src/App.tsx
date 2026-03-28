@@ -71,9 +71,9 @@ function App() {
               <span className="text-[8px] font-black uppercase tracking-[0.4em] opacity-30 mt-1">Management System</span>
             </div>
             {/* Creator Info Button */}
-            <div className="relative group ml-1">
-              <button aria-label="Creator info" className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800/50 flex items-center justify-center text-slate-500 cursor-help hover:bg-blue-500 hover:text-white transition-all duration-300">
-                <Info size={10} />
+            <div className="relative group ml-2 mt-1">
+              <button aria-label="Creator info" className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-800/80 flex items-center justify-center text-slate-500 cursor-help hover:bg-blue-500 hover:text-white transition-all duration-300 shadow-sm border border-slate-300 dark:border-white/10">
+                <Info size={16} />
               </button>
               <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 w-max min-w-[200px] bg-slate-900 text-white p-4 rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 shadow-2xl border border-white/10 pointer-events-none translate-x-1 group-hover:translate-x-0">
                 <p className="text-[9px] font-black uppercase tracking-widest text-emerald-400 mb-2">Dialcheck Inc.</p>
