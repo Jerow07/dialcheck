@@ -1265,7 +1265,7 @@ const HistoryDrawer = ({ onClose }: { onClose: () => void }) => {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[3000] flex justify-end">
+    <div className="fixed inset-0 z-[5000] flex justify-end">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full max-w-lg bg-[var(--bg-primary)] h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-300">
         <div className="p-8 border-b border-[var(--border-color)] flex items-center justify-between">
