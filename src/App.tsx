@@ -181,7 +181,7 @@ function App() {
         </div>
       </header>
 
-      <main className="relative z-20 px-4 max-w-7xl mx-auto pb-40">
+      <main className="relative px-4 max-w-7xl mx-auto pb-40">
         {activeTab === 'panel' ? (
           <NursingPanel 
             patients={patients} 
