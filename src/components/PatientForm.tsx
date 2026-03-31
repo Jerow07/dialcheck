@@ -71,7 +71,7 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
       <div className="bg-[var(--bg-primary)] border border-[var(--border-color)] p-5 md:p-10 rounded-[32px] md:rounded-[48px] w-full max-w-xl shadow-2xl relative max-h-[95vh] overflow-y-auto scrollbar-hide">
         <button 
           onClick={onClose}

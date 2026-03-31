@@ -20,7 +20,7 @@ export const AssignPatientModal = ({ patients, onClose, onAssign, onRegisterNew,
   );
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
       <div className="bg-[var(--bg-primary)] border border-[var(--border-color)] p-5 md:p-8 rounded-[32px] md:rounded-[40px] w-full max-w-lg shadow-2xl relative overflow-hidden">
         <button 
           onClick={onClose}
