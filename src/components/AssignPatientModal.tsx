@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { X, Search, UserCheck } from 'lucide-react';
+import { X, Search, UserCheck, Plus } from 'lucide-react';
 
 interface AssignPatientModalProps {
   patients: Patient[];
@@ -9,14 +9,26 @@ interface AssignPatientModalProps {
   onRegisterNew: () => void;
   floor: number;
   chairNumber: number;
+  selectedDate: string;
 }
 
-export const AssignPatientModal = ({ patients, onClose, onAssign, onRegisterNew, floor, chairNumber }: AssignPatientModalProps) => {
+export const AssignPatientModal = ({ 
+  patients, 
+  onClose, 
+  onAssign, 
+  onRegisterNew, 
+  floor, 
+  chairNumber,
+  selectedDate
+}: AssignPatientModalProps) => {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const unassignedPatients = patients.filter(p => 
+  const searchFiltered = patients.filter(p => 
     searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const availablePatients = searchFiltered.filter(p => p.date !== selectedDate);
+  const assignedToday = searchFiltered.filter(p => p.date === selectedDate);
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-md z-[9999] flex items-center justify-center p-4">
@@ -49,29 +61,59 @@ export const AssignPatientModal = ({ patients, onClose, onAssign, onRegisterNew,
           />
         </div>
 
-        <div className="space-y-2 md:space-y-3 max-h-[300px] md:max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-          {unassignedPatients.length > 0 ? (
-            unassignedPatients.map(p => (
-              <button
-                key={p.id}
-                onClick={() => onAssign(p.id)}
-                className="w-full p-5 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-2xl flex items-center justify-between group hover:bg-blue-500 transition-all text-left"
-              >
-                <div>
-                  <h4 className="font-black text-sm group-hover:text-white transition-colors">{p.name}</h4>
-                  <p className="text-[10px] font-bold opacity-60 group-hover:text-white/80 transition-colors uppercase tracking-widest">
-                    Hosp. {p.address.split(',')[0]}
-                  </p>
-                </div>
-                <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:bg-white/20 transition-all">
-                  <UserCheck size={18} className="text-blue-500 group-hover:text-white" />
-                </div>
-              </button>
-            ))
-          ) : (
+        <div className="space-y-4 md:space-y-6 max-h-[350px] md:max-h-[450px] overflow-y-auto pr-2 custom-scrollbar">
+          {availablePatients.length > 0 && (
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-3 block">Disponibles para Hoy</span>
+              <div className="space-y-2">
+                {availablePatients.map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => onAssign(p.id)}
+                    className="w-full p-4 bg-emerald-500/5 border border-emerald-500/10 hover:border-emerald-500/40 rounded-2xl flex items-center justify-between group transition-all text-left"
+                  >
+                    <div>
+                      <h4 className="font-black text-sm text-[var(--text-primary)]">{p.name}</h4>
+                      <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest">Listo para asignar</p>
+                    </div>
+                    <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                      <Plus size={16} className="text-emerald-500" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {assignedToday.length > 0 && (
+            <div>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-3 block">Ya Asignados (Mover Silla)</span>
+              <div className="space-y-2">
+                {assignedToday.map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => onAssign(p.id)}
+                    className="w-full p-4 bg-amber-500/5 border border-amber-500/10 hover:border-amber-500/40 rounded-2xl flex items-center justify-between group transition-all text-left opacity-70 hover:opacity-100"
+                  >
+                    <div>
+                      <h4 className="font-black text-sm text-[var(--text-primary)]">{p.name}</h4>
+                      <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">
+                        En Silla {p.chairNumber} • Piso {p.floor}
+                      </p>
+                    </div>
+                    <div className="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                      <UserCheck size={16} className="text-amber-500" />
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {searchFiltered.length === 0 && (
             <div className="py-12 text-center">
-              <p className="opacity-60 italic font-medium">No hay pacientes disponibles para asignar</p>
-              <p className="text-[10px] uppercase font-black tracking-widest mt-2">Usa "Nuevo Paciente" para registrar uno de cero</p>
+              <p className="opacity-60 italic font-medium">No se encontraron pacientes</p>
+              <p className="text-[10px] uppercase font-black tracking-widest mt-2">Usa "Nuevo Registro" para crear uno nuevo</p>
             </div>
           )}
         </div>

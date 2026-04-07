@@ -1256,6 +1256,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           patients={Array.from(new Map([...patients].reverse().map(p => [p.name, p])).values())}
           floor={selectedFloor}
           chairNumber={selectedChair}
+          selectedDate={selectedDate}
           onClose={() => {
             setShowAssignModal(false);
             setSelectedChair(null);

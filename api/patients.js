@@ -211,16 +211,16 @@ app.put(['/api/patients/:id', '/:id'], async (req, res) => {
   }
 
   // Update fields
-  if (name) patients[index].name = name;
+  if (name !== undefined) patients[index].name = name;
   if (phone !== undefined) patients[index].phone = phone;
   if (address !== undefined) patients[index].address = address;
   if (familyContact !== undefined) patients[index].familyContact = familyContact;
   if (familyRelationship !== undefined) patients[index].familyRelationship = familyRelationship;
-  if (shift) patients[index].shift = shift;
+  if (shift !== undefined) patients[index].shift = shift;
   if (floor !== undefined) patients[index].floor = floor;
   if (chairNumber !== undefined) patients[index].chairNumber = chairNumber;
-  if (status) patients[index].status = status;
-  if (date) patients[index].date = date;
+  if (status !== undefined) patients[index].status = status;
+  if (date !== undefined) patients[index].date = date;
   if (birthDate !== undefined) patients[index].birthDate = birthDate;
   if (isHypertensive !== undefined) patients[index].isHypertensive = !!isHypertensive;
   if (isDiabetic !== undefined) patients[index].isDiabetic = !!isDiabetic;
