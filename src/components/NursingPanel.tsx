@@ -867,7 +867,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
 
                 <div className="bg-white/5 border border-slate-200 dark:border-white/10 p-8 rounded-[40px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none space-y-6">
                   <div>
-                    <h4 className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-4 text-slate-900 dark:text-white">Administrativas</h4>
+                    <h4 className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-4 text-slate-900 dark:text-white">Administrativos/as</h4>
                     <div className="space-y-4">
                       
                       <div className="flex items-center gap-5">
