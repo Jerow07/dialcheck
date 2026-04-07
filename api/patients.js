@@ -142,6 +142,17 @@ app.post(['/api/patients', '/'], async (req, res) => {
   };
 
   const patients = await getPatients();
+  
+  // VALIDACIÓN: No permitir duplicados el mismo día
+  const isDuplicate = patients.some(p => 
+    p.name.toLowerCase().trim() === name.toLowerCase().trim() && 
+    p.date === (date || today)
+  );
+
+  if (isDuplicate) {
+    return res.status(409).json({ error: `El paciente "${name}" ya tiene una silla asignada para el día ${(date || today)}.` });
+  }
+
   patients.push(newPatient);
   const result = await savePatients(patients);
   if (!result.success) return res.status(500).json({ error: `Error en base de datos: ${result.error}` });
@@ -174,6 +185,21 @@ app.put(['/api/patients/:id', '/:id'], async (req, res) => {
   const index = patients.findIndex(p => p.id === id);
   if (index === -1) {
     return res.status(404).json({ error: 'Patient not found' });
+  }
+
+  // VALIDACIÓN: No permitir duplicados el mismo día (exceto el mismo ID)
+  if (name || date) {
+    const checkName = name || patients[index].name;
+    const checkDate = date || patients[index].date;
+    const isDuplicate = patients.some(p => 
+      p.id !== id &&
+      p.name.toLowerCase().trim() === checkName.toLowerCase().trim() &&
+      p.date === checkDate
+    );
+
+    if (isDuplicate) {
+      return res.status(409).json({ error: `Conflicto: Ya existe un registro para "${checkName}" en la fecha ${checkDate}.` });
+    }
   }
 
   // Update fields
