@@ -1253,7 +1253,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
 
       {showAssignModal && selectedChair && (
         <AssignPatientModal 
-          patients={Array.from(new Map([...patients].reverse().map(p => [p.name, p])).values()).filter(p => p.date !== selectedDate || p.chairNumber === 0)}
+          patients={Array.from(new Map([...patients].reverse().map(p => [p.name, p])).values())}
           floor={selectedFloor}
           chairNumber={selectedChair}
           onClose={() => {
