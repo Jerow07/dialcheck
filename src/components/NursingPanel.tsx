@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, Copy, Coffee, Cake, History as HistoryIcon, Thermometer, Droplets } from 'lucide-react';
+import { UserPlus, Users, CheckCircle2, UserX, Edit2, Activity, Stethoscope, ArrowLeftRight, X, Calendar, Copy, Coffee, Cake, History as HistoryIcon, Thermometer, Droplets, Apple, Heart } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 import { AssignPatientModal } from './AssignPatientModal';
 import { NotificationBell } from './NotificationBell';
@@ -918,6 +918,26 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                       <div className="flex items-center gap-3 bg-white/50 dark:bg-white/5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm">
                         <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">Patricia Sidoruk</span>
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 border-t border-slate-200 dark:border-white/10">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Apple size={16} className="text-orange-500" />
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Médico Nutricionista General</h4>
+                    </div>
+                    <div className="flex items-center gap-3 bg-white/50 dark:bg-white/5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm">
+                      <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">Mariana Wust</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 border-t border-slate-200 dark:border-white/10">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Heart size={16} className="text-rose-500" />
+                      <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 dark:text-white">Servicio Social</h4>
+                    </div>
+                    <div className="flex items-center gap-3 bg-white/50 dark:bg-white/5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm">
+                      <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">Teresa Fernandez Madero</span>
                     </div>
                   </div>
                 </div>
