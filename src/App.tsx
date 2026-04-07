@@ -31,6 +31,16 @@ function App() {
     return 'Admin'
   })
 
+  // Real-time clock state
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     if (theme === 'dark') {
@@ -134,6 +144,19 @@ function App() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Real-time Clock */}
+          <div className="hidden lg:flex flex-col items-center px-8 py-3 bg-[var(--bg-accent)]/50 backdrop-blur-xl rounded-[32px] border border-[var(--border-color)] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none animate-in fade-in zoom-in duration-700">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+              <span className="text-2xl font-black tabular-nums tracking-tighter text-slate-800 dark:text-white leading-none">
+                {currentTime.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </span>
+            </div>
+            <p className="text-[9px] font-black uppercase tracking-[0.3em] opacity-40 mt-1.5 text-slate-500 dark:text-slate-400">
+              {new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(currentTime)}
+            </p>
           </div>
 
           {/* Navigation & Theme */}
