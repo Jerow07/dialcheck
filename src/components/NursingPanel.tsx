@@ -1333,7 +1333,7 @@ const HistoryDrawer = ({ onClose }: { onClose: () => void }) => {
                     {log.action}
                   </span>
                   <span className="text-[9px] font-bold opacity-30">
-                    {new Date(log.timestamp).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })} hs
+                    {new Date(log.timestamp).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })} hs
                   </span>
                 </div>
                 <p className="text-sm font-black text-[var(--text-primary)] mb-1 uppercase tracking-tight">{log.patientName}</p>

@@ -165,7 +165,7 @@ function App() {
             <div className="relative z-10">
               <div className="flex items-end gap-1.5 mb-1 justify-center">
                 <span className="text-3xl font-black tabular-nums tracking-tighter text-slate-900 dark:text-white leading-none drop-shadow-sm">
-                  {currentTime.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+                  {currentTime.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })}
                 </span>
                 <span className="text-sm font-bold tabular-nums text-blue-500 mb-0.5 animate-pulse">
                   :{currentTime.toLocaleTimeString('es-AR', { second: '2-digit' })}
