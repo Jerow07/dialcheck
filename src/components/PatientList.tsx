@@ -211,7 +211,7 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
                   <History size={14} />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Piso {patient.floor} • Silla {patient.chairNumber}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Piso {patient.floor}</span>
                   <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Turno {patient.shift}</span>
                 </div>
               </div>
