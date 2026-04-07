@@ -16,7 +16,28 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null);
   const [showForm, setShowForm] = useState(false);
 
-  const filteredPatients = patients.filter(p => 
+  // Agrupar y deduplicar: Mostrar solo la entrada más reciente por nombre de paciente
+  const uniquePatientsMap = new Map<string, Patient>();
+  
+  // Ordenar por fecha descendentemente para tomar siempre el registro más nuevo
+  const sortedByLatest = [...patients].sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    if (dateB !== dateA) return dateB - dateA;
+    // Si la fecha es igual, usar ID como desempate (orden alfabético inverso)
+    return b.id.localeCompare(a.id);
+  });
+
+  sortedByLatest.forEach(p => {
+    const nameKey = p.name.toLowerCase().trim();
+    if (!uniquePatientsMap.has(nameKey)) {
+      uniquePatientsMap.set(nameKey, p);
+    }
+  });
+
+  const uniquePatients = Array.from(uniquePatientsMap.values());
+
+  const filteredPatients = uniquePatients.filter(p => 
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
