@@ -13,6 +13,7 @@ export interface Patient {
   birthDate?: string; // YYYY-MM-DD
   isHypertensive?: boolean;
   isDiabetic?: boolean;
+  dryWeight?: string;
 }
 
 export interface Chair {

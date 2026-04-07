@@ -558,6 +558,11 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
             <div className="flex flex-col items-center w-full space-y-0.5">
               <div className="bg-slate-200 dark:bg-slate-200 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-300 shadow-sm w-full">
                 <span className="text-[11px] font-black tracking-tight leading-tight truncate block text-slate-900">{chair.patient.name}</span>
+                {chair.patient.dryWeight && (
+                  <span className="text-[8px] font-bold text-blue-600 block leading-tight mt-0.5 uppercase tracking-tighter">
+                    Peso Seco: {chair.patient.dryWeight} kg
+                  </span>
+                )}
               </div>
               <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full shadow-lg border ${
                  isAbsent ? 'bg-orange-600 dark:bg-orange-500 text-white border-orange-400/30' : 'bg-red-600 dark:bg-red-500 text-white border-red-400/30'

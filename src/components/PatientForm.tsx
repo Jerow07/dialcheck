@@ -129,6 +129,24 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
               />
             </div>
 
+            <div className="col-span-1 md:col-span-2">
+              <label className="text-[10px] font-black uppercase opacity-60 ml-2 mb-2 block tracking-widest">Peso Seco (kg)</label>
+              <div className="relative">
+                <input 
+                  type="text" 
+                  placeholder="Ej: 85,5"
+                  value={formData.dryWeight || ''}
+                  className="w-full h-12 md:h-14 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl md:rounded-2xl px-6 font-bold text-sm md:text-base focus:outline-none transition-all focus:ring-4 focus:ring-blue-500/20"
+                  onChange={e => {
+                    // Allow only numbers and comma/dot
+                    const val = e.target.value.replace(/[^0-9,.]/g, '');
+                    setFormData({...formData, dryWeight: val});
+                  }}
+                />
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black uppercase opacity-40">kg</div>
+              </div>
+            </div>
+
             {!hideOperationalFields && (
               <>
                 <div className="col-span-1 md:col-span-2">
