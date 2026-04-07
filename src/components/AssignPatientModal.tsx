@@ -15,8 +15,7 @@ export const AssignPatientModal = ({ patients, onClose, onAssign, onRegisterNew,
   const [searchTerm, setSearchTerm] = useState('');
 
   const unassignedPatients = patients.filter(p => 
-    p.chairNumber === 0 && 
-    (searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    searchTerm === '' || p.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
