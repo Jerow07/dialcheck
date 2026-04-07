@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { Search, MapPin, Phone, Users, History, ClipboardList, Trash2, Edit, Thermometer, Droplets, Plus, Weight } from 'lucide-react';
+import { Search, MapPin, Phone, Users, ClipboardList, Trash2, Edit, Thermometer, Droplets, Plus, Weight } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 
 const API_URL = '/api/patients';
@@ -206,15 +206,6 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
                 </div>
               )}
 
-              <div className="flex items-center gap-4 opacity-60 text-blue-500">
-                <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
-                  <History size={14} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest leading-none mb-1">Piso {patient.floor}</span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest opacity-60">Turno {patient.shift}</span>
-                </div>
-              </div>
             </div>
 
             {/* Contacto de Emergencia */}
