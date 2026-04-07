@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Patient } from '../types';
-import { Search, MapPin, Phone, Users, History, ClipboardList, Trash2, Edit, Thermometer, Droplets, Plus } from 'lucide-react';
+import { Search, MapPin, Phone, Users, History, ClipboardList, Trash2, Edit, Thermometer, Droplets, Plus, Weight } from 'lucide-react';
 import { PatientForm } from './PatientForm';
 
 const API_URL = '/api/patients';
@@ -175,6 +175,15 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
                 </div>
                 <span className="text-sm font-bold truncate">{patient.address || 'Sin dirección'}</span>
               </div>
+
+              {patient.dryWeight && (
+                <div className="flex items-center gap-4 text-blue-600 dark:text-blue-400">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                    <Weight size={14} />
+                  </div>
+                  <span className="text-sm font-black italic">Peso Seco: {patient.dryWeight} kg</span>
+                </div>
+              )}
 
               <div className="flex items-center gap-4 opacity-60 text-blue-500">
                 <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">

@@ -96,5 +96,21 @@
     "birthDate": "",
     "isHypertensive": false,
     "isDiabetic": true
+  },
+  {
+    "id": "3ad5f990-84a0-469e-9297-115c22a43a33",
+    "name": "Jeronimo parra ",
+    "phone": "1168618977",
+    "address": "Vivaldi 1363",
+    "familyContact": "1166196831",
+    "familyRelationship": "Madre",
+    "shift": "2",
+    "floor": 1,
+    "chairNumber": 0,
+    "status": "Ocupada",
+    "date": "2026-04-07",
+    "birthDate": "1995-01-08",
+    "isHypertensive": false,
+    "isDiabetic": true
   }
 ]

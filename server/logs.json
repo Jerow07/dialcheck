@@ -1,5 +1,29 @@
 [
   {
+    "id": "1775589038958",
+    "user": "jeronimo1995",
+    "action": "LIBERACIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Silla liberada manualmente en Piso 1",
+    "timestamp": "2026-04-07T19:10:38.958Z"
+  },
+  {
+    "id": "1775589032321",
+    "user": "jeronimo1995",
+    "action": "MOVIMIENTO",
+    "patientName": "Jeronimo parra ",
+    "detail": "Asignado a Piso 1 / Silla 9 / Turno 2",
+    "timestamp": "2026-04-07T19:10:32.321Z"
+  },
+  {
+    "id": "1775589007648",
+    "user": "jeronimo1995",
+    "action": "EDICIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Ficha técnica editada desde el Directorio",
+    "timestamp": "2026-04-07T19:10:07.648Z"
+  },
+  {
     "id": "1774722249674",
     "user": "jeronimo1995",
     "action": "EDICIÓN",
