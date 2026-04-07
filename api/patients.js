@@ -117,7 +117,7 @@ app.get(['/api/patients', '/'], async (req, res) => {
 // POST new patient
 app.post(['/api/patients', '/'], async (req, res) => {
   const body = req.body || {};
-  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic } = body;
+  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic, dryWeight } = body;
   
   if (!name || !shift) {
     return res.status(400).json({ error: `Name and shift are required. Received name: "${name}", shift: "${shift}", all body keys: [${Object.keys(body).join(',')}]` });
@@ -137,7 +137,8 @@ app.post(['/api/patients', '/'], async (req, res) => {
     date: date || today,
     birthDate: birthDate || '',
     isHypertensive: !!isHypertensive,
-    isDiabetic: !!isDiabetic
+    isDiabetic: !!isDiabetic,
+    dryWeight: dryWeight || ''
   };
 
   const patients = await getPatients();
@@ -167,7 +168,7 @@ app.delete(['/api/patients/:id', '/:id'], async (req, res) => {
 // UPDATE patient
 app.put(['/api/patients/:id', '/:id'], async (req, res) => {
   const { id } = req.params;
-  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic } = req.body;
+  const { name, phone, address, familyContact, familyRelationship, shift, floor, chairNumber, status, date, birthDate, isHypertensive, isDiabetic, dryWeight } = req.body;
   
   const patients = await getPatients();
   const index = patients.findIndex(p => p.id === id);
@@ -189,6 +190,7 @@ app.put(['/api/patients/:id', '/:id'], async (req, res) => {
   if (birthDate !== undefined) patients[index].birthDate = birthDate;
   if (isHypertensive !== undefined) patients[index].isHypertensive = !!isHypertensive;
   if (isDiabetic !== undefined) patients[index].isDiabetic = !!isDiabetic;
+  if (dryWeight !== undefined) patients[index].dryWeight = dryWeight;
   
   const result = await savePatients(patients);
   if (!result.success) return res.status(500).json({ error: `Error al actualizar en base de datos: ${result.error}` });

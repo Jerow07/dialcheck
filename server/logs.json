@@ -1,5 +1,69 @@
 [
   {
+    "id": "1775589699727",
+    "user": "jeronimo1995",
+    "action": "EDICIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Ficha técnica editada desde el Directorio",
+    "timestamp": "2026-04-07T19:21:39.727Z"
+  },
+  {
+    "id": "1775589687846",
+    "user": "jeronimo1995",
+    "action": "EDICIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Ficha técnica editada desde el Directorio",
+    "timestamp": "2026-04-07T19:21:27.846Z"
+  },
+  {
+    "id": "1775589673520",
+    "user": "jeronimo1995",
+    "action": "MOVIMIENTO",
+    "patientName": "Jeronimo parra ",
+    "detail": "Asignado a Piso 1 / Silla 11 / Turno 2",
+    "timestamp": "2026-04-07T19:21:13.520Z"
+  },
+  {
+    "id": "1775589670485",
+    "user": "jeronimo1995",
+    "action": "LIBERACIÓN",
+    "patientName": "molina",
+    "detail": "Silla liberada manualmente en Piso 1",
+    "timestamp": "2026-04-07T19:21:10.485Z"
+  },
+  {
+    "id": "1775589655821",
+    "user": "jeronimo1995",
+    "action": "MOVIMIENTO",
+    "patientName": "molina",
+    "detail": "Asignado a Piso 1 / Silla 6 / Turno 1",
+    "timestamp": "2026-04-07T19:20:55.821Z"
+  },
+  {
+    "id": "1775589641103",
+    "user": "jeronimo1995",
+    "action": "LIBERACIÓN",
+    "patientName": "molina",
+    "detail": "Silla liberada manualmente en Piso 1",
+    "timestamp": "2026-04-07T19:20:41.103Z"
+  },
+  {
+    "id": "1775589636528",
+    "user": "jeronimo1995",
+    "action": "MOVIMIENTO",
+    "patientName": "molina",
+    "detail": "Asignado a Piso 1 / Silla 6 / Turno 1",
+    "timestamp": "2026-04-07T19:20:36.528Z"
+  },
+  {
+    "id": "1775589520112",
+    "user": "jeronimo1995",
+    "action": "EDICIÓN",
+    "patientName": "Jeronimo parra ",
+    "detail": "Ficha técnica editada desde el Directorio",
+    "timestamp": "2026-04-07T19:18:40.112Z"
+  },
+  {
     "id": "1775589038958",
     "user": "jeronimo1995",
     "action": "LIBERACIÓN",
