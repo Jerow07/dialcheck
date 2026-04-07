@@ -147,17 +147,17 @@ function App() {
           </div>
 
           {/* Futuristic Medical Clock (Concept 1) */}
-          <div className="hidden lg:flex flex-col items-center px-10 py-4 bg-slate-200/40 dark:bg-slate-900/40 backdrop-blur-2xl rounded-[40px] border-2 border-slate-300/30 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group animate-in fade-in zoom-in duration-1000 scale-105">
+          <div className="hidden lg:flex flex-col items-center px-10 py-4 bg-slate-200/80 dark:bg-slate-800/60 backdrop-blur-3xl rounded-[40px] border-2 border-blue-500/30 dark:border-blue-500/40 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_0_40px_rgba(59,130,246,0.15)] relative overflow-hidden group animate-in fade-in zoom-in duration-1000 scale-105">
             {/* Heartbeat SVG Background Animation */}
-            <div className="absolute inset-0 opacity-[0.07] dark:opacity-[0.15] pointer-events-none">
+            <div className="absolute inset-0 opacity-[0.2] dark:opacity-[0.4] pointer-events-none">
               <svg className="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
                 <path
                   d="M0 10 L10 10 L12 2 L14 18 L16 10 L30 10 L32 5 L34 15 L36 10 L50 10 L52 0 L54 20 L56 10 L70 10 L72 7 L74 13 L76 10 L90 10 L100 10"
                   fill="none"
-                  stroke={theme === 'dark' ? '#3b82f6' : '#2563eb'}
-                  strokeWidth="0.5"
+                  stroke={theme === 'dark' ? '#60a5fa' : '#2563eb'}
+                  strokeWidth="1.2"
                   className="animate-heartbeat"
-                  style={{ strokeDasharray: '100', strokeDashoffset: '100' }}
+                  style={{ strokeDasharray: '100', strokeDashoffset: '100', filter: 'drop-shadow(0 0 3px rgba(59,130,246,0.6))' }}
                 />
               </svg>
             </div>

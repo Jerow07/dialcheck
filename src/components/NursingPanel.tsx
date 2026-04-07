@@ -673,7 +673,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                     ? 'bg-orange-500 border-orange-600 shadow-lg shadow-orange-500/20 scale-[1.02]' 
                     : isToday
                       ? 'bg-orange-500/10 border-orange-500/30'
-                      : 'bg-white/50 dark:bg-black/20 border-transparent hover:border-orange-500/30'
+                      : 'bg-white/50 dark:bg-white/10 border-slate-200 dark:border-white/20 hover:bg-white/80 dark:hover:bg-white/20'
                 }`}
               >
                 <span className={`text-[9px] font-black uppercase tracking-widest ${isSelected ? 'text-white' : 'opacity-40 group-hover/day:opacity-100'}`}>
@@ -760,7 +760,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                 className={`flex-1 flex flex-col items-center justify-center px-2 md:px-6 py-2 md:py-3 rounded-2xl transition-all duration-300 ${
                   selectedFloor === f 
                     ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40' 
-                    : 'bg-slate-100 dark:bg-white/5 text-slate-500 hover:bg-slate-200 dark:hover:bg-white/10'
+                    : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400 border border-transparent dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/20'
                 }`}
               >
                 <span className="text-[7px] md:text-[9px] font-black uppercase tracking-widest opacity-60">Piso</span>
@@ -779,7 +779,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                     className={`flex flex-col items-center px-6 py-2 rounded-xl font-black transition-all ${
                       selectedShift === s 
                         ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/40 scale-[1.05] translate-y-[-1px]' 
-                        : 'bg-slate-200 text-black hover:bg-slate-300'
+                        : 'bg-slate-200 dark:bg-white/10 text-black dark:text-slate-200 border border-transparent dark:border-white/10 hover:bg-slate-300 dark:hover:bg-white/20'
                     }`}
                   >
                     <span className="text-xs uppercase tracking-widest">Turno {s}</span>
