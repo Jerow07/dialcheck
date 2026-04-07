@@ -740,7 +740,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
       })()}
 
       {/* Header & Shift Selector */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-[var(--bg-accent)] p-4 md:p-8 rounded-[32px] md:rounded-[40px] border border-[var(--border-color)] backdrop-blur-xl">
+      <div className="flex flex-col md:flex-row flex-wrap justify-center lg:justify-between items-center gap-6 bg-[var(--bg-accent)] p-4 md:p-8 rounded-[32px] md:rounded-[40px] border border-[var(--border-color)] backdrop-blur-xl">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-blue-500 rounded-3xl flex items-center justify-center shadow-2xl shadow-blue-500/20">
             <Users className="text-white" size={32} />
