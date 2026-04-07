@@ -80,23 +80,28 @@ export const PatientList = ({ patients, onRefresh, currentUser }: PatientListPro
   };
 
   const deletePatient = async (id: string) => {
-    if (!window.confirm('¿Está seguro de que desea eliminar este paciente del directorio?')) return;
+    const patient = patients.find(p => p.id === id);
+    if (!patient) return;
+
+    if (!window.confirm(`¿Está seguro? Se eliminarán TODOS los registros históricos de "${patient.name}" en el sistema.`)) return;
+
     try {
-      const patient = patients.find(p => p.id === id);
-      const resp = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+      const resp = await fetch(`${API_URL}/${id}?global=true&name=${encodeURIComponent(patient.name)}`, { 
+        method: 'DELETE' 
+      });
+
       if (resp.ok) {
-        if (patient) {
-          fetch('/api/logs', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              user: currentUser || 'Admin',
-              action: 'ELIMINACIÓN',
-              patientName: patient.name,
-              detail: `Paciente eliminado permanentemente del Directorio`
-            })
-          }).catch(console.error);
-        }
+        fetch('/api/logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user: currentUser || 'Admin',
+            action: 'ELIMINACIÓN TOTAL',
+            patientName: patient.name,
+            detail: `Paciente y todo su historial eliminados permanentemente del sistema`
+          })
+        }).catch(console.error);
+
         onRefresh();
       } else {
         const data = await resp.json().catch(() => ({}));

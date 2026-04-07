@@ -162,10 +162,18 @@ app.post(['/api/patients', '/'], async (req, res) => {
 // DELETE patient
 app.delete(['/api/patients/:id', '/:id'], async (req, res) => {
   const { id } = req.params;
+  const { name, global } = req.query;
   
   let patients = await getPatients();
   const initialLength = patients.length;
-  patients = patients.filter(p => p.id !== id);
+
+  if (global === 'true' && name) {
+    // Delete all records with the same name
+    patients = patients.filter(p => p.name.toLowerCase().trim() !== name.toLowerCase().trim());
+  } else {
+    // Standard delete by ID
+    patients = patients.filter(p => p.id !== id);
+  }
   
   if (patients.length === initialLength) {
     return res.status(404).json({ error: 'Patient not found' });
