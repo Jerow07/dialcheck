@@ -86,7 +86,7 @@ function App() {
   }
 
   if (!isAuthenticated) {
-    return <LoginScreen onLogin={handleLogin} />
+    return <LoginScreen onLogin={handleLogin} theme={theme} onToggleTheme={toggleTheme} />
   }
 
   return (

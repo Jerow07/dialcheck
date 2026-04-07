@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
-import { Lock, User, Activity, AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
+import { Lock, User, Activity, AlertCircle, Loader2, Eye, EyeOff, Sun, Moon } from 'lucide-react';
 
-export const LoginScreen = ({ onLogin }: { onLogin: (token: string, username: string) => void }) => {
+export const LoginScreen = ({ 
+  onLogin, 
+  theme, 
+  onToggleTheme 
+}: { 
+  onLogin: (token: string, username: string) => void,
+  theme: 'light' | 'dark',
+  onToggleTheme: () => void
+}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -41,7 +49,18 @@ export const LoginScreen = ({ onLogin }: { onLogin: (token: string, username: st
   };
 
   return (
-    <div className="fixed inset-0 min-h-screen bg-[var(--bg-primary)] flex items-center justify-center p-4 z-50 overflow-hidden">
+    <div className="fixed inset-0 min-h-screen bg-[var(--bg-primary)] flex items-center justify-center p-4 z-50 overflow-hidden text-[var(--text-primary)]">
+      {/* Theme Toggle Button */}
+      <div className="absolute top-6 right-6 z-[60]">
+        <button 
+          onClick={onToggleTheme}
+          className="w-11 h-11 bg-[var(--bg-accent)] border border-[var(--border-color)] rounded-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl shadow-black/5"
+          aria-label="Toggle Theme"
+        >
+          {theme === 'light' ? <Moon size={20} className="text-blue-600" /> : <Sun size={20} className="text-orange-400" />}
+        </button>
+      </div>
+
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none" />
       

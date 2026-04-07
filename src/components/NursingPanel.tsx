@@ -139,25 +139,27 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
   };
 
   const getDoctorName = (floor: number) => {
-    if (floor === 2) return "Por asignar";
-    
-    // dateObj = Tue Mar 27 2026 (for example)
     const dateObj = new Date(selectedDate + 'T12:00:00');
     const day = dateObj.getDay(); // 0 = Sun, 1 = Mon, 2 = Tue, 3 = Wed, 4 = Thu, 5 = Fri, 6 = Sat
     const isAfternoon = selectedShift === '3' || (selectedShift === '2' && rotation === 'PM');
 
-    // Rules for Piso 1:
-    // Mon (1), Wed (3), Thu AM (4): Silvina Vazquez
-    // Thu PM (4), Sat (6): Gabriela Palminio
-    // Tue (2), Fri (5): Marisa Ochoa
-    
     if (floor === 1) {
       if (day === 1 || day === 3) return "Silvina Vazquez";
       if (day === 4) return isAfternoon ? "Gabriela Palminio" : "Silvina Vazquez";
       if (day === 2 || day === 5) return "Marisa Ochoa";
       if (day === 6) return "Gabriela Palminio";
-      return "Silvina Vazquez"; // Default
+      return "Silvina Vazquez";
     }
+
+    if (floor === 2) {
+      if (day === 2 || day === 6) return "Cristian Flander";
+      if (day === 1) return "Cecilia Procopick";
+      if (day === 5) return selectedShift === '1' ? "Cecilia Procopick" : "Cristian Flander";
+      if (day === 4) return "Maria Jose Ripol";
+      if (day === 3) return selectedShift === '3' ? "Maria Levien" : "Maria Jose Ripol";
+      return "Cristian Flander";
+    }
+
     return "Por asignar";
   };
   
@@ -869,27 +871,31 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                     <div className="space-y-4">
                       
                       <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 rounded-[16px] bg-gradient-to-br from-blue-500 to-indigo-600 flex shrink-0 items-center justify-center text-white font-black shadow-lg">
-                          MS
-                        </div>
                         <div>
                           <p className="text-lg font-black uppercase tracking-tighter text-blue-600 dark:text-blue-500">M. de los Angeles Suarez</p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <p className="text-[9px] font-black opacity-60 uppercase tracking-widest">En Línea • 08:00 - 16:00 hs</p>
+                            <p className="text-[9px] font-black opacity-60 uppercase tracking-widest">En Línea • 08:00 - 17:00 hs</p>
                           </div>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 rounded-[16px] bg-gradient-to-br from-indigo-500 to-purple-600 flex shrink-0 items-center justify-center text-white font-black shadow-lg">
-                          KB
-                        </div>
                         <div>
                           <p className="text-lg font-black uppercase tracking-tighter text-indigo-600 dark:text-indigo-500">Karina Mabel Batla</p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            <p className="text-[9px] font-black opacity-60 uppercase tracking-widest">En Línea • 08:00 - 16:00 hs</p>
+                            <p className="text-[9px] font-black opacity-60 uppercase tracking-widest">En Línea • 08:00 - 17:00 hs</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-5">
+                        <div>
+                          <p className="text-lg font-black uppercase tracking-tighter text-sky-600 dark:text-sky-500">Diego Paez</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <p className="text-[9px] font-black opacity-60 uppercase tracking-widest">Adm. Personal • 08:00 - 17:00 hs</p>
                           </div>
                         </div>
                       </div>
@@ -904,15 +910,12 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                     </div>
                     <div className="flex flex-col gap-3">
                       <div className="flex items-center gap-3 bg-white/50 dark:bg-white/5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm">
-                        <div className="w-10 h-10 rounded-[12px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex shrink-0 items-center justify-center font-black text-sm">DC</div>
                         <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">Dario Campos</span>
                       </div>
                       <div className="flex items-center gap-3 bg-white/50 dark:bg-white/5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm">
-                        <div className="w-10 h-10 rounded-[12px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex shrink-0 items-center justify-center font-black text-sm">OT</div>
                         <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">Osvaldo Torrado</span>
                       </div>
                       <div className="flex items-center gap-3 bg-white/50 dark:bg-white/5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm">
-                        <div className="w-10 h-10 rounded-[12px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex shrink-0 items-center justify-center font-black text-sm">PS</div>
                         <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">Patricia Sidoruk</span>
                       </div>
                     </div>
