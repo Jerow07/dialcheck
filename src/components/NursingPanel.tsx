@@ -338,16 +338,20 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
             user: currentUser || 'Admin',
             action: 'MOVIMIENTO',
             patientName: patient.name,
-            detail: `Asignado a Piso ${selectedFloor} / Silla ${selectedChair} / Turno ${selectedShift}`
+            detail: `Asignado/Mover a Piso ${selectedFloor} / Silla ${selectedChair} / Turno ${selectedShift}`
           })
         }).catch(console.error);
 
         onRefresh();
         setShowAssignModal(false);
         setSelectedChair(null);
+      } else {
+        const data = await resp.json().catch(() => ({}));
+        alert(`No se pudo mover: ${data.error || 'Error desconocido'}`);
       }
     } catch (err) {
       console.error('Error assigning patient:', err);
+      alert("Error de conexión al intentar mover al paciente.");
     }
   };
 
@@ -401,7 +405,10 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          chairNumber: targetChair 
+          chairNumber: targetChair,
+          floor: selectedFloor,
+          shift: selectedShift,
+          date: selectedDate
         })
       });
 
