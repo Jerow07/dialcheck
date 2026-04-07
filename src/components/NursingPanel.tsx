@@ -849,7 +849,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
       {/* Realistic Chair Layout */}
       {selectedFloor === 0 ? (
         <div className="max-w-5xl mx-auto py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             {/* Reception Module */}
             <div className="bg-[var(--bg-accent)]/30 p-8 md:p-12 rounded-[48px] border border-[var(--border-color)] relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] -translate-y-1/2 translate-x-1/2" />
