@@ -50,11 +50,12 @@ export const PatientForm = ({ initialData, onClose, onSave, title, patients, hid
         const isDuplicate = patientsList.some(p => 
           p && p.name && 
           p.id !== formData.id && // Diferente ID
-          p.name.toLowerCase().trim() === currentName // Mismo Nombre
+          p.name.toLowerCase().trim() === currentName && // Mismo Nombre
+          p.date === formData.date // Misma Fecha
         );
 
         if (isDuplicate) {
-          setFormError(`Error: El nombre "${formData.name}" ya está registrado para otro paciente.`);
+          setFormError(`Error: El nombre "${formData.name}" ya está registrado para este día (${formData.date}).`);
           return;
         }
       }
