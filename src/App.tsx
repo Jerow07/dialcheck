@@ -146,17 +146,43 @@ function App() {
             </div>
           </div>
 
-          {/* Real-time Clock */}
-          <div className="hidden lg:flex flex-col items-center px-8 py-3 bg-[var(--bg-accent)]/50 backdrop-blur-xl rounded-[32px] border border-[var(--border-color)] shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-none animate-in fade-in zoom-in duration-700">
-            <div className="flex items-center gap-3">
-              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-              <span className="text-2xl font-black tabular-nums tracking-tighter text-slate-800 dark:text-white leading-none">
-                {currentTime.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-              </span>
+          {/* Futuristic Medical Clock (Concept 1) */}
+          <div className="hidden lg:flex flex-col items-center px-10 py-4 bg-slate-200/40 dark:bg-slate-900/40 backdrop-blur-2xl rounded-[40px] border-2 border-slate-300/30 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group animate-in fade-in zoom-in duration-1000 scale-105">
+            {/* Heartbeat SVG Background Animation */}
+            <div className="absolute inset-0 opacity-[0.07] dark:opacity-[0.15] pointer-events-none">
+              <svg className="w-full h-full" viewBox="0 0 100 20" preserveAspectRatio="none">
+                <path
+                  d="M0 10 L10 10 L12 2 L14 18 L16 10 L30 10 L32 5 L34 15 L36 10 L50 10 L52 0 L54 20 L56 10 L70 10 L72 7 L74 13 L76 10 L90 10 L100 10"
+                  fill="none"
+                  stroke={theme === 'dark' ? '#3b82f6' : '#2563eb'}
+                  strokeWidth="0.5"
+                  className="animate-heartbeat"
+                  style={{ strokeDasharray: '100', strokeDashoffset: '100' }}
+                />
+              </svg>
             </div>
-            <p className="text-[9px] font-black uppercase tracking-[0.3em] opacity-40 mt-1.5 text-slate-500 dark:text-slate-400">
-              {new Intl.DateTimeFormat('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }).format(currentTime)}
-            </p>
+
+            <div className="relative z-10">
+              <div className="flex items-end gap-1.5 mb-1 justify-center">
+                <span className="text-3xl font-black tabular-nums tracking-tighter text-slate-900 dark:text-white leading-none drop-shadow-sm">
+                  {currentTime.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+                </span>
+                <span className="text-sm font-bold tabular-nums text-blue-500 mb-0.5 animate-pulse">
+                  :{currentTime.toLocaleTimeString('es-AR', { second: '2-digit' })}
+                </span>
+              </div>
+              
+              <div className="flex items-center justify-center gap-3">
+                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/10 rounded-full border border-blue-500/20">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-digital-pulse shadow-[0_0_8px_rgba(59,130,246,0.8)]" />
+                  <span className="text-[8px] font-black uppercase tracking-widest text-blue-500">System Active</span>
+                </div>
+                <div className="h-3 w-px bg-slate-300 dark:bg-white/10" />
+                <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 text-slate-600 dark:text-slate-400">
+                  {new Intl.DateTimeFormat('es-AR', { day: 'numeric', month: 'short' }).format(currentTime)}
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Navigation & Theme */}
