@@ -168,6 +168,14 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
 
     return "Por asignar";
   };
+
+  const handleDateChange = (newDate: string) => {
+    if (movingPatient) {
+      alert("No puedes mover al paciente a otra fecha. El movimiento se ha cancelado.");
+      setMovingPatient(null);
+    }
+    setSelectedDate(newDate);
+  };
   
   const [selectedChair, setSelectedChair] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -618,7 +626,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
                 id="hidden-date-picker"
                 type="date" 
                 className="absolute inset-0 opacity-0 pointer-events-none"
-                onChange={(e) => e.target.value && setSelectedDate(e.target.value)}
+                onChange={(e) => e.target.value && handleDateChange(e.target.value)}
               />
             </div>
           </div>
@@ -628,14 +636,14 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
               onClick={() => {
                 const prev = new Date(selectedDate + 'T12:00:00');
                 prev.setDate(prev.getDate() - 7);
-                setSelectedDate(getLocalDateString(prev));
+                handleDateChange(getLocalDateString(prev));
               }}
               className="px-2.5 md:px-4 h-8 md:h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all"
             >
               Sem. Ant.
             </button>
             <button 
-              onClick={() => setSelectedDate(getLocalDateString())}
+              onClick={() => handleDateChange(getLocalDateString())}
               className={`px-3 md:px-4 h-8 md:h-10 ${selectedDate === getLocalDateString() ? 'bg-orange-500 text-white' : 'bg-slate-200 text-black'} hover:opacity-90 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all`}
             >
               Hoy
@@ -644,7 +652,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
               onClick={() => {
                 const next = new Date(selectedDate + 'T12:00:00');
                 next.setDate(next.getDate() + 7);
-                setSelectedDate(getLocalDateString(next));
+                handleDateChange(getLocalDateString(next));
               }}
               className="px-2.5 md:px-4 h-8 md:h-10 bg-slate-200 text-black hover:bg-slate-300 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest transition-all"
             >
@@ -685,7 +693,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
             return (
               <button
                 key={dateStr}
-                onClick={() => setSelectedDate(dateStr)}
+                onClick={() => handleDateChange(dateStr)}
                 className={`flex-1 min-w-[70px] p-3 rounded-2xl border transition-all flex flex-col items-center gap-1 group/day ${
                   isSelected 
                     ? 'bg-orange-500 border-orange-600 shadow-lg shadow-orange-500/20 scale-[1.02]' 
