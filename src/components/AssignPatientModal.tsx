@@ -64,7 +64,7 @@ export const AssignPatientModal = ({
         <div className="space-y-4 md:space-y-6 max-h-[350px] md:max-h-[450px] overflow-y-auto pr-2 custom-scrollbar">
           {availablePatients.length > 0 && (
             <div>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-3 block">Disponibles para Hoy</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-3 block">Pacientes del Directorio (Asignar Nuevo)</span>
               <div className="space-y-2">
                 {availablePatients.map(p => (
                   <button
@@ -74,7 +74,7 @@ export const AssignPatientModal = ({
                   >
                     <div>
                       <h4 className="font-black text-sm text-[var(--text-primary)]">{p.name}</h4>
-                      <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest">Listo para asignar</p>
+                      <p className="text-[10px] font-bold opacity-40 uppercase tracking-widest">Crear registro para hoy</p>
                     </div>
                     <div className="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center">
                       <Plus size={16} className="text-emerald-500" />
@@ -87,7 +87,7 @@ export const AssignPatientModal = ({
 
           {assignedToday.length > 0 && (
             <div>
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-3 block">Ya Asignados (Mover Silla)</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-3 block">Ya Asignados Hoy (Mover Silla)</span>
               <div className="space-y-2">
                 {assignedToday.map(p => (
                   <button
@@ -98,7 +98,7 @@ export const AssignPatientModal = ({
                     <div>
                       <h4 className="font-black text-sm text-[var(--text-primary)]">{p.name}</h4>
                       <p className="text-[10px] font-bold text-amber-500 uppercase tracking-widest">
-                        En Silla {p.chairNumber} • Piso {p.floor}
+                        Cambiar lugar • Silla {p.chairNumber}
                       </p>
                     </div>
                     <div className="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center">

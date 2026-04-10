@@ -54,7 +54,13 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
 
   useEffect(() => {
     setActiveChair(null);
-  }, [selectedShift, selectedFloor, selectedDate, rotation]);
+  }, [selectedShift, selectedFloor, rotation]);
+
+  // Si cambia la fecha, cancelamos cualquier modo de "mover" para evitar errores de fecha
+  useEffect(() => {
+    setActiveChair(null);
+    setMovingPatient(null);
+  }, [selectedDate]);
 
   useEffect(() => {
     const today = new Date();
@@ -408,7 +414,7 @@ export const NursingPanel = ({ patients, onRefresh, currentUser }: NursingPanelP
           chairNumber: targetChair,
           floor: selectedFloor,
           shift: selectedShift,
-          date: selectedDate
+          date: movingPatient.date // Usar siempre la fecha original del paciente para el movimiento
         })
       });
 
